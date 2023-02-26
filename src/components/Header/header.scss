@@ -1,0 +1,49 @@
+.appbar {
+    padding: 16px 0;
+    box-shadow: none;
+
+    .logo {
+        display: block;
+        width: 320px;
+
+        img {
+            width: 100%;
+        }
+    }
+
+    .stakedInfo {
+        font-size: 12px;
+        border-radius: 8px;
+        padding: 4px 8px;
+        border: 1px solid #ff7523;
+    }
+
+    .social-buttons {
+        align-items: center;
+        column-gap: 8px;
+
+
+        .social-button {
+            display: block;
+            width: 36px;
+            min-width: 36px;
+            height: 36px;
+            padding: 8px;
+            border-radius: 8px;
+
+            >* {
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+
+    .menu-button {
+        padding: 8px;
+        width: 36px;
+        min-width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background-color: rgba(101,230,255,0.12);
+    }
+}

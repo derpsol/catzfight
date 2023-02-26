@@ -1,0 +1,539 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        { "name": "name", "type": "string" },
+        { "name": "symbol", "type": "string" }
+      ],
+      "stateMutability": "Nonpayable",
+      "type": "Constructor"
+    },
+    {
+      "inputs": [
+        { "indexed": true, "name": "owner", "type": "address" },
+        { "indexed": true, "name": "approved", "type": "address" },
+        { "indexed": true, "name": "tokenId", "type": "uint256" }
+      ],
+      "name": "Approval",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        { "indexed": true, "name": "owner", "type": "address" },
+        { "indexed": true, "name": "operator", "type": "address" },
+        { "name": "approved", "type": "bool" }
+      ],
+      "name": "ApprovalForAll",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        { "indexed": true, "name": "_tokenId", "type": "uint256" },
+        { "indexed": true, "name": "_payer", "type": "address" },
+        { "name": "_price", "type": "uint256" },
+        { "name": "reason", "type": "string" }
+      ],
+      "name": "BidCancelled",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        { "indexed": true, "name": "_tokenId", "type": "uint256" },
+        { "indexed": true, "name": "_from", "type": "address" },
+        { "indexed": true, "name": "_to", "type": "address" },
+        { "name": "buyer", "type": "address" },
+        { "name": "_price", "type": "uint256" }
+      ],
+      "name": "MarketTrade",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        { "indexed": true, "name": "maskIndex", "type": "uint256" },
+        { "name": "newName", "type": "string" }
+      ],
+      "name": "NameChange",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        { "indexed": true, "name": "_tokenId", "type": "uint256" },
+        { "indexed": true, "name": "_payer", "type": "address" },
+        { "name": "_price", "type": "uint256" }
+      ],
+      "name": "NewBid",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        { "indexed": true, "name": "previousOwner", "type": "address" },
+        { "indexed": true, "name": "newOwner", "type": "address" }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        { "indexed": true, "name": "_tokenId", "type": "uint256" },
+        { "indexed": true, "name": "_owner", "type": "address" },
+        { "name": "_oldPrice", "type": "uint256" },
+        { "name": "_newPrice", "type": "uint256" }
+      ],
+      "name": "TokenMarketPriceChange",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        { "indexed": true, "name": "_tokenId", "type": "uint256" },
+        { "indexed": true, "name": "_owner", "type": "address" }
+      ],
+      "name": "TokenNotOnSale",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        { "indexed": true, "name": "_tokenId", "type": "uint256" },
+        { "indexed": true, "name": "_owner", "type": "address" },
+        { "name": "_price", "type": "uint256" }
+      ],
+      "name": "TokenOnSale",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        { "indexed": true, "name": "from", "type": "address" },
+        { "indexed": true, "name": "to", "type": "address" },
+        { "indexed": true, "name": "tokenId", "type": "uint256" }
+      ],
+      "name": "Transfer",
+      "type": "Event"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "MAX_NFT_SUPPLY",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "string" }],
+      "name": "PROVENANCE_HASH",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "_tokenId", "type": "uint256" },
+        { "name": "_bidId", "type": "uint256" }
+      ],
+      "name": "acceptBid",
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "_tokenId", "type": "uint256" },
+        { "name": "_price", "type": "uint256" }
+      ],
+      "name": "addBid",
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "to", "type": "address" },
+        { "name": "tokenId", "type": "uint256" }
+      ],
+      "name": "approve",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "inputs": [{ "name": "owner", "type": "address" }],
+      "name": "balanceOf",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "string" }],
+      "name": "baseURI",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [
+        { "name": "id", "type": "uint256" },
+        { "name": "tokenId", "type": "uint256" },
+        { "name": "price", "type": "uint256" },
+        { "name": "payer", "type": "address" },
+        { "name": "active", "type": "bool" },
+        { "name": "status", "type": "string" }
+      ],
+      "inputs": [{ "type": "uint256" }],
+      "name": "bids",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "inputs": [{ "type": "uint256" }, { "type": "uint256" }],
+      "name": "bidsByToken",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "inputs": [{ "type": "address" }, { "type": "uint256" }],
+      "name": "bidsByUser",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "bidsCount",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "inputs": [{ "type": "address" }],
+      "name": "bidsCountByUser",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "_bidId", "type": "uint256" }],
+      "name": "cancelBid",
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "catPrice",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "_tokenId", "type": "uint256" },
+        { "name": "newPrice", "type": "uint256" }
+      ],
+      "name": "changeLotPrice",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "name": "flipSaleState",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "address" }],
+      "inputs": [{ "name": "tokenId", "type": "uint256" }],
+      "name": "getApproved",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "address" }],
+      "name": "getDevAddress",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "getNFTPrice",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "address" }],
+      "inputs": [{ "name": "index", "type": "uint256" }],
+      "name": "getPoolAddress",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256[]" }],
+      "name": "getTokensOnSale",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "inputs": [{ "name": "owner", "type": "address" }],
+      "name": "getUserLevel",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "inputs": [{ "name": "owner", "type": "address" }],
+      "name": "getUserPoolId",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "inputs": [{ "name": "owner", "type": "address" }],
+      "name": "getUserWallet",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "bool" }],
+      "inputs": [
+        { "name": "owner", "type": "address" },
+        { "name": "operator", "type": "address" }
+      ],
+      "name": "isApprovedForAll",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "bool" }],
+      "name": "isMarketEnabled",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "levelOneUsers",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "levelTwousers",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [
+        { "name": "tokenId", "type": "uint256" },
+        { "name": "isForSale", "type": "bool" },
+        { "name": "owner", "type": "address" },
+        { "name": "price", "type": "uint256" },
+        { "name": "bidsCount", "type": "uint256" },
+        { "name": "maxBidPrice", "type": "uint256" }
+      ],
+      "inputs": [{ "type": "uint256" }],
+      "name": "marketLots",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "maxCatPushcase",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "numberOfNfts", "type": "uint256" }],
+      "name": "mintNFT",
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "string" }],
+      "name": "name",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "address" }],
+      "name": "owner",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "address" }],
+      "inputs": [{ "name": "tokenId", "type": "uint256" }],
+      "name": "ownerOf",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "poolSize",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "_tokenId", "type": "uint256" },
+        { "name": "price", "type": "uint256" }
+      ],
+      "name": "putOnMarket",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "name": "renounceOwnership",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "count", "type": "uint256" }],
+      "name": "reserveTokens",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "address" }],
+      "inputs": [{ "type": "uint256" }],
+      "name": "rewardPool",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "from", "type": "address" },
+        { "name": "to", "type": "address" },
+        { "name": "tokenId", "type": "uint256" }
+      ],
+      "name": "safeTransferFrom",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "from", "type": "address" },
+        { "name": "to", "type": "address" },
+        { "name": "tokenId", "type": "uint256" },
+        { "name": "_data", "type": "bytes" }
+      ],
+      "name": "safeTransferFrom",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "bool" }],
+      "name": "saleIsActive",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "operator", "type": "address" },
+        { "name": "approved", "type": "bool" }
+      ],
+      "name": "setApprovalForAll",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "baseURI", "type": "string" }],
+      "name": "setBaseURI",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "provenanceHash", "type": "string" }],
+      "name": "setProvenanceHash",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "startingIndex",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "startingIndexBlock",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "bool" }],
+      "inputs": [{ "name": "interfaceId", "type": "bytes4" }],
+      "name": "supportsInterface",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "string" }],
+      "name": "symbol",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "inputs": [{ "name": "index", "type": "uint256" }],
+      "name": "tokenByIndex",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "inputs": [
+        { "name": "owner", "type": "address" },
+        { "name": "index", "type": "uint256" }
+      ],
+      "name": "tokenOfOwnerByIndex",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "string" }],
+      "inputs": [{ "name": "tokenId", "type": "uint256" }],
+      "name": "tokenURI",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "totalSupply",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "from", "type": "address" },
+        { "name": "to", "type": "address" },
+        { "name": "tokenId", "type": "uint256" }
+      ],
+      "name": "transferFrom",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "newOwner", "type": "address" }],
+      "name": "transferOwnership",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "outputs": [
+        { "name": "poolId", "type": "uint256" },
+        { "name": "mintedCount", "type": "uint256" },
+        { "name": "level", "type": "uint256" },
+        { "name": "wallet", "type": "uint256" },
+        { "name": "isExists", "type": "bool" }
+      ],
+      "inputs": [{ "type": "address" }],
+      "name": "users",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "name": "withdraw",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "_tokenId", "type": "uint256" }],
+      "name": "withdrawFromMarket",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "withdrawToUser",
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ]
+}

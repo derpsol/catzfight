@@ -1,0 +1,210 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        { "name": "_nftAddress", "type": "address" },
+        { "name": "_meowAddress", "type": "address" },
+        { "name": "_teamAddress", "type": "address" }
+      ],
+      "stateMutability": "Nonpayable",
+      "type": "Constructor"
+    },
+    {
+      "inputs": [
+        { "name": "tokenId", "type": "uint256" },
+        { "name": "roomnum", "type": "uint256" }
+      ],
+      "name": "EnteredRoom",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        { "name": "tokenId1", "type": "uint256" },
+        { "name": "tokenId2", "type": "uint256" }
+      ],
+      "name": "GameStarted",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        { "indexed": true, "name": "previousOwner", "type": "address" },
+        { "indexed": true, "name": "newOwner", "type": "address" }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "Event"
+    },
+    {
+      "outputs": [{ "type": "bool" }],
+      "name": "big",
+      "stateMutability": "View",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        { "name": "tokenId", "type": "uint256" },
+        { "name": "roomnum", "type": "uint256" }
+      ],
+      "name": "claimFight",
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "amount", "type": "uint256" }],
+      "name": "deposit",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "tokenId", "type": "uint256" },
+        { "name": "roomnum", "type": "uint256" }
+      ],
+      "name": "enterRoom",
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "gamePrice",
+      "stateMutability": "View",
+      "type": "Function"
+    },
+    {
+      "outputs": [{ "type": "bool" }],
+      "inputs": [{ "type": "uint256" }],
+      "name": "gameStatus",
+      "stateMutability": "View",
+      "type": "Function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "iterations",
+      "stateMutability": "View",
+      "type": "Function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "jackpotAmount",
+      "stateMutability": "View",
+      "type": "Function"
+    },
+    {
+      "inputs": [{ "name": "tokenId", "type": "uint256" }],
+      "name": "leaveLobby",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "address" }],
+      "name": "owner",
+      "stateMutability": "View",
+      "type": "Function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "prime",
+      "stateMutability": "View",
+      "type": "Function"
+    },
+    {
+      "name": "renounceOwnership",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "outputs": [
+        { "name": "fighter1", "type": "address" },
+        { "name": "fighter2", "type": "address" },
+        { "name": "random1", "type": "uint256" },
+        { "name": "random2", "type": "uint256" },
+        { "name": "tokenid1", "type": "uint256" },
+        { "name": "tokenid2", "type": "uint256" },
+        { "name": "big", "type": "bool" }
+      ],
+      "inputs": [{ "type": "uint256" }],
+      "name": "room",
+      "stateMutability": "View",
+      "type": "Function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "secondrandom",
+      "stateMutability": "View",
+      "type": "Function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "inputs": [{ "type": "address" }],
+      "name": "seeds",
+      "stateMutability": "View",
+      "type": "Function"
+    },
+    {
+      "inputs": [{ "name": "newGamePrice", "type": "uint256" }],
+      "name": "setGamePrice",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "newNftAddress", "type": "address" }],
+      "name": "setNftAddress",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "newTeamAddress", "type": "address" }],
+      "name": "setTeamAddress",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "amount", "type": "uint256" }],
+      "name": "stake",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "inputs": [{ "type": "address" }],
+      "name": "stakeAmount",
+      "stateMutability": "View",
+      "type": "Function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "stakeTotal",
+      "stateMutability": "View",
+      "type": "Function"
+    },
+    {
+      "outputs": [{ "type": "address" }],
+      "name": "teamAddress",
+      "stateMutability": "View",
+      "type": "Function"
+    },
+    {
+      "inputs": [{ "name": "newOwner", "type": "address" }],
+      "name": "transferOwnership",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "amount", "type": "uint256" }],
+      "name": "unStake",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "waitingId",
+      "stateMutability": "View",
+      "type": "Function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "waitingNumber",
+      "stateMutability": "View",
+      "type": "Function"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+.network-icon {
+    margin-left: 0.25rem;
+    margin-right: 0.5rem;
+    width: 16px;
+    height: 16px;
+}
+
+.close-icon {
+    position: absolute;
+    right: 2px;
+    top: 2px;
+}
+
+.info-card {
+    border: 1px solid #edeef2;
+    border-radius: 20px;
+    display: grid;
+    grid-row-gap: 12px;
+}
+
+.address-link {
+    text-decoration: none;
+    color: #888d9b;
+    margin-left: 1rem;
+    display: flex;
+    align-items: center;
+
+    &:hover,
+    &:active,
+    &:focus {
+        color: #565a69;
+        text-decoration: none;
+    }
+}
+
+.copy-icon {
+    color: #888d9b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+        color: #565a69;
+    }
+}
+
+.green-circle {
+    height: 8px;
+    width: 8px;
+    margin-right: 8px;
+    background-color: #27ae60;
+    border-radius: 50%;
+}
+
+.option-card-clickable {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid;
+
+    border-radius: 12px;
+    padding: 1rem;
+
+    &:focus {
+        box-shadow: 0 0 0 1px #6164ff;
+    }
+}

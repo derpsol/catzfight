@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+@font-face {
+  font-family: LilitaOne;
+  src: url(../fonts/LilitaOne-Regular.ttf);
+}
+
+@font-face {
+  font-family: Gaegu-Bold;
+  src: url(../fonts/Gaegu-Bold.ttf);
+}
+
+@font-face {
+  font-family: Gaegu-Light;
+  src: url(../fonts/Gaegu-Light.ttf);
+}
+
+@font-face {
+  font-family: Gaegu-Regular;
+  src: url(../fonts/Gaegu-Regular.ttf);
+}
+
+@font-face {
+  font-family: Audiowide;
+  src: url(../fonts/Audiowide-Regular.ttf);
+}
+
+@font-face {
+  font-family: LucidaSans;
+  src: url(../fonts/LucidaSansRegular.ttf);
+}
