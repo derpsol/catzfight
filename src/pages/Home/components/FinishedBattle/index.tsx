@@ -36,7 +36,7 @@ const FinishedBattle = () => {
           flexWrap: "wrap",
         }}
       >
-        {resultData?.map((data, index) => {
+        {resultData && resultData.map((data, index) => {
           return (
             <Box
               sx={{

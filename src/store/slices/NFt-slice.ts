@@ -1,48 +1,39 @@
-import { ethers } from "ethers";
-import { getAddresses } from "../../constants";
-import { NFTContractABI } from "../../abi";
 import { setAll } from "../../helpers/set-all";
+import TronWeb from 'tronweb';
 import {
   createSlice,
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
-import { JsonRpcProvider } from "@ethersproject/providers";
 import { RootState } from "../../state";
 import { messages } from "../../constants/messages";
-import { warning, success, info } from "./messages-slice";
+import { success, info } from "./messages-slice";
 import { fetchPendingTxns, clearPendingTxn } from "./pending-txns-slice";
 import { metamaskErrorWrap } from "helpers/metamask-error-wrap";
 
 interface IapproveNFT {
-  networkID: number;
-  provider: JsonRpcProvider;
   tokenId: Number;
 }
 
 export const approveNFT = createAsyncThunk(
   "NFT/loadMFTDetails",
   //@ts-ignore
-  async ({ networkID, provider, tokenId }: IapproveNFT, { dispatch }) => {
-    if (!provider) {
-      dispatch(warning({ text: messages.please_connect_wallet }));
-      return;
-    }
-    const addresses = getAddresses(networkID);
-    const provider1 = new ethers.providers.Web3Provider(window.ethereum);
-    await provider1.send("eth_requestAccounts", []); // <- this promps user to connect metamask
-    const signer = provider1.getSigner();
-    const nftContract = new ethers.Contract(
-      addresses.NFT_ADDRESS,
-      NFTContractABI,
-      signer
-    );
+  async ({ tokenId }: IapproveNFT, { dispatch }) => {
+    const HttpProvider = TronWeb.providers.HttpProvider;
+    const fullNode = "https://nile.trongrid.io";
+    const solidityNode = "https://nile.trongrid.io";
+    const eventServer = "https://nile.trongrid.io";
+    const privateKey = "f40377da14d42e691ca51d43ea2a3177bfce04201a9ba2dd997e8e38c694722a";
+    const tronWeb = new TronWeb(fullNode, solidityNode, eventServer, privateKey);
+    let nftContract = await tronWeb.contract().at('TNmfgzNsuD4Xdv9oAFs3Nk6nJQdq826WL4')
     let enterTx;
+    console.log("select nftContract");
     try {
       enterTx = await nftContract.approve(
-        "0x9e0E637be31FaBCB390393DE1c744fb29f8F322e",
+        "TGCipcjY4ptZw6jUAz5tGEJ59in7avuW4M",
         tokenId
-      );
+      ).send({ feeLimit: 100000000 }).then((output: any) => {console.log('- approve hash:', output, '\n');});
+      console.log("sent request to contract");
       const text = "Approve";
       const pendingTxnType = "Approving";
 
@@ -56,6 +47,7 @@ export const approveNFT = createAsyncThunk(
       return;
     } catch (err: any) {
       console.log(metamaskErrorWrap(err, dispatch));
+      console.log("there is an error while approving");
       return metamaskErrorWrap(err, dispatch);
     } finally {
       if (enterTx) {
@@ -66,30 +58,30 @@ export const approveNFT = createAsyncThunk(
 );
 
 interface ILoadNFTDetails {
-  networkID: number;
-  provider: JsonRpcProvider;
   tokenIds: Number[];
 }
 
 export const loadNFTDetails = createAsyncThunk(
   "app/loadNFTDetails",
   //@ts-ignore
-  async ({ networkID, provider, tokenIds }: ILoadNFTDetails) => {
-    const addresses = getAddresses(networkID);
-    const nftContract = new ethers.Contract(
-      addresses.NFT_ADDRESS,
-      NFTContractABI,
-      provider
-    );
+  async ({ tokenIds }: ILoadNFTDetails) => {
+    const fullNode = "https://nile.trongrid.io";
+    const solidityNode = "https://nile.trongrid.io";
+    const eventServer = "https://nile.trongrid.io";
+    const privateKey = "f40377da14d42e691ca51d43ea2a3177bfce04201a9ba2dd997e8e38c694722a";
+    const tronWeb = new TronWeb(fullNode, solidityNode, eventServer, privateKey);
+    let nftContract = await tronWeb.contract().at('TNmfgzNsuD4Xdv9oAFs3Nk6nJQdq826WL4')
     let allowtmp: String[] = [];
     await Promise.all(
       tokenIds.map(async (tokenId, index) => {
-        allowtmp[index] = await nftContract.getApproved(tokenId);
+        let tmpstring = await nftContract.getApproved(tokenId);
+        allowtmp[index] = tronWeb.toDecimal(tmpstring);
       })
     );
+    console.log("allow array: ", allowtmp);
     let allows: boolean[] = [];
     allowtmp.map((allow, index) => {
-      allows[index] = allow === "0x9e0E637be31FaBCB390393DE1c744fb29f8F322e";
+      allows[index] = allow === "TGCipcjY4ptZw6jUAz5tGEJ59in7avuW4M";
     });
     return {
       allowances: allows,

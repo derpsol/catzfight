@@ -16,7 +16,7 @@ function App() {
   const { active, account, connector, activate, error } = useWeb3React();
 
   const loadData = useCallback(() => {
-    dispatch(loadGameDetails());
+    dispatch(loadGameDetails({account: account}));
   }, [active]);
 
   useEffect(() => {

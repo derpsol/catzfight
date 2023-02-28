@@ -61,7 +61,7 @@ const Winner = () => {
               </Typography>
             </TableCell>
           </TableRow>
-          {winnerData?.map((data, index) => (
+          {winnerData && winnerData.map((data, index) => (
             <TableRow key={index}>
               <TableCell
                 sx={{ borderBottom: "none", padding: "0", textAlign: "center" }}

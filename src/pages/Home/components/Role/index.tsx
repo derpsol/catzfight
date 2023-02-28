@@ -27,7 +27,7 @@ const Role = () => {
       >
         Numbers Rolled:
       </Typography>
-      {randomData?.map((data, index) => (
+      {randomData && randomData.map((data, index) => (
         <Box key={index}>
           <Typography
             sx={{

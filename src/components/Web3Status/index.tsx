@@ -33,8 +33,6 @@ const SOCK = (
 );
 
 function StatusIcon({ connector }: { connector: AbstractConnector }) {
-  console.log("connector", connector);
-  console.log(connector === injected);
   if (connector === injected) {
     return <Identicon />;
   }

@@ -1,5 +1,4 @@
 import { Box, Typography, Button, Skeleton } from "@mui/material";
-import { useWeb3Context, useAddress } from "../../../../hooks";
 import { ClaimFight, EnterRoom } from "store/slices/play-slice";
 import { approveNFT, loadNFTDetails } from "store/slices/NFt-slice";
 import { loadGameDetails } from "store/slices/game-slice";
@@ -9,7 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import Modal from "@mui/material/Modal";
 import axios from "axios";
 import { IReduxState } from "../../../../store/slices/state.interface";
-import io from 'socket.io-client';
+import io from "socket.io-client";
+import { useWeb3React } from "@web3-react/core";
 
 const style = {
   position: "absolute" as "absolute",
@@ -17,7 +17,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: { xs: "400px", sm: "500px", md: "700px", lg: "1000px" },
-  height: '600px',
+  height: "600px",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -31,6 +31,8 @@ const style = {
 };
 
 const CurrentBattle = () => {
+  const { account } = useWeb3React();
+
   const gameData: any[] = useSelector<IReduxState, any[]>(
     (state) => state.app.gameData
   );
@@ -48,6 +50,12 @@ const CurrentBattle = () => {
   );
   const isLoading: boolean = useSelector<IReduxState, boolean>(
     (state) => state.nft.loading
+  );
+  const nftids: any[] = useSelector<IReduxState, any[]>(
+    (state) => state.app.nftids
+  );
+  const nfturis: any[] = useSelector<IReduxState, any[]>(
+    (state) => state.app.nfturis
   );
 
   const Datas = [
@@ -137,16 +145,11 @@ const CurrentBattle = () => {
 
   const [openState, setOpenState] = useState(false);
   const [claimState, setClaimState] = useState(false);
-  const address = useAddress();
   const dispatch = useDispatch<AppDispatch>();
-  const { connect, provider, hasCachedProvider, chainID, connected } =
-    useWeb3Context();
-  const [nftids, setNftIds] = useState([]);
-  const [nfturls, setNftUrls] = useState([]);
   const [whichroom, setWhichroom] = useState(0);
   const [whichfight, setWhichfight] = useState(0);
   const [decide, setDecide] = useState(false);
-  var socket = io('http://192.168.106.175:8001');
+  var socket = io("http://173.249.54.208");
 
   const getDate = () => {
     let date = new Date();
@@ -166,31 +169,13 @@ const CurrentBattle = () => {
     return number;
   };
 
-  const getIds = () => {
-    axios.get(`http://192.168.106.175:8001/api/nft/ids?address=${address}`).then((res) => {
-      setNftIds(res.data);
-    });
-  };
-
-  const getUrls = () => {
-    axios.get(`http://192.168.106.175:8001/api/nft/urls?address=${address}`).then((res) => {
-      setNftUrls(res.data);
-      getApprove();
-    });
-  };
-
-
   async function getGameData() {
-    await dispatch(
-      loadGameDetails()
-    );
+    await dispatch(loadGameDetails({account}));
   }
 
   async function getApprove() {
     await dispatch(
       loadNFTDetails({
-        networkID: chainID,
-        provider,
         tokenIds: nftids,
       })
     );
@@ -199,8 +184,6 @@ const CurrentBattle = () => {
   async function approve(id: Number) {
     let approveTmp = await dispatch(
       approveNFT({
-        networkID: chainID,
-        provider,
         tokenId: id,
       })
     );
@@ -213,13 +196,11 @@ const CurrentBattle = () => {
     let fightRoomnum = getDate();
     let enterState = await dispatch(
       EnterRoom({
-        networkID: chainID,
-        provider,
         tokenId: nftids[index],
         fightRoom: fightRoomnum,
         whichroom: whichroom + 1,
-        url: nfturls[index],
-        address,
+        url: nfturis[index],
+        address: account,
       })
     );
     if (enterState.meta.requestStatus === "fulfilled") {
@@ -230,13 +211,11 @@ const CurrentBattle = () => {
   async function onClaimFight(index: number) {
     let fightState = await dispatch(
       ClaimFight({
-        networkID: chainID,
-        provider,
         tokenId: nftids[index],
         fightRoom: whichfight,
         whichroom: whichroom + 1,
-        url: nfturls[index],
-        address,
+        url: nfturis[index],
+        address: account,
       })
     );
     if (fightState.meta.requestStatus === "fulfilled") {
@@ -257,14 +236,14 @@ const CurrentBattle = () => {
   }, [gameLoading]);
 
   function reload() {
-    socket.emit('enter');
+    socket.emit("enter");
   }
 
   useEffect(() => {
-    socket.on('entered', () => {
+    socket.on("entered", () => {
       getGameData();
       getApprove();
-    })
+    });
   }, []);
 
   useEffect(() => {
@@ -272,7 +251,7 @@ const CurrentBattle = () => {
       setDecide(true);
       setTimeout(() => {
         axios.delete(
-          `http://192.168.106.175:8001/api/betting/delete/${secRandomData.length - 1}`
+          `http://173.249.54.208/api/betting/delete/${secRandomData.length - 1}`
         );
         setDecide(false);
         reload();
@@ -308,159 +287,158 @@ const CurrentBattle = () => {
           flexWrap: "wrap",
         }}
       >
-        {Datas.map((data, index) => {
-          if (index > 3) return;
-          return (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-start",
-                mr: { xs: 1, sm: 2 },
-                ml: { xs: 1, sm: 2 },
-                mb: { xs: 1, sm: 2 },
-              }}
-              key={index}
-            >
+        {Datas &&
+          Datas.map((data, index) => {
+            if (index > 3) return;
+            return (
               <Box
                 sx={{
-                  mr: { xs: "6px", sm: "8px", md: "12px", xl: "16px" },
                   display: "flex",
-                  flexDirection: "column",
+                  justifyContent: "flex-start",
+                  mr: { xs: 1, sm: 2 },
+                  ml: { xs: 1, sm: 2 },
+                  mb: { xs: 1, sm: 2 },
                 }}
+                key={index}
               >
-                {data.firstNFt !== "" ? (
-                  <Box
-                    component="img"
-                    src={data.firstNFt}
-                    sx={{
-                      width: { xs: "120px", sm: "160px", md: "200px" },
-                      height: { xs: "120px", sm: "160px", md: "200px" },
-                      border: "4px solid #F39B33",
-                      borderRadius: { xs: "10px", sm: "15px", md: "20px" },
-                    }}
-                  />
-                ) : (
-                  <Box
-                    sx={{
-                      width: { xs: "120px", sm: "160px", md: "200px" },
-                      height: { xs: "120px", sm: "160px", md: "200px" },
-                      border: "4px solid #F39B33",
-                      borderRadius: { xs: "10px", sm: "15px", md: "20px" },
-                    }}
-                  />
-                )}
-                <Button
+                <Box
                   sx={{
-                    fontSize: { xs: "15px", sm: "18px" },
-                    border: "2px solid white",
-                    width: { xs: "120px", sm: "160px", md: "200px" },
-                    backgroundColor: "rgba(38,40,42,0.64)",
-                    paddingX: "0",
-                    textAlign: "center",
-                    minWidth: "60px",
-                    paddingY: { xs: "2px", sm: "4px" },
-                    mt: { xs: 1, sm: 2 },
-                    color: isFightable ? "green" : "#FF1E1E",
+                    mr: { xs: "6px", sm: "8px", md: "12px", xl: "16px" },
+                    display: "flex",
+                    flexDirection: "column",
                   }}
-                  onClick={() => {
-                    getIds();
-                    getUrls();
-                    setOpenState(true);
-                    setWhichroom(index);
-                  }}
-                  disabled={data.firstNFt !== "" ? true : false}
                 >
-                  {firRandomData &&
-                  decide &&
-                  !(
-                    firRandomData[index + 1] === undefined ||
-                    firRandomData[index + 1] === 0
-                  )
-                    ? firRandomData[index + 1] > secRandomData[index + 1]
-                      ? "Winner"
-                      : firRandomData[index + 1] == secRandomData[index + 1]
-                      ? "Draw"
-                      : "Loser"
-                    : data.secondaddress === "" ||
-                      data.secondaddress === undefined
-                    ? data.firstaddress === ""
+                  {data.firstNFt !== "" ? (
+                    <Box
+                      component="img"
+                      src={data.firstNFt}
+                      sx={{
+                        width: { xs: "120px", sm: "160px", md: "200px" },
+                        height: { xs: "120px", sm: "160px", md: "200px" },
+                        border: "4px solid #F39B33",
+                        borderRadius: { xs: "10px", sm: "15px", md: "20px" },
+                      }}
+                    />
+                  ) : (
+                    <Box
+                      sx={{
+                        width: { xs: "120px", sm: "160px", md: "200px" },
+                        height: { xs: "120px", sm: "160px", md: "200px" },
+                        border: "4px solid #F39B33",
+                        borderRadius: { xs: "10px", sm: "15px", md: "20px" },
+                      }}
+                    />
+                  )}
+                  <Button
+                    sx={{
+                      fontSize: { xs: "15px", sm: "18px" },
+                      border: "2px solid white",
+                      width: { xs: "120px", sm: "160px", md: "200px" },
+                      backgroundColor: "rgba(38,40,42,0.64)",
+                      paddingX: "0",
+                      textAlign: "center",
+                      minWidth: "60px",
+                      paddingY: { xs: "2px", sm: "4px" },
+                      mt: { xs: 1, sm: 2 },
+                      color: isFightable ? "green" : "#FF1E1E",
+                    }}
+                    onClick={() => {
+                      setOpenState(true);
+                      setWhichroom(index);
+                      getGameData();
+                    }}
+                    disabled={data.firstNFt !== "" ? true : false}
+                  >
+                    {firRandomData &&
+                    decide &&
+                    !(
+                      firRandomData[index + 1] === undefined ||
+                      firRandomData[index + 1] === 0
+                    )
+                      ? firRandomData[index + 1] > secRandomData[index + 1]
+                        ? "Winner"
+                        : firRandomData[index + 1] == secRandomData[index + 1]
+                        ? "Draw"
+                        : "Loser"
+                      : data.secondaddress === "" ||
+                        data.secondaddress === undefined
+                      ? data.firstaddress === ""
+                        ? "Fight"
+                        : `${data.firstaddress?.slice(
+                            0,
+                            4
+                          )}...${data.firstaddress?.slice(-4)}`
+                      : "Fighting..."}
+                  </Button>
+                </Box>
+                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                  {data.secondNFt !== "" ? (
+                    <Box
+                      component="img"
+                      src={data.secondNFt}
+                      sx={{
+                        width: { xs: "120px", sm: "160px", md: "200px" },
+                        height: { xs: "120px", sm: "160px", md: "200px" },
+                        border: "4px solid #F39B33",
+                        borderRadius: { xs: "10px", sm: "15px", md: "20px" },
+                      }}
+                    />
+                  ) : (
+                    <Box
+                      sx={{
+                        width: { xs: "120px", sm: "160px", md: "200px" },
+                        height: { xs: "120px", sm: "160px", md: "200px" },
+                        border: "4px solid #F39B33",
+                        borderRadius: { xs: "10px", sm: "15px", md: "20px" },
+                      }}
+                    />
+                  )}
+                  <Button
+                    disabled={
+                      data.secondNFt !== "" && data.secondaddress !== undefined
+                        ? true
+                        : false
+                    }
+                    onClick={() => {
+                      setClaimState(true);
+                      setWhichroom(index);
+                      setWhichfight(data.fightroom);
+                      getGameData();
+                    }}
+                    sx={{
+                      fontSize: { xs: "15px", sm: "18px" },
+                      border: "2px solid white",
+                      width: { xs: "120px", sm: "160px", md: "200px" },
+                      backgroundColor: "rgba(38,40,42,0.64)",
+                      paddingX: "0",
+                      textAlign: "center",
+                      minWidth: "60px",
+                      paddingY: { xs: "2px", sm: "4px" },
+                      my: { xs: 1, sm: 2 },
+                      "& .css-2pgj13-MuiButtonBase-root-MuiButton-root.Mui-disabled":
+                        { color: "#FF1E1E" },
+                    }}
+                  >
+                    {secRandomData &&
+                    decide &&
+                    !(
+                      secRandomData[index + 1] === undefined ||
+                      secRandomData[index + 1] === 0
+                    )
+                      ? firRandomData[index + 1] > secRandomData[index + 1]
+                        ? "Loser"
+                        : firRandomData[index + 1] == secRandomData[index + 1]
+                        ? "Draw"
+                        : "Winner"
+                      : data.secondaddress === "" ||
+                        data.secondaddress === undefined
                       ? "Fight"
-                      : `${data.firstaddress?.slice(
-                          0,
-                          4
-                        )}...${data.firstaddress?.slice(-4)}`
-                    : "Fighting..."}
-                </Button>
+                      : "Fighting..."}
+                  </Button>
+                </Box>
               </Box>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                {data.secondNFt !== "" ? (
-                  <Box
-                    component="img"
-                    src={data.secondNFt}
-                    sx={{
-                      width: { xs: "120px", sm: "160px", md: "200px" },
-                      height: { xs: "120px", sm: "160px", md: "200px" },
-                      border: "4px solid #F39B33",
-                      borderRadius: { xs: "10px", sm: "15px", md: "20px" },
-                    }}
-                  />
-                ) : (
-                  <Box
-                    sx={{
-                      width: { xs: "120px", sm: "160px", md: "200px" },
-                      height: { xs: "120px", sm: "160px", md: "200px" },
-                      border: "4px solid #F39B33",
-                      borderRadius: { xs: "10px", sm: "15px", md: "20px" },
-                    }}
-                  />
-                )}
-                <Button
-                  disabled={
-                    data.secondNFt !== "" && data.secondaddress !== undefined
-                      ? true
-                      : false
-                  }
-                  onClick={() => {
-                    getIds();
-                    getUrls();
-                    setClaimState(true);
-                    setWhichroom(index);
-                    setWhichfight(data.fightroom);
-                  }}
-                  sx={{
-                    fontSize: { xs: "15px", sm: "18px" },
-                    border: "2px solid white",
-                    width: { xs: "120px", sm: "160px", md: "200px" },
-                    backgroundColor: "rgba(38,40,42,0.64)",
-                    paddingX: "0",
-                    textAlign: "center",
-                    minWidth: "60px",
-                    paddingY: { xs: "2px", sm: "4px" },
-                    my: { xs: 1, sm: 2 },
-                    "& .css-2pgj13-MuiButtonBase-root-MuiButton-root.Mui-disabled":
-                      { color: "#FF1E1E" },
-                  }}
-                >
-                  {secRandomData &&
-                  decide &&
-                  !(
-                    secRandomData[index + 1] === undefined ||
-                    secRandomData[index + 1] === 0
-                  )
-                    ? firRandomData[index + 1] > secRandomData[index + 1]
-                      ? "Loser"
-                      : firRandomData[index + 1] == secRandomData[index + 1]
-                      ? "Draw"
-                      : "Winner"
-                    : data.secondaddress === "" ||
-                      data.secondaddress === undefined
-                    ? "Fight"
-                    : "Fighting..."}
-                </Button>
-              </Box>
-            </Box>
-          );
-        })}
+            );
+          })}
       </Box>
       <Typography
         fontFamily="Audiowide"
@@ -480,106 +458,112 @@ const CurrentBattle = () => {
           flexWrap: "wrap",
         }}
       >
-        {Datas.map((data, index) => {
-          if (index < 4) return;
-          return (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-start",
-                mr: { xs: 2, sm: 3 },
-                mb: { xs: 1, sm: 2 },
-              }}
-              key={index}
-            >
+        {Datas &&
+          Datas.map((data, index) => {
+            if (index < 4) return;
+            return (
               <Box
                 sx={{
-                  marginRight: { xs: "6px", sm: "8px", md: "12px", xl: "16px" },
-                  mb: 1,
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  mr: { xs: 2, sm: 3 },
+                  mb: { xs: 1, sm: 2 },
                 }}
+                key={index}
               >
                 <Box
                   sx={{
-                    width: { xs: "120px", sm: "160px", md: "200px" },
-                    height: { xs: "120px", sm: "160px", md: "200px" },
-                    border: "4px solid #F39B33",
-                    borderRadius: { xs: "10px", sm: "15px", md: "20px" },
+                    marginRight: {
+                      xs: "6px",
+                      sm: "8px",
+                      md: "12px",
+                      xl: "16px",
+                    },
+                    mb: 1,
                   }}
-                />
-                <Button
-                  sx={{
-                    fontSize: { xs: "15px", sm: "18px" },
-                    border: "2px solid white",
-                    width: { xs: "120px", sm: "160px", md: "200px" },
-                    backgroundColor: "rgba(38,40,42,0.64)",
-                    paddingX: "0",
-                    textAlign: "center",
-                    minWidth: "60px",
-                    paddingY: { xs: "2px", sm: "4px" },
-                    mt: { xs: 1, sm: 2 },
-                    color: isFightable ? "green" : "#FF1E1E",
-                  }}
-                  onClick={() => {
-                    getIds();
-                    getUrls();
-                    setOpenState(true);
-                    setWhichroom(index);
-                  }}
-                  disabled={data.firstNFt !== "" ? true : false}
                 >
-                  {data.secondaddress === "" || data.secondaddress === undefined
-                    ? data.firstaddress === ""
+                  <Box
+                    sx={{
+                      width: { xs: "120px", sm: "160px", md: "200px" },
+                      height: { xs: "120px", sm: "160px", md: "200px" },
+                      border: "4px solid #F39B33",
+                      borderRadius: { xs: "10px", sm: "15px", md: "20px" },
+                    }}
+                  />
+                  <Button
+                    sx={{
+                      fontSize: { xs: "15px", sm: "18px" },
+                      border: "2px solid white",
+                      width: { xs: "120px", sm: "160px", md: "200px" },
+                      backgroundColor: "rgba(38,40,42,0.64)",
+                      paddingX: "0",
+                      textAlign: "center",
+                      minWidth: "60px",
+                      paddingY: { xs: "2px", sm: "4px" },
+                      mt: { xs: 1, sm: 2 },
+                      color: isFightable ? "green" : "#FF1E1E",
+                    }}
+                    onClick={() => {
+                      setOpenState(true);
+                      setWhichroom(index);
+                      getGameData();
+                    }}
+                    disabled={data.firstNFt !== "" ? true : false}
+                  >
+                    {data.secondaddress === "" ||
+                    data.secondaddress === undefined
+                      ? data.firstaddress === ""
+                        ? "Fight"
+                        : `${data.firstaddress?.slice(
+                            0,
+                            4
+                          )}...${data.firstaddress?.slice(-4)}`
+                      : "Fighting..."}
+                  </Button>
+                </Box>
+                <Box>
+                  <Box
+                    sx={{
+                      width: { xs: "120px", sm: "160px", md: "200px" },
+                      height: { xs: "120px", sm: "160px", md: "200px" },
+                      border: "4px solid #F39B33",
+                      borderRadius: { xs: "10px", sm: "15px", md: "20px" },
+                    }}
+                  />
+                  <Button
+                    sx={{
+                      fontSize: { xs: "15px", sm: "18px" },
+                      border: "2px solid white",
+                      width: { xs: "120px", sm: "160px", md: "200px" },
+                      backgroundColor: "rgba(38,40,42,0.64)",
+                      paddingX: "0",
+                      textAlign: "center",
+                      minWidth: "60px",
+                      paddingY: { xs: "2px", sm: "4px" },
+                      mt: { xs: 1, sm: 2 },
+                      color: isFightable ? "green" : "#FF1E1E",
+                    }}
+                    onClick={() => {
+                      setClaimState(true);
+                      setWhichroom(index);
+                      setWhichfight(data.fightroom);
+                      getGameData();
+                    }}
+                    disabled={
+                      data.firstNFt !== "" && data.secondaddress !== undefined
+                        ? true
+                        : false
+                    }
+                  >
+                    {data.secondaddress === "" ||
+                    data.secondaddress === undefined
                       ? "Fight"
-                      : `${data.firstaddress?.slice(
-                          0,
-                          4
-                        )}...${data.firstaddress?.slice(-4)}`
-                    : "Fighting..."}
-                </Button>
+                      : "Fighting..."}
+                  </Button>
+                </Box>
               </Box>
-              <Box>
-                <Box
-                  sx={{
-                    width: { xs: "120px", sm: "160px", md: "200px" },
-                    height: { xs: "120px", sm: "160px", md: "200px" },
-                    border: "4px solid #F39B33",
-                    borderRadius: { xs: "10px", sm: "15px", md: "20px" },
-                  }}
-                />
-                <Button
-                  sx={{
-                    fontSize: { xs: "15px", sm: "18px" },
-                    border: "2px solid white",
-                    width: { xs: "120px", sm: "160px", md: "200px" },
-                    backgroundColor: "rgba(38,40,42,0.64)",
-                    paddingX: "0",
-                    textAlign: "center",
-                    minWidth: "60px",
-                    paddingY: { xs: "2px", sm: "4px" },
-                    mt: { xs: 1, sm: 2 },
-                    color: isFightable ? "green" : "#FF1E1E",
-                  }}
-                  onClick={() => {
-                    getIds();
-                    getUrls();
-                    setClaimState(true);
-                    setWhichroom(index);
-                    setWhichfight(data.fightroom);
-                  }}
-                  disabled={
-                    data.firstNFt !== "" && data.secondaddress !== undefined
-                      ? true
-                      : false
-                  }
-                >
-                  {data.secondaddress === "" || data.secondaddress === undefined
-                    ? "Fight"
-                    : "Fighting..."}
-                </Button>
-              </Box>
-            </Box>
-          );
-        })}
+            );
+          })}
       </Box>
       <Modal
         open={openState}
@@ -590,69 +574,70 @@ const CurrentBattle = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          {nftids?.map((id: Number, index) => {
-            return (
-              <Box
-                sx={{ m: 2, display: "flex", flexDirection: "column" }}
-                key={index}
-              >
-                <Box sx={{ mb: 2, display: "flex", flexDirection: "column" }}>
-                  {nfturls ? (
-                    <Box
-                      component="img"
-                      src={nfturls?.[index]}
-                      alt="NFT_avatar"
-                      sx={{
-                        width: {
-                          sx: "60px",
-                          sm: "100px",
-                          md: "150px",
-                          lg: "230px",
-                        },
-                        height: "100%",
-                        borderRadius: "12px",
-                      }}
-                    />
+          {nftids &&
+            nftids.map((id: Number, index) => {
+              return (
+                <Box
+                  sx={{ m: 2, display: "flex", flexDirection: "column" }}
+                  key={index}
+                >
+                  <Box sx={{ mb: 2, display: "flex", flexDirection: "column" }}>
+                    {nfturis ? (
+                      <Box
+                        component="img"
+                        src={nfturis?.[index]}
+                        alt="NFT_avatar"
+                        sx={{
+                          width: {
+                            sx: "60px",
+                            sm: "100px",
+                            md: "150px",
+                            lg: "230px",
+                          },
+                          height: "100%",
+                          borderRadius: "12px",
+                        }}
+                      />
+                    ) : (
+                      <Skeleton
+                        sx={{
+                          width: {
+                            sx: "60px",
+                            sm: "100px",
+                            md: "150px",
+                            lg: "230px",
+                          },
+                          height: {
+                            sx: "60px",
+                            sm: "100px",
+                            md: "150px",
+                            lg: "230px",
+                          },
+                        }}
+                      />
+                    )}
+                  </Box>
+                  {isLoading ? (
+                    <Skeleton height="36px" />
                   ) : (
-                    <Skeleton
-                      sx={{
-                        width: {
-                          sx: "60px",
-                          sm: "100px",
-                          md: "150px",
-                          lg: "230px",
-                        },
-                        height: {
-                          sx: "60px",
-                          sm: "100px",
-                          md: "150px",
-                          lg: "230px",
-                        },
-                      }}
-                    />
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={
+                        allowFlg?.[index]
+                          ? () => {
+                              onEnterRoom(index);
+                              setOpenState(false);
+                            }
+                          : () => approve(id)
+                      }
+                    >
+                      {allowFlg?.[index] ? "Fight" : "Approve"}
+                    </Button>
                   )}
                 </Box>
-                {isLoading ? (
-                  <Skeleton height="36px" />
-                ) : (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={
-                      allowFlg?.[index]
-                        ? () => {
-                            onEnterRoom(index);
-                            setOpenState(false);
-                          }
-                        : () => approve(id)
-                    }
-                  >
-                    {allowFlg?.[index] ? "Fight" : "Approve"}
-                  </Button>
-                )}
-              </Box>
-            );
-          })}
+              );
+            })}
         </Box>
       </Modal>
       <Modal
@@ -665,69 +650,70 @@ const CurrentBattle = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          {nftids?.map((id: Number, index) => {
-            return (
-              <Box
-                sx={{ m: 2, display: "flex", flexDirection: "column" }}
-                key={index}
-              >
-                <Box sx={{ mb: 2, display: "flex", flexDirection: "column" }}>
-                  {nfturls ? (
-                    <Box
-                      component="img"
-                      src={nfturls?.[index]}
-                      alt="NFT_avatar"
-                      sx={{
-                        width: {
-                          sx: "60px",
-                          sm: "100px",
-                          md: "150px",
-                          lg: "230px",
-                        },
-                        height: "100%",
-                        borderRadius: "12px",
-                      }}
-                    />
+          {nftids &&
+            nftids.map((id: Number, index) => {
+              return (
+                <Box
+                  sx={{ m: 2, display: "flex", flexDirection: "column" }}
+                  key={index}
+                >
+                  <Box sx={{ mb: 2, display: "flex", flexDirection: "column" }}>
+                    {nfturis ? (
+                      <Box
+                        component="img"
+                        src={nfturis?.[index]}
+                        alt="NFT_avatar"
+                        sx={{
+                          width: {
+                            sx: "60px",
+                            sm: "100px",
+                            md: "150px",
+                            lg: "230px",
+                          },
+                          height: "100%",
+                          borderRadius: "12px",
+                        }}
+                      />
+                    ) : (
+                      <Skeleton
+                        sx={{
+                          width: {
+                            sx: "60px",
+                            sm: "100px",
+                            md: "150px",
+                            lg: "230px",
+                          },
+                          height: {
+                            sx: "60px",
+                            sm: "100px",
+                            md: "150px",
+                            lg: "230px",
+                          },
+                        }}
+                      />
+                    )}
+                  </Box>
+                  {isLoading ? (
+                    <Skeleton height="36px" />
                   ) : (
-                    <Skeleton
-                      sx={{
-                        width: {
-                          sx: "60px",
-                          sm: "100px",
-                          md: "150px",
-                          lg: "230px",
-                        },
-                        height: {
-                          sx: "60px",
-                          sm: "100px",
-                          md: "150px",
-                          lg: "230px",
-                        },
-                      }}
-                    />
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={
+                        allowFlg?.[index]
+                          ? () => {
+                              onClaimFight(index);
+                              setClaimState(false);
+                            }
+                          : () => approve(id)
+                      }
+                    >
+                      {allowFlg?.[index] ? "Fight" : "Approve"}
+                    </Button>
                   )}
                 </Box>
-                {isLoading ? (
-                  <Skeleton height="36px" />
-                ) : (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={
-                      allowFlg?.[index]
-                        ? () => {
-                            onClaimFight(index);
-                            setClaimState(false);
-                          }
-                        : () => approve(id)
-                    }
-                  >
-                    {allowFlg?.[index] ? "Fight" : "Approve"}
-                  </Button>
-                )}
-              </Box>
-            );
-          })}
+              );
+            })}
         </Box>
       </Modal>
     </Box>

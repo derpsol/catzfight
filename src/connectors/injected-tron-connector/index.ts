@@ -39,7 +39,7 @@ export class InjectedTronConnector extends AbstractConnector {
     };
     const signs: any = {};
     const web3 = new Web3(
-      new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws/v3/7f14d2eb070c41029d687df66b286a09'),
+      new Web3.providers.WebsocketProvider('wss://nile.infura.io/ws/v3/7f14d2eb070c41029d687df66b286a09'),
     );
     abis.map((fn: any) => {
       try {
