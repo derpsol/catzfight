@@ -1,4 +1,4 @@
-import TronWeb from 'tronweb';
+import tronWeb from 'tronweb';
 import {
   createSlice,
   createSelector,
@@ -12,7 +12,7 @@ import { success, info } from "./messages-slice";
 import axios from "axios";
 import { setAll } from "../../helpers/set-all";
 import io from 'socket.io-client';
-var socket = io('http://173.249.54.208');
+var socket = io('http://192.168.106.175:8001');
 
 interface IenterRoomMeow {
   tokenId: Number;
@@ -20,7 +20,9 @@ interface IenterRoomMeow {
   whichroom: number;
   url: string;
   address: any;
+  gamePrice: number;
 }
+declare var window: any
 
 export const EnterRoom = createAsyncThunk(
   "enterRoom/enterRoomMeow",
@@ -32,31 +34,30 @@ export const EnterRoom = createAsyncThunk(
       whichroom,
       url,
       address,
+      gamePrice,
     }: IenterRoomMeow,
     { dispatch }
   ) => {
-    const fullNode = "https://nile.trongrid.io";
-    const solidityNode = "https://nile.trongrid.io";
-    const eventServer = "https://nile.trongrid.io";
-    const privateKey = "f40377da14d42e691ca51d43ea2a3177bfce04201a9ba2dd997e8e38c694722a";
-    const tronWeb = new TronWeb(fullNode, solidityNode, eventServer, privateKey);
-    let meowContract = await tronWeb.contract().at('TGCipcjY4ptZw6jUAz5tGEJ59in7avuW4M');
-
+    let meowContract;
+    if(window) {
+      if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
+        meowContract = await window.tronWeb.contract().at(tronWeb.address.toHex('TGCipcjY4ptZw6jUAz5tGEJ59in7avuW4M'));
+      }
+    }
     axios.post(
-      `http://173.249.54.208/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}`
+      `http://192.168.106.175:8001/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}`
     );
     socket.emit('enter');
 
     let enterTx;
     try {
-      enterTx = await meowContract.enterRoom(tokenId, fightRoom).send({ feeLimit: 100000000, value: 500000000 });
+      enterTx = await meowContract.enterRoom(tokenId, fightRoom).send({ feeLimit: 100000000, value: gamePrice });
       const text = "EnterRoom";
       const pendingTxnType = "Entering";
 
       dispatch(
         fetchPendingTxns({ txnHash: enterTx.hash, text, type: pendingTxnType })
       );
-      await enterTx.wait();
       dispatch(success({ text: messages.tx_successfully_send }));
       dispatch(info({ text: messages.your_balance_update_soon }));
       dispatch(info({ text: messages.your_balance_updated }));
@@ -64,8 +65,9 @@ export const EnterRoom = createAsyncThunk(
       return;
     } catch (err: any) {
       axios.delete(
-        `http://173.249.54.208/api/betting/delete/${whichroom}`
+        `http://192.168.106.175:8001/api/betting/delete/${whichroom}`
       );
+      console.log(err);
       socket.emit('enter');
       return metamaskErrorWrap(err, dispatch);
     } finally {
@@ -81,6 +83,7 @@ interface IclaimFightMeow {
   whichroom: number;
   url: string;
   address: any;
+  gamePrice: number;
 }
 
 export const ClaimFight = createAsyncThunk(
@@ -93,32 +96,32 @@ export const ClaimFight = createAsyncThunk(
       whichroom,
       url,
       address,
+      gamePrice,
     }: IclaimFightMeow,
     { dispatch }
   ) => {
-    const fullNode = "https://nile.trongrid.io";
-    const solidityNode = "https://nile.trongrid.io";
-    const eventServer = "https://nile.trongrid.io";
-    const privateKey = "f40377da14d42e691ca51d43ea2a3177bfce04201a9ba2dd997e8e38c694722a";
-    const tronWeb = new TronWeb(fullNode, solidityNode, eventServer, privateKey);
-    let meowContract = await tronWeb.contract().at('TGCipcjY4ptZw6jUAz5tGEJ59in7avuW4M');
+    let meowContract;
+    if(window) {
+      if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
+        meowContract = await window.tronWeb.contract().at(tronWeb.address.toHex('TGCipcjY4ptZw6jUAz5tGEJ59in7avuW4M'));
+      }
+    }
 
     let enterTx;
     let random1: number[] = [];
     let random2: number[] = [];
     axios.post(
-      `http://173.249.54.208/api/betting/update?roomnum=${whichroom}&secondNFT=${url}&secondaddress=${address}`
+      `http://192.168.106.175:8001/api/betting/update?roomnum=${whichroom}&secondNFT=${url}&secondaddress=${address}`
     );
     socket.emit('enter');
     try {
-      enterTx = await meowContract.claimFight(tokenId, fightRoom).send({ feeLimit: 100000000, value: 500000000 });
+      enterTx = await meowContract.claimFight(tokenId, fightRoom).send({ feeLimit: 100000000, value: gamePrice });
       const text = "ClaimFight";
       const pendingTxnType = "Fighting";
 
       dispatch(
         fetchPendingTxns({ txnHash: enterTx.hash, text, type: pendingTxnType })
       );
-      await enterTx.wait();
       dispatch(success({ text: messages.tx_successfully_send }));
       dispatch(info({ text: messages.your_balance_update_soon }));
       dispatch(info({ text: messages.your_balance_updated }));
@@ -133,7 +136,7 @@ export const ClaimFight = createAsyncThunk(
       let flag: boolean = false;
       let resultData: any;
       await axios
-      .get(`http://173.249.54.208/api/betting/find?fightRoom=${fightRoom}`)
+      .get(`http://192.168.106.175:8001/api/betting/find?fightRoom=${fightRoom}`)
       .then((res) => {
         resultData = res.data;
       });
@@ -141,7 +144,7 @@ export const ClaimFight = createAsyncThunk(
       if (firstrandom > secondrandom) {
         await axios
           .get(
-            `http://173.249.54.208/api/winner/find?address=${room.fighter1}`
+            `http://192.168.106.175:8001/api/winner/find?address=${room.fighter1}`
           )
           .then((res) => {
             winnerData = res.data;
@@ -149,7 +152,7 @@ export const ClaimFight = createAsyncThunk(
       } else if (firstrandom < secondrandom) {
         await axios
           .get(
-            `http://173.249.54.208/api/winner/find?address=${room.fighter2}`
+            `http://192.168.106.175:8001/api/winner/find?address=${room.fighter2}`
           )
           .then((res) => {
             winnerData = res.data;
@@ -159,29 +162,29 @@ export const ClaimFight = createAsyncThunk(
       }
 
       await axios.post(
-        `http://173.249.54.208/api/random/create?randomNumber1=${room.random1}&randomNumber2=${room.random2}&roomnum=${fightRoom}`
+        `http://192.168.106.175:8001/api/random/create?randomNumber1=${room.random1}&randomNumber2=${room.random2}&roomnum=${fightRoom}`
       );
 
       if (winnerData) {
         await axios.post(
-          `http://173.249.54.208/api/winner/update?address=${winnerData.address}&winCount=${winnerData.winCount + 1}`
+          `http://192.168.106.175:8001/api/winner/update?address=${winnerData.address}&winCount=${winnerData.winCount + 1}`
         );
       } else {
         if (!flag) {
           if (firstrandom > secondrandom) {
             await axios.post(
-            `http://173.249.54.208/api/winner/create?address=${room.fighter1}&winCount=${1}`
+            `http://192.168.106.175:8001/api/winner/create?address=${room.fighter1}&winCount=${1}`
           );
         } else if (firstrandom < secondrandom) {
           await axios.post(
-              `http://173.249.54.208/api/winner/create?address=${room.fighter2}&winCount=${1}`
+              `http://192.168.106.175:8001/api/winner/create?address=${room.fighter2}&winCount=${1}`
             );
           }
         }
       }
 
       await axios.post(
-        `http://173.249.54.208/api/result/create?randomNumber1=${room.random1}&randomNumber2=${room.random2}&nftUrl1=${resultData.firstNFT}&nftUrl2=${resultData.secondNFT}&address1=${room.fighter1}&address2=${room.fighter2}&roomnum=${fightRoom}`
+        `http://192.168.106.175:8001/api/result/create?randomNumber1=${room.random1}&randomNumber2=${room.random2}&nftUrl1=${resultData.firstNFT}&nftUrl2=${resultData.secondNFT}&address1=${room.fighter1}&address2=${room.fighter2}&roomnum=${fightRoom}`
       );
   
       return {
@@ -190,9 +193,10 @@ export const ClaimFight = createAsyncThunk(
       };
     } catch (err: any) {
       axios.delete(
-        `http://173.249.54.208/api/betting/delete1/${whichroom}`
+        `http://192.168.106.175:8001/api/betting/delete1/${whichroom}`
       );
       socket.emit('enter');
+      console.log(err);
       return metamaskErrorWrap(err, dispatch);
     } finally {
       if (enterTx) {

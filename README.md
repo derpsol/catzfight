@@ -9,7 +9,7 @@ In the project directory, you can run:
 ### `yarn start`
 
 Runs the app in the development mode.\
-Open [http://173.249.54.208:3000](http://173.249.54.208:3000) to view it in the browser.
+Open [http://192.168.106.175:8001:3000](http://192.168.106.175:8001:3000) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.

@@ -31,10 +31,13 @@ const style = {
 };
 
 const CurrentBattle = () => {
-  const { account } = useWeb3React();
+  const { account, connector } = useWeb3React();
 
   const gameData: any[] = useSelector<IReduxState, any[]>(
     (state) => state.app.gameData
+  );
+  const gamePrice: string = useSelector<IReduxState, string>(
+    (state) => state.app.gameprice
   );
   let firRandomData: number[] = useSelector<IReduxState, number[]>(
     (state) => state.fight.random1
@@ -149,7 +152,7 @@ const CurrentBattle = () => {
   const [whichroom, setWhichroom] = useState(0);
   const [whichfight, setWhichfight] = useState(0);
   const [decide, setDecide] = useState(false);
-  var socket = io("http://173.249.54.208");
+  var socket = io("http://192.168.106.175:8001");
 
   const getDate = () => {
     let date = new Date();
@@ -170,7 +173,7 @@ const CurrentBattle = () => {
   };
 
   async function getGameData() {
-    await dispatch(loadGameDetails({account}));
+    await dispatch(loadGameDetails({ account: account }));
   }
 
   async function getApprove() {
@@ -201,6 +204,7 @@ const CurrentBattle = () => {
         whichroom: whichroom + 1,
         url: nfturis[index],
         address: account,
+        gamePrice: Number(gamePrice),
       })
     );
     if (enterState.meta.requestStatus === "fulfilled") {
@@ -216,6 +220,7 @@ const CurrentBattle = () => {
         whichroom: whichroom + 1,
         url: nfturis[index],
         address: account,
+        gamePrice: Number(gamePrice),
       })
     );
     if (fightState.meta.requestStatus === "fulfilled") {
@@ -251,7 +256,7 @@ const CurrentBattle = () => {
       setDecide(true);
       setTimeout(() => {
         axios.delete(
-          `http://173.249.54.208/api/betting/delete/${secRandomData.length - 1}`
+          `http://192.168.106.175:8001/api/betting/delete/${secRandomData.length - 1}`
         );
         setDecide(false);
         reload();
@@ -343,9 +348,10 @@ const CurrentBattle = () => {
                       color: isFightable ? "green" : "#FF1E1E",
                     }}
                     onClick={() => {
-                      setOpenState(true);
                       setWhichroom(index);
                       getGameData();
+                      getApprove();
+                      setOpenState(true);
                     }}
                     disabled={data.firstNFt !== "" ? true : false}
                   >
@@ -400,10 +406,11 @@ const CurrentBattle = () => {
                         : false
                     }
                     onClick={() => {
-                      setClaimState(true);
                       setWhichroom(index);
                       setWhichfight(data.fightroom);
                       getGameData();
+                      getApprove();
+                      setClaimState(true);
                     }}
                     sx={{
                       fontSize: { xs: "15px", sm: "18px" },
@@ -504,9 +511,10 @@ const CurrentBattle = () => {
                       color: isFightable ? "green" : "#FF1E1E",
                     }}
                     onClick={() => {
-                      setOpenState(true);
                       setWhichroom(index);
                       getGameData();
+                      getApprove();
+                      setOpenState(true);
                     }}
                     disabled={data.firstNFt !== "" ? true : false}
                   >
@@ -544,10 +552,11 @@ const CurrentBattle = () => {
                       color: isFightable ? "green" : "#FF1E1E",
                     }}
                     onClick={() => {
-                      setClaimState(true);
                       setWhichroom(index);
                       setWhichfight(data.fightroom);
                       getGameData();
+                      getApprove();
+                      setClaimState(true);
                     }}
                     disabled={
                       data.firstNFt !== "" && data.secondaddress !== undefined
