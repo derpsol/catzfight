@@ -41,7 +41,7 @@ export const EnterRoom = createAsyncThunk(
     let meowContract;
     if(window) {
       if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
-        meowContract = await window.tronWeb.contract().at(tronWeb.address.toHex('TGCipcjY4ptZw6jUAz5tGEJ59in7avuW4M'));
+        meowContract = await window.tronWeb.contract().at(tronWeb.address.toHex('TKBtA9sb6dVVW3GFRscvXyvGEyWjTToPVF'));
       }
     }
     axios.post(
@@ -51,23 +51,21 @@ export const EnterRoom = createAsyncThunk(
 
     let enterTx;
     try {
-      enterTx = await meowContract.enterRoom(tokenId, fightRoom).send({ feeLimit: 100000000, value: gamePrice });
+      enterTx = await meowContract.enterRoom(tokenId, fightRoom).send({ feeLimit: 100000000, callValue: gamePrice });
       const text = "EnterRoom";
       const pendingTxnType = "Entering";
-
       dispatch(
         fetchPendingTxns({ txnHash: enterTx.hash, text, type: pendingTxnType })
       );
       dispatch(success({ text: messages.tx_successfully_send }));
       dispatch(info({ text: messages.your_balance_update_soon }));
       dispatch(info({ text: messages.your_balance_updated }));
-      
       return;
     } catch (err: any) {
       axios.delete(
         `http://192.168.106.175:8001/api/betting/delete/${whichroom}`
       );
-      console.log(err);
+      console.log(metamaskErrorWrap(err, dispatch));
       socket.emit('enter');
       return metamaskErrorWrap(err, dispatch);
     } finally {
@@ -103,7 +101,7 @@ export const ClaimFight = createAsyncThunk(
     let meowContract;
     if(window) {
       if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
-        meowContract = await window.tronWeb.contract().at(tronWeb.address.toHex('TGCipcjY4ptZw6jUAz5tGEJ59in7avuW4M'));
+        meowContract = await window.tronWeb.contract().at(tronWeb.address.toHex('TKBtA9sb6dVVW3GFRscvXyvGEyWjTToPVF'));
       }
     }
 
@@ -115,18 +113,19 @@ export const ClaimFight = createAsyncThunk(
     );
     socket.emit('enter');
     try {
-      enterTx = await meowContract.claimFight(tokenId, fightRoom).send({ feeLimit: 100000000, value: gamePrice });
+      console.log("start claim Fight");
+      enterTx = await meowContract.claimFight(tokenId, fightRoom).send({ feeLimit: 200000000, callValue: gamePrice });
       const text = "ClaimFight";
       const pendingTxnType = "Fighting";
-
+      console.log("enterTx: ", enterTx);
       dispatch(
         fetchPendingTxns({ txnHash: enterTx.hash, text, type: pendingTxnType })
       );
       dispatch(success({ text: messages.tx_successfully_send }));
       dispatch(info({ text: messages.your_balance_update_soon }));
       dispatch(info({ text: messages.your_balance_updated }));
-      
-      let room = await meowContract.room(fightRoom);
+      let room = await meowContract.room(fightRoom).call();
+      console.log("roominfo: ", room);
       let firstrandom = Number(room.random1);
       let secondrandom = Number(room.random2);
       random1[whichroom] = firstrandom;
@@ -196,7 +195,7 @@ export const ClaimFight = createAsyncThunk(
         `http://192.168.106.175:8001/api/betting/delete1/${whichroom}`
       );
       socket.emit('enter');
-      console.log(err);
+      console.log(metamaskErrorWrap(err, dispatch));
       return metamaskErrorWrap(err, dispatch);
     } finally {
       if (enterTx) {

@@ -367,7 +367,7 @@ const CurrentBattle = () => {
                         ? "Draw"
                         : "Loser"
                       : data.secondaddress === "" ||
-                        data.secondaddress === undefined
+                        data.secondaddress === null || data.secondaddress === undefined
                       ? data.firstaddress === ""
                         ? "Fight"
                         : `${data.firstaddress?.slice(
@@ -401,7 +401,7 @@ const CurrentBattle = () => {
                   )}
                   <Button
                     disabled={
-                      data.secondNFt !== "" && data.secondaddress !== undefined
+                      !(data.firstNFt !== "" || data.secondaddress !== null || data.secondaddress === undefined)
                         ? true
                         : false
                     }
@@ -437,8 +437,8 @@ const CurrentBattle = () => {
                         : firRandomData[index + 1] == secRandomData[index + 1]
                         ? "Draw"
                         : "Winner"
-                      : data.secondaddress === "" ||
-                        data.secondaddress === undefined
+                      : data.secondaddress === '' ||
+                        data.secondaddress === null || data.secondaddress === undefined
                       ? "Fight"
                       : "Fighting..."}
                   </Button>
@@ -519,7 +519,7 @@ const CurrentBattle = () => {
                     disabled={data.firstNFt !== "" ? true : false}
                   >
                     {data.secondaddress === "" ||
-                    data.secondaddress === undefined
+                    data.secondaddress === null || data.secondaddress === undefined
                       ? data.firstaddress === ""
                         ? "Fight"
                         : `${data.firstaddress?.slice(
@@ -559,13 +559,13 @@ const CurrentBattle = () => {
                       setClaimState(true);
                     }}
                     disabled={
-                      data.firstNFt !== "" && data.secondaddress !== undefined
+                      !(data.firstNFt !== "" || data.secondaddress !== null || data.secondaddress === undefined)
                         ? true
                         : false
                     }
                   >
                     {data.secondaddress === "" ||
-                    data.secondaddress === undefined
+                    data.secondaddress === null || data.secondaddress === undefined
                       ? "Fight"
                       : "Fighting..."}
                   </Button>

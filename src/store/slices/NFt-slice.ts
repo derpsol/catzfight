@@ -1,5 +1,4 @@
 import { setAll } from "../../helpers/set-all";
-import TronWeb from 'tronweb';
 import {
   createSlice,
   createSelector,
@@ -30,7 +29,7 @@ export const approveNFT = createAsyncThunk(
     let enterTx;
     try {
       enterTx = await nftContract.approve(
-        "TGCipcjY4ptZw6jUAz5tGEJ59in7avuW4M",
+        "TKBtA9sb6dVVW3GFRscvXyvGEyWjTToPVF",
         tokenId
       ).send({ feeLimit: 100000000 });
       const text = "Approve";
@@ -77,7 +76,7 @@ export const loadNFTDetails = createAsyncThunk(
     );
     let allows: boolean[] = [];
     allowtmp.map((allow, index) => {
-      allows[index] = allow === tronWeb.address.toHex("TGCipcjY4ptZw6jUAz5tGEJ59in7avuW4M");
+      allows[index] = allow === tronWeb.address.toHex("TKBtA9sb6dVVW3GFRscvXyvGEyWjTToPVF");
     });
     return {
       allowances: allows,
