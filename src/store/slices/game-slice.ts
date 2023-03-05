@@ -7,6 +7,7 @@ import {
 import { RootState } from "../../state";
 import axios from "axios";
 import TronWeb from 'tronweb';
+import { NILE_TESTNET } from "../../constants/addresses";
 
 interface IloadgameDetails {
   account: any;
@@ -17,15 +18,14 @@ export const loadGameDetails = createAsyncThunk(
   "app/loadGameDetails",
   //@ts-ignore
   async ({ account }: IloadgameDetails ) => {
-    console.log('start loadgame');
-    let meowContract, nftContract;
+    let meowContract, nftContract, meowTokenContract;
     if(window) {
       if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
-        meowContract = await window.tronWeb.contract().at(TronWeb.address.toHex('TKBtA9sb6dVVW3GFRscvXyvGEyWjTToPVF'));
-        nftContract = await window.tronWeb.contract().at(TronWeb.address.toHex('TNmfgzNsuD4Xdv9oAFs3Nk6nJQdq826WL4'));
+        meowContract = await window.tronWeb.contract().at(TronWeb.address.toHex(NILE_TESTNET.MEOW_ADDRESS));
+        nftContract = await window.tronWeb.contract().at(TronWeb.address.toHex(NILE_TESTNET.NFT_ADDRESS));
+        meowTokenContract = await window.tronWeb.contract().at(TronWeb.address.toHex(NILE_TESTNET.MEOWTOKEN_ADDRESS));
       }
     }
-    console.log("hold contract addresses");
     
     let gameData: any[] = [];
     let randomData: any[] = [];
@@ -48,12 +48,13 @@ export const loadGameDetails = createAsyncThunk(
     });
     console.log("get Axios");
     
-    const gameprice = (
-      (await meowContract.gamePrice().call())
-    ).toString();
-    const jackpotAmount = (
-      (await meowContract.jackpotAmount().call()) / Math.pow(10, 6)
-    ).toString();
+    const gameprice = ((await meowContract.gamePrice().call())).toString();
+    const widrawAmount = (await meowContract.claimAmount(account).call()) / Math.pow(10,6);
+    const jackpotAmount = ((await meowContract.jackpotAmount().call()) / Math.pow(10, 6)).toString();
+    const meowCount = await meowTokenContract.balanceOf(account).call();
+    console.log('get meow count');
+    const contractNFTCount = await meowContract.tokenOwner(account).call();
+    console.log('get nft count');
     const nft_counts = await nftContract.balanceOf(account).call();
     for(let i = 0; i < nft_counts; i ++) {
       let tmptokenID = await nftContract.tokenOfOwnerByIndex(account, i).call();
@@ -67,6 +68,11 @@ export const loadGameDetails = createAsyncThunk(
     for(let i = 0; i < nft_counts; i ++) {
       nfturis[i] = `https://ipfs.io/ipfs/${nfturls[i].slice(7, 53)}/${nftids[i]}.png`
     }
+    let contractNFTs = 0;
+    for(let i = 0; i < contractNFTCount.length; i ++) {
+      if(contractNFTCount[i] == 0) continue;
+      contractNFTs ++;
+    }
     return {
       gameprice,
       jackpotAmount,
@@ -76,6 +82,9 @@ export const loadGameDetails = createAsyncThunk(
       winnerData,
       nftids,
       nfturis,
+      widrawAmount,
+      meowCount,
+      contractNFTs,
     };
   }
 );
@@ -96,6 +105,9 @@ export interface IAppSlice {
   winnerData: any[];
   nftids: any[];
   nfturis: any[];
+  widrawAmount: number;
+  meowCount: number;
+  contractNFTs: number;
 }
 
 const gameSlice = createSlice({

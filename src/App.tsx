@@ -8,12 +8,12 @@ import store, { AppDispatch } from "./state";
 import { loadGameDetails } from "./store/slices/game-slice";
 import { useDispatch } from "react-redux";
 import { useEffect, useCallback } from "react";
-
-// import MiningPoints from "pages/MiningPoints";
+import { useWalletModalToggle } from "state/application/hooks";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const { active, account, connector, activate, error } = useWeb3React();
+  const toggleWalletModal = useWalletModalToggle();
 
   const loadData = useCallback(() => {
     dispatch(loadGameDetails({ account: account }));
@@ -22,34 +22,13 @@ function App() {
   useEffect(() => {
     if (active) {
       loadData();
-    } else {
-      tryWallet();
     }
   }, [active]);
-
-  const waitTron = () => {
-    return new Promise((resolve, reject) => {
-      let attempts = 0, maxAttempts = 100;
-      const checkTron = () => {
-        if(window.tronWeb) {
-          resolve(true);
-          return;
-        }
-        attempts ++;
-        if(attempts >= maxAttempts) {
-          reject(false);
-          return;
-        }
-        setTimeout(checkTron, 100);
-      }
-      checkTron();
-    })
-  }
-
-  async function tryWallet() {
-    await waitTron();
-    return;
-  }
+  useEffect(() => {
+    if (!active) {
+      toggleWalletModal();
+    }
+  }, [active]);
 
   return (
     <>
