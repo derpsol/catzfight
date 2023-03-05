@@ -205,6 +205,7 @@ const CurrentBattle = () => {
         url: nfturis[index],
         address: account,
         gamePrice: Number(gamePrice),
+        socket,
       })
     );
     if (enterState.meta.requestStatus === "fulfilled") {
@@ -221,6 +222,7 @@ const CurrentBattle = () => {
         url: nfturis[index],
         address: account,
         gamePrice: Number(gamePrice),
+        socket,
       })
     );
     if (fightState.meta.requestStatus === "fulfilled") {

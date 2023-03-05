@@ -10,6 +10,7 @@ import { success, info } from "./messages-slice";
 import { fetchPendingTxns, clearPendingTxn } from "./pending-txns-slice";
 import { metamaskErrorWrap } from "helpers/metamask-error-wrap";
 import tronWeb from 'tronweb';
+import { NILE_TESTNET } from "../../constants/addresses";
 
 interface IapproveNFT {
   tokenId: Number;
@@ -23,13 +24,13 @@ export const approveNFT = createAsyncThunk(
     let nftContract;
     if(window) {
       if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
-        nftContract = await window.tronWeb.contract().at(tronWeb.address.toHex('TNmfgzNsuD4Xdv9oAFs3Nk6nJQdq826WL4'));
+        nftContract = await window.tronWeb.contract().at(tronWeb.address.toHex(NILE_TESTNET.NFT_ADDRESS));
       }
     }
     let enterTx;
     try {
       enterTx = await nftContract.approve(
-        "TKBtA9sb6dVVW3GFRscvXyvGEyWjTToPVF",
+        NILE_TESTNET.MEOW_ADDRESS,
         tokenId
       ).send({ feeLimit: 100000000 });
       const text = "Approve";
@@ -65,18 +66,18 @@ export const loadNFTDetails = createAsyncThunk(
     let nftContract: any;
     if(window) {
       if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
-        nftContract = await window.tronWeb.contract().at(tronWeb.address.toHex('TNmfgzNsuD4Xdv9oAFs3Nk6nJQdq826WL4'));
+        nftContract = await window.tronWeb.contract().at(tronWeb.address.toHex(NILE_TESTNET.NFT_ADDRESS));
       }
     }
     let allowtmp: String[] = [];
     await Promise.all(
       tokenIds.map(async (tokenId, index) => {
-        allowtmp[index] = await nftContract.getApproved(tokenId).call();
+        allowtmp[index] = await nftContract.getApproved(tokenId).call(NILE_TESTNET.MEOW_ADDRESS);
       })
     );
     let allows: boolean[] = [];
     allowtmp.map((allow, index) => {
-      allows[index] = allow === tronWeb.address.toHex("TKBtA9sb6dVVW3GFRscvXyvGEyWjTToPVF");
+      allows[index] = allow === tronWeb.address.toHex(NILE_TESTNET.MEOW_ADDRESS);
     });
     return {
       allowances: allows,

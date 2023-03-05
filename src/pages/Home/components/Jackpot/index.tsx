@@ -7,6 +7,15 @@ const Jackpot = () => {
   const JackpotAmount = useSelector<IReduxState, string>(
     (state) => state.app.jackpotAmount
   );
+  const widrawAmount: number = useSelector<IReduxState, number>(
+    (state) => state.app.widrawAmount
+  );
+  const meowCount: number = useSelector<IReduxState, number>(
+    (state) => state.app.meowCount
+  );
+  const contractNFTs: number = useSelector<IReduxState, number>(
+    (state) => state.app.contractNFTs
+  );
 
   const history = useHistory();
   const handleClickStake = (link: string) => {
@@ -62,19 +71,54 @@ const Jackpot = () => {
             </Button>
           </Box>
         </Box>
-        <Button
-          sx={{
-            paddingX: "16px",
-            paddingY: "6px",
-            marginTop: "8px",
-            fontSize: "18px",
-            mr: 3,
-            color: "#52b202",
-            backgroundColor: "#d0e7b7",
-          }}
-        >
-          Withdraw
-        </Button>
+        <Box sx={{ mr: 3 }}>
+          <Button
+            sx={{
+              paddingX: "16px",
+              paddingY: "6px",
+              marginTop: "8px",
+              fontSize: "18px",
+              color: "#52b202",
+              backgroundColor: "#d0e7b7",
+            }}
+          >
+            Withdraw NFTs
+          </Button>
+          <Typography
+            sx={{
+              paddingY: "4px",
+              textAlign: "center",
+              fontSize: "18px",
+              color: "#F39B33",
+            }}
+          >
+            Available NFTs: {contractNFTs}
+          </Typography>
+        </Box>
+        <Box sx={{ mr: 3 }}>
+          <Button
+            sx={{
+              paddingX: "16px",
+              paddingY: "6px",
+              marginTop: "8px",
+              fontSize: "18px",
+              color: "#52b202",
+              backgroundColor: "#d0e7b7",
+            }}
+          >
+            Withdraw TRX
+          </Button>
+          <Typography
+            sx={{
+              paddingY: "4px",
+              textAlign: "center",
+              fontSize: "18px",
+              color: "#F39B33",
+            }}
+          >
+            Available TRX: {widrawAmount}
+          </Typography>
+        </Box>
         <Box sx={{ mr: 3 }}>
           <Button
             sx={{
@@ -103,7 +147,7 @@ const Jackpot = () => {
               color: "#F39B33",
             }}
           >
-            Available Meow: 2
+            Available Meow: {meowCount}
           </Typography>
         </Box>
       </Box>
