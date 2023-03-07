@@ -36,7 +36,7 @@ export const EnterRoom = createAsyncThunk(
           .at(tronWeb.address.toHex(NILE_TESTNET.MEOW_ADDRESS));
       }
     }
-    axios.post(
+    await axios.post(
       `http://192.168.106.175:8001/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}`
     );
     socket.emit("enter");
@@ -89,17 +89,21 @@ export const ClaimFight = createAsyncThunk(
     let enterTx;
     let random1: number[] = [];
     let random2: number[] = [];
-    axios.post(
+    await axios.post(
       `http://192.168.106.175:8001/api/betting/update?roomnum=${whichroom}&secondNFT=${url}&secondaddress=${address}`
     );
     socket.emit("enter");
+    let room: any;
     try {
       console.log("start claim Fight");
-      let room: any;
       enterTx = await meowContract
         .claimFight(tokenId, fightRoom)
-        .send({ feeLimit: 200000000, callValue: gamePrice })
+        .send({ feeLimit: 200000000, callValue: gamePrice });
       room = await meowContract.room(fightRoom).call();
+      console.log('before while');
+      while (room.random2 == 0) {
+        room = await meowContract.room(fightRoom).call();
+      }
       console.log("roominfo: ", room);
       let firstrandom = Number(room.random1);
       let secondrandom = Number(room.random2);

@@ -51,10 +51,9 @@ export const loadGameDetails = createAsyncThunk(
     const gameprice = ((await meowContract.gamePrice().call())).toString();
     const widrawAmount = (await meowContract.claimAmount(account).call()) / Math.pow(10,6);
     const jackpotAmount = ((await meowContract.jackpotAmount().call()) / Math.pow(10, 6)).toString();
-    const meowCount = await meowTokenContract.balanceOf(account).call();
+    const meowCount = (await meowTokenContract.balanceOf(account).call()).toString();
     console.log('get meow count');
-    const contractNFTCount = await meowContract.tokenOwner(account).call();
-    console.log('get nft count');
+    const contractNFTCount = await meowContract.tokenOwnerLength(account).call();
     const nft_counts = await nftContract.balanceOf(account).call();
     for(let i = 0; i < nft_counts; i ++) {
       let tmptokenID = await nftContract.tokenOfOwnerByIndex(account, i).call();
@@ -69,10 +68,12 @@ export const loadGameDetails = createAsyncThunk(
       nfturis[i] = `https://ipfs.io/ipfs/${nfturls[i].slice(7, 53)}/${nftids[i]}.png`
     }
     let contractNFTs = 0;
-    for(let i = 0; i < contractNFTCount.length; i ++) {
-      if(contractNFTCount[i] == 0) continue;
+    for(let i = contractNFTCount - 1; i >= 0 ; i --) {
+      let tmp = await meowContract.tokenOwner(account, i).call();
+      if(tmp == 0) break;
       contractNFTs ++;
     }
+    console.log('get nft count');
     return {
       gameprice,
       jackpotAmount,
@@ -106,7 +107,7 @@ export interface IAppSlice {
   nftids: any[];
   nfturis: any[];
   widrawAmount: number;
-  meowCount: number;
+  meowCount: string;
   contractNFTs: number;
 }
 

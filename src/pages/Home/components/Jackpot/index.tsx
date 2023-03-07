@@ -10,7 +10,7 @@ const Jackpot = () => {
   const widrawAmount: number = useSelector<IReduxState, number>(
     (state) => state.app.widrawAmount
   );
-  const meowCount: number = useSelector<IReduxState, number>(
+  const meowCount: string = useSelector<IReduxState, string>(
     (state) => state.app.meowCount
   );
   const contractNFTs: number = useSelector<IReduxState, number>(

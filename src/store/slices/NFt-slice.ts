@@ -33,15 +33,6 @@ export const approveNFT = createAsyncThunk(
         NILE_TESTNET.MEOW_ADDRESS,
         tokenId
       ).send({ feeLimit: 100000000 });
-      const text = "Approve";
-      const pendingTxnType = "Approving";
-
-      dispatch(
-        fetchPendingTxns({ txnHash: enterTx, text, type: pendingTxnType })
-      );
-      dispatch(success({ text: messages.tx_successfully_send }));
-      dispatch(info({ text: messages.your_balance_update_soon }));
-      dispatch(info({ text: messages.your_balance_updated }));
       return;
     } catch (err: any) {
       console.log(metamaskErrorWrap(err, dispatch));
@@ -72,7 +63,7 @@ export const loadNFTDetails = createAsyncThunk(
     let allowtmp: String[] = [];
     await Promise.all(
       tokenIds.map(async (tokenId, index) => {
-        allowtmp[index] = await nftContract.getApproved(tokenId).call(NILE_TESTNET.MEOW_ADDRESS);
+        allowtmp[index] = await nftContract.getApproved(tokenId).call();
       })
     );
     let allows: boolean[] = [];
