@@ -31,7 +31,7 @@ const style = {
 };
 
 const CurrentBattle = () => {
-  const { account, connector } = useWeb3React();
+  const { account } = useWeb3React();
 
   const gameData: any[] = useSelector<IReduxState, any[]>(
     (state) => state.app.gameData
@@ -172,16 +172,12 @@ const CurrentBattle = () => {
     return number;
   };
 
-  async function getGameData() {
-    await dispatch(loadGameDetails({ account: account }));
+  function getGameData() {
+    dispatch(loadGameDetails({ account: account }));
   }
 
-  async function getApprove() {
-    await dispatch(
-      loadNFTDetails({
-        tokenIds: nftids,
-      })
-    );
+  function getApprove() {
+    dispatch(loadNFTDetails({ tokenIds: nftids }));
   }
 
   async function approve(id: Number) {
@@ -248,6 +244,7 @@ const CurrentBattle = () => {
 
   useEffect(() => {
     socket.on("entered", () => {
+      console.log('broadcast from backend');
       getGameData();
       getApprove();
     });
