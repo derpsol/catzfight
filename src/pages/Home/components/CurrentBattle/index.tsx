@@ -39,12 +39,12 @@ const CurrentBattle = () => {
   const gamePrice: string = useSelector<IReduxState, string>(
     (state) => state.app.gameprice
   );
-  let firRandomData: number[] = useSelector<IReduxState, number[]>(
-    (state) => state.fight.random1
-  );
-  let secRandomData: number[] = useSelector<IReduxState, number[]>(
-    (state) => state.fight.random2
-  );
+  // let firRandomData: number[] = useSelector<IReduxState, number[]>(
+  //   (state) => state.fight.random1
+  // );
+  // let secRandomData: number[] = useSelector<IReduxState, number[]>(
+  //   (state) => state.fight.random2
+  // );
   const gameLoading: boolean = useSelector<IReduxState, boolean>(
     (state) => state.app.loading
   );
@@ -68,6 +68,9 @@ const CurrentBattle = () => {
       secondNFt: "",
       firstaddress: "",
       secondaddress: "",
+      firstrandom: 0,
+      secondrandom: 0,
+      tokenId: 0,
       fightroom: 0,
       whichfight: 0,
     },
@@ -77,6 +80,9 @@ const CurrentBattle = () => {
       secondNFt: "",
       firstaddress: "",
       secondaddress: "",
+      firstrandom: 0,
+      secondrandom: 0,
+      tokenId: 0,
       fightroom: 0,
       whichfight: 0,
     },
@@ -86,6 +92,9 @@ const CurrentBattle = () => {
       secondNFt: "",
       firstaddress: "",
       secondaddress: "",
+      firstrandom: 0,
+      secondrandom: 0,
+      tokenId: 0,
       whichfight: 0,
       fightroom: 0,
     },
@@ -95,6 +104,9 @@ const CurrentBattle = () => {
       secondNFt: "",
       firstaddress: "",
       secondaddress: "",
+      firstrandom: 0,
+      secondrandom: 0,
+      tokenId: 0,
       fightroom: 0,
       whichfight: 0,
     },
@@ -104,6 +116,9 @@ const CurrentBattle = () => {
       secondNFt: "",
       firstaddress: "",
       secondaddress: "",
+      firstrandom: 0,
+      secondrandom: 0,
+      tokenId: 0,
       fightroom: 0,
       whichfight: 0,
     },
@@ -113,6 +128,9 @@ const CurrentBattle = () => {
       secondNFt: "",
       firstaddress: "",
       secondaddress: "",
+      firstrandom: 0,
+      secondrandom: 0,
+      tokenId: 0,
       fightroom: 0,
       whichfight: 0,
     },
@@ -122,6 +140,9 @@ const CurrentBattle = () => {
       secondNFt: "",
       firstaddress: "",
       secondaddress: "",
+      firstrandom: 0,
+      secondrandom: 0,
+      tokenId: 0,
       fightroom: 0,
       whichfight: 0,
     },
@@ -131,6 +152,9 @@ const CurrentBattle = () => {
       secondNFt: "",
       firstaddress: "",
       secondaddress: "",
+      firstrandom: 0,
+      secondrandom: 0,
+      tokenId: 0,
       fightroom: 0,
       whichfight: 0,
     },
@@ -142,8 +166,11 @@ const CurrentBattle = () => {
       Datas[data.roomnum - 1].secondNFt = data.secondNFT;
       Datas[data.roomnum - 1].firstaddress = data.firstaddress;
       Datas[data.roomnum - 1].secondaddress = data.secondaddress;
+      Datas[data.roomnum - 1].firstrandom = data.firstRandom;
+      Datas[data.roomnum - 1].secondrandom = data.secondRandom;
       Datas[data.roomnum - 1].fightroom = data.fightRoom;
       Datas[data.roomnum - 1].whichfight = data.whichFight;
+      Datas[data.roomnum - 1].tokenId = data.tokenId;
     });
 
   const [openState, setOpenState] = useState(false);
@@ -151,6 +178,8 @@ const CurrentBattle = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [whichroom, setWhichroom] = useState(0);
   const [whichfight, setWhichfight] = useState(0);
+  const [waitingRandom, setWaitingRandom] = useState(0);
+  const [preTokenId, setPreTokenId] = useState(0);
   const [decide, setDecide] = useState(false);
   var socket = io("http://192.168.106.175:8001");
 
@@ -213,9 +242,11 @@ const CurrentBattle = () => {
     let fightState = await dispatch(
       ClaimFight({
         tokenId: nftids[index],
+        preTokenId: preTokenId,
         fightRoom: whichfight,
         whichroom: whichroom + 1,
         url: nfturis[index],
+        waitingRandom: waitingRandom,
         address: account,
         gamePrice: Number(gamePrice),
         socket,
@@ -250,18 +281,18 @@ const CurrentBattle = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (secRandomData) {
-      setDecide(true);
-      setTimeout(() => {
-        axios.delete(
-          `http://192.168.106.175:8001/api/betting/delete/${secRandomData.length - 1}`
-        );
-        setDecide(false);
-        reload();
-      }, 4000);
-    }
-  }, [secRandomData]);
+  // useEffect(() => {
+  //   if (secRandomData) {
+  //     setDecide(true);
+  //     setTimeout(() => {
+  //       axios.delete(
+  //         `http://192.168.106.175:8001/api/betting/delete/${secRandomData.length - 1}`
+  //       );
+  //       setDecide(false);
+  //       reload();
+  //     }, 4000);
+  //   }
+  // }, [secRandomData]);
 
   let isFightable = false;
   return (
@@ -354,7 +385,8 @@ const CurrentBattle = () => {
                     }}
                     disabled={data.firstNFt !== "" ? true : false}
                   >
-                    {firRandomData &&
+                    Fight
+                    {/* {firRandomData &&
                     decide &&
                     !(
                       firRandomData[index + 1] === undefined ||
@@ -373,7 +405,7 @@ const CurrentBattle = () => {
                             0,
                             4
                           )}...${data.firstaddress?.slice(-4)}`
-                      : "Fighting..."}
+                      : "Fighting..."} */}
                   </Button>
                 </Box>
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -407,6 +439,8 @@ const CurrentBattle = () => {
                     onClick={() => {
                       setWhichroom(index);
                       setWhichfight(data.fightroom);
+                      setWaitingRandom(data.firstrandom);
+                      setPreTokenId(data.tokenId);
                       getGameData();
                       getApprove();
                       setClaimState(true);
@@ -425,7 +459,8 @@ const CurrentBattle = () => {
                         { color: "#FF1E1E" },
                     }}
                   >
-                    {secRandomData &&
+                    Fight
+                    {/* {secRandomData &&
                     decide &&
                     !(
                       secRandomData[index + 1] === undefined ||
@@ -439,7 +474,7 @@ const CurrentBattle = () => {
                       : data.secondaddress === '' ||
                         data.secondaddress === null || data.secondaddress === undefined
                       ? "Fight"
-                      : "Fighting..."}
+                      : "Fighting..."} */}
                   </Button>
                 </Box>
               </Box>

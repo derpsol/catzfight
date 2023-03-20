@@ -5,8 +5,6 @@ import {
   createAsyncThunk,
 } from "@reduxjs/toolkit";
 import { RootState } from "../../state";
-import { messages } from "../../constants/messages";
-import { success, info } from "./messages-slice";
 import { fetchPendingTxns, clearPendingTxn } from "./pending-txns-slice";
 import { metamaskErrorWrap } from "helpers/metamask-error-wrap";
 import tronWeb from 'tronweb';
@@ -91,7 +89,6 @@ const nftSlice = createSlice({
   reducers: {
     fetchAppSuccess(state, action) {
       setAll(state, action.payload);
-      // console.log(action.payload);
     },
   },
   extraReducers: (builder) => {
