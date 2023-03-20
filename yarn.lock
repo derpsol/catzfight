@@ -15088,6 +15088,14 @@ tr46@~0.0.3:
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
   integrity sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==
 
+trongrid@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/trongrid/-/trongrid-1.2.6.tgz#a4c939f52f8dbea9596d4809ee9d5ba52d71bb86"
+  integrity sha512-5NAyz1uvwdD0xPC3VShNk+yFP+bFSTo2m+Eli3beWBXzb5SPxWIOZ3BHN1ohD9jGlOKuq7UD+pOGvd+F16EqVg==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    babel-runtime "^6.26.0"
+
 tronweb@^3.2.7:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-3.2.7.tgz#207a56741c4d191614c45a543dc3f49248f3632a"
