@@ -11,7 +11,7 @@ import { setAll } from "../../helpers/set-all";
 import { NILE_TESTNET } from "../../constants/addresses";
 
 interface IenterRoomMeow {
-  tokenId: Number;
+  tokenId: number;
   fightRoom: number;
   whichroom: number;
   url: string;
@@ -45,32 +45,47 @@ export const EnterRoom = createAsyncThunk(
       }
     }
     socket.emit("enter");
-
-    let enterTx;
-    enterTx = await meowContract
+    
+    await meowContract
       .enterRoom(tokenId)
       .send({ feeLimit: 100000000, callValue: gamePrice })
       .then(() => {
         socket.emit("enter");
       });
     let random_tmp;
+    console.log("before getting event");
     await meowContract.goSmallRoom().watch((err: any, event: any) => {
       if (err) return console.error('Error with "Message" event:', err);
 
       console.log("- Result:", event.result.random, "\n");
       random_tmp = event.result.random;
 
+      // writeEnterData(whichroom, url, address, fightRoom, random_tmp, tokenId);
+
       console.groupEnd();
     });
-    // setTimeout(async () => {
-      await axios.post(
-        `http://192.168.106.175:8001/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}&firstRandom=${random_tmp}&firstId=${tokenId}`
-      );
-    // }, 10000);
-
+    await axios.post(
+      `http://192.168.106.175:8001/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}&firstRandom=${random_tmp}&firstId=${tokenId}`
+    );
+    console.log("after getting event");
     return;
   }
 );
+
+async function writeEnterData(
+  whichroom: number,
+  url: string,
+  address: string,
+  fightRoom: number,
+  random_tmp: number,
+  tokenId: number,
+) {
+  await axios.post(
+    `http://192.168.106.175:8001/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}&firstRandom=${random_tmp}&firstId=${tokenId}`
+  );
+  return;
+}
+
 interface IclaimFightMeow {
   tokenId: number;
   preTokenId: number;
@@ -109,7 +124,6 @@ export const ClaimFight = createAsyncThunk(
       }
     }
 
-    let enterTx;
     let random_tmp: number;
     // let random1: number[] = [];
     // let random2: number[] = [];
