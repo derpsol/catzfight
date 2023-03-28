@@ -37,6 +37,7 @@ export const EnterRoom = createAsyncThunk(
     { dispatch }
   ) => {
     let meowContract;
+    let random_tmp: number;
     if (window) {
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
         meowContract = await window.tronWeb
@@ -44,31 +45,35 @@ export const EnterRoom = createAsyncThunk(
           .at(tronWeb.address.toHex(NILE_TESTNET.MEOW_ADDRESS));
       }
     }
-    socket.emit("enter");
-    
-    await meowContract
-      .enterRoom(tokenId)
-      .send({ feeLimit: 100000000, callValue: gamePrice })
-      .then(() => {
-        socket.emit("enter");
+    try {
+      await meowContract
+        .enterRoom(tokenId)
+        .send({ feeLimit: 100000000, callValue: gamePrice })
+        .then(() => {});
+      console.log("before getting event");
+      meowContract.goSmallRoom().watch((err: any, event: any) => {
+        if (err) return console.error('Error with "Message" event:', err);
+        console.log("- Result:", event.result.random, "\n");
+        random_tmp = event.result.random;
       });
-    let random_tmp;
-    console.log("before getting event");
-    await meowContract.goSmallRoom().watch((err: any, event: any) => {
-      if (err) return console.error('Error with "Message" event:', err);
 
-      console.log("- Result:", event.result.random, "\n");
-      random_tmp = event.result.random;
-
-      // writeEnterData(whichroom, url, address, fightRoom, random_tmp, tokenId);
-
-      console.groupEnd();
-    });
-    await axios.post(
-      `http://192.168.106.175:8001/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}&firstRandom=${random_tmp}&firstId=${tokenId}`
-    );
-    console.log("after getting event");
-    return;
+      // let eventdata = meowContract.events.goSmallRoom();
+      // console.log(eventdata.data);
+      // await axios.post(
+      //   `http://192.168.106.175:8001/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}&firstRandom=${random_tmp}&firstId=${tokenId}`
+      // );
+      // while(random_tmp < 0 || random_tmp === null) {
+      //   console.log("inside of while");
+      //   sleep(1000);
+      // }
+      console.log("after getting event");
+      // return random_tmp;
+    } catch (err: any) {
+      console.log(metamaskErrorWrap(err, dispatch));
+      return metamaskErrorWrap(err, dispatch);
+    } finally {
+      return;
+    }
   }
 );
 
@@ -78,7 +83,7 @@ async function writeEnterData(
   address: string,
   fightRoom: number,
   random_tmp: number,
-  tokenId: number,
+  tokenId: number
 ) {
   await axios.post(
     `http://192.168.106.175:8001/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}&firstRandom=${random_tmp}&firstId=${tokenId}`
@@ -239,6 +244,7 @@ const initialState = {
 export interface IWinSlice {
   // random1: number[];
   // random2: number[];
+  random_tmp: number;
 }
 
 const fightSlice = createSlice({
@@ -255,6 +261,7 @@ const fightSlice = createSlice({
         state.loading = true;
       })
       .addCase(EnterRoom.fulfilled, (state, action) => {
+        setAll(state, action.payload);
         state.loading = false;
       })
       .addCase(EnterRoom.rejected, (state, { error }) => {
