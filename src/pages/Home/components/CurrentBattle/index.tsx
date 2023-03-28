@@ -45,6 +45,9 @@ const CurrentBattle = () => {
   // let secRandomData: number[] = useSelector<IReduxState, number[]>(
   //   (state) => state.fight.random2
   // );
+  let randomtmp: number = useSelector<IReduxState, number>(
+    (state) => state.fight.random_tmp
+  )
   const gameLoading: boolean = useSelector<IReduxState, boolean>(
     (state) => state.app.loading
   );
@@ -234,6 +237,7 @@ const CurrentBattle = () => {
       })
     );
     if (enterState.meta.requestStatus === "fulfilled") {
+      console.log(randomtmp);
       reload();
     }
   }

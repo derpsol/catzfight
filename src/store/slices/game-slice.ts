@@ -46,22 +46,23 @@ export const loadGameDetails = createAsyncThunk(
     await axios.get(`http://192.168.106.175:8001/api/winner`).then((res) => {
       winnerData = res.data;
     });
+    console.log("loadgamedetail");
     
     const gameprice = ((await meowContract.gamePrice().call())).toString();
     const jackpotAmount = ((await meowContract.jackpotAmount().call()) / Math.pow(10, 6)).toString();
     const meowCount = (await meowTokenContract.balanceOf(account).call()).toString();
     const contractNFTCount = await meowContract.tokenOwnerLength(account).call();
     const nft_counts = await nftContract.balanceOf(account).call();
-    for(let i = 0; i < nft_counts; i ++) {
+    for(let i = 0; i < Math.min(nft_counts, 4); i ++) {
       let tmptokenID = await nftContract.tokenOfOwnerByIndex(account, i).call();
       nftids[i] = TronWeb.toDecimal(tmptokenID)
     }
 
-    for(let i = 0; i < nft_counts; i ++) {
+    for(let i = 0; i < Math.min(nft_counts, 4); i ++) {
       nfturls[i] = await nftContract.tokenURI(nftids[i]).call();
     }
 
-    for(let i = 0; i < nft_counts; i ++) {
+    for(let i = 0; i < Math.min(nft_counts, 4); i ++) {
       nfturis[i] = `https://ipfs.io/ipfs/${nfturls[i].slice(7, 53)}/${nftids[i]}.png`
     }
     let contractNFTs = 0;
