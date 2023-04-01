@@ -1,18 +1,25 @@
+import { ethers } from "ethers";
+import { getAddresses } from "../../constants";
+import { NFTContractABI } from "../../abi";
 import { setAll } from "../../helpers/set-all";
 import {
   createSlice,
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
+import { JsonRpcProvider } from "@ethersproject/providers";
 import { RootState } from "../../state";
+import { messages } from "../../constants/messages";
+import { warning, success, info } from "./messages-slice";
 import { fetchPendingTxns, clearPendingTxn } from "./pending-txns-slice";
 import { metamaskErrorWrap } from "helpers/metamask-error-wrap";
+import { NILE_TESTNET } from '../../constants/addresses';
 import tronWeb from 'tronweb';
-import { NILE_TESTNET } from "../../constants/addresses";
 
 interface IapproveNFT {
   tokenId: Number;
 }
+
 declare var window: any
 
 export const approveNFT = createAsyncThunk(
@@ -31,10 +38,18 @@ export const approveNFT = createAsyncThunk(
         NILE_TESTNET.MEOW_ADDRESS,
         tokenId
       ).send({ feeLimit: 100000000 });
+      const text = "Approve";
+      const pendingTxnType = "Approving";
+
+      dispatch(
+        fetchPendingTxns({ txnHash: enterTx.hash, text, type: pendingTxnType })
+      );
+      dispatch(success({ text: messages.tx_successfully_send }));
+      dispatch(info({ text: messages.your_balance_update_soon }));
+      dispatch(info({ text: messages.your_balance_updated }));
       return;
     } catch (err: any) {
       console.log(metamaskErrorWrap(err, dispatch));
-      console.log("there is an error while approving");
       return metamaskErrorWrap(err, dispatch);
     } finally {
       if (enterTx) {
@@ -89,6 +104,7 @@ const nftSlice = createSlice({
   reducers: {
     fetchAppSuccess(state, action) {
       setAll(state, action.payload);
+      // console.log(action.payload);
     },
   },
   extraReducers: (builder) => {
