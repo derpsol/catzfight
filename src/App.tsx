@@ -6,17 +6,19 @@ import Stake from "pages/Stake";
 import { Provider } from "react-redux";
 import store, { AppDispatch } from "./state";
 import { loadGameDetails } from "./store/slices/game-slice";
+import { loadNftDetails } from "store/slices/Nftinfo-slice";
 import { useDispatch } from "react-redux";
 import { useEffect, useCallback } from "react";
 import { useWalletModalToggle } from "state/application/hooks";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
-  const { active, account, connector, activate, error } = useWeb3React();
+  const { active, account } = useWeb3React();
   const toggleWalletModal = useWalletModalToggle();
 
   const loadData = useCallback(() => {
     dispatch(loadGameDetails({ account: account }));
+    dispatch(loadNftDetails({ account: account }));
   }, [active]);
 
   useEffect(() => {

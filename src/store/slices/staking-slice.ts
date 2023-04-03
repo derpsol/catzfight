@@ -27,10 +27,6 @@ export const stackingMeow = createAsyncThunk(
   "stacking/stackingMeow",
 
   async ({ networkID, provider, amount }: IStackingMeow, { dispatch }) => {
-    if (!provider) {
-      dispatch(warning({ text: messages.please_connect_wallet }));
-      return;
-    }
     const addresses = getAddresses(networkID);
     const provider1 = new ethers.providers.Web3Provider(window.ethereum);
     await provider1.send("eth_requestAccounts", []);

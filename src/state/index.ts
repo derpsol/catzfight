@@ -11,6 +11,8 @@ import appReducer from "../store/slices/game-slice";
 import fightReducer from "../store/slices/play-slice";
 import stackReducer from "../store/slices/staking-slice";
 import nftReducer from "../store/slices/NFt-slice";
+import nftInfoReducer from '../store/slices/Nftinfo-slice';
+import walletInfoReducer from '../store/slices/walletInfo-slice';
   
 const PERSISTED_KEYS: string[] = ["user", "transactions", "lists"];
 
@@ -24,6 +26,8 @@ const store = configureStore({
     fight: fightReducer,
     stack: stackReducer,
     nft: nftReducer,
+    nfts: nftInfoReducer,
+    wallet: walletInfoReducer,
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false }),
   preloadedState: load({ states: PERSISTED_KEYS }),
