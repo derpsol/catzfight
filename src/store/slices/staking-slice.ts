@@ -1,112 +1,119 @@
-import { ethers } from "ethers";
-import { getAddresses, Networks } from "../../constants";
-import { meowContractABI } from "../../abi";
 import { setAll } from "../../helpers/set-all";
 import {
   createSlice,
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
-import {
-  JsonRpcProvider,
-  StaticJsonRpcProvider,
-} from "@ethersproject/providers";
 import { RootState } from "../../state";
 import { metamaskErrorWrap } from "helpers/metamask-error-wrap";
-import { fetchPendingTxns, clearPendingTxn } from "./pending-txns-slice";
-import { messages } from "../../constants/messages";
-import { warning, success, info } from "./messages-slice";
+import tronWeb from "tronweb";
+import { NILE_TESTNET } from "../../constants/addresses";
+import axios from "axios";
 
 interface IStackingMeow {
-  networkID: Networks;
-  provider: StaticJsonRpcProvider | JsonRpcProvider;
+  address: any;
   amount: string;
 }
+
+declare var window: any;
 
 export const stackingMeow = createAsyncThunk(
   "stacking/stackingMeow",
 
-  async ({ networkID, provider, amount }: IStackingMeow, { dispatch }) => {
-    const addresses = getAddresses(networkID);
-    const provider1 = new ethers.providers.Web3Provider(window.ethereum);
-    await provider1.send("eth_requestAccounts", []);
-    const signer = provider1.getSigner();
-    const meowContract = new ethers.Contract(
-      addresses.MEOW_ADDRESS,
-      meowContractABI,
-      signer
-    );
-    let enterTx;
-    let stackamount = parseInt(amount);
+  async ({ address, amount }: IStackingMeow, { dispatch }) => {
+    let meowContract, meowTokenContract;
+    if (window) {
+      if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+        meowContract = await window.tronWeb
+          .contract()
+          .at(tronWeb.address.toHex(NILE_TESTNET.MEOW_ADDRESS));
+          meowTokenContract = await window.tronWeb.contract().at(tronWeb.address.toHex(NILE_TESTNET.MEOWTOKEN_ADDRESS));
+        }
+    }
+    let enterTx, approveTx;
+    let stakeamount = parseInt(amount);
     try {
-      enterTx = await meowContract.stake(stackamount);
-      const text = "EnterRoom";
-      const pendingTxnType = "Entering";
+      console.log(stakeamount);
+      approveTx = await meowTokenContract.approve(NILE_TESTNET.MEOW_ADDRESS, stakeamount).send({ feeLimit: 100000000 });
+      let receipt = null;
+      while (receipt === 'REVERT' || receipt == null) {
+        if (window.tronWeb) {
+          const transaction = await window.tronWeb.trx.getTransaction(approveTx);
+          receipt = transaction.ret[0].contractRet;
+        }
+        if (receipt === 'REVERT') {
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
+        }
+      }
 
-      dispatch(
-        fetchPendingTxns({ txnHash: enterTx.hash, text, type: pendingTxnType })
-      );
-      await enterTx.wait();
-      dispatch(success({ text: messages.tx_successfully_send }));
-      dispatch(info({ text: messages.your_balance_update_soon }));
-      dispatch(info({ text: messages.your_balance_updated }));
+      enterTx = await meowContract
+        .stake(stakeamount)
+        .send({ feeLimit: 100000000 });
+
+      receipt = null;
+      while (receipt === 'REVERT' || receipt == null) {
+        if (window.tronWeb) {
+          const transaction = await window.tronWeb.trx.getTransaction(enterTx);
+          receipt = transaction.ret[0].contractRet;
+        }
+        if (receipt === 'REVERT') {
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
+        }
+      }
+      await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=${stakeamount}&claimAmount=0&ownNfts=[]`);
+
       return;
     } catch (err: any) {
+      console.log(err);
       return metamaskErrorWrap(err, dispatch);
     } finally {
-      if (enterTx) {
-        dispatch(clearPendingTxn(enterTx.hash));
-      }
+      return;
     }
   }
 );
 
 interface IunstackingMeow {
-  networkID: Networks;
-  provider: StaticJsonRpcProvider | JsonRpcProvider;
+  address: any;
   amount: string;
 }
 
 export const unstackingMeow = createAsyncThunk(
   "claimfight/claimfightMeow",
 
-  async ({ networkID, provider, amount }: IunstackingMeow, { dispatch }) => {
-    if (!provider) {
-      dispatch(warning({ text: messages.please_connect_wallet }));
-      return;
+  async ({ amount, address }: IunstackingMeow, { dispatch }) => {
+    let meowContract;
+    if (window) {
+      if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+        meowContract = await window.tronWeb
+          .contract()
+          .at(tronWeb.address.toHex(NILE_TESTNET.MEOW_ADDRESS));
+      }
     }
-    const addresses = getAddresses(networkID);
-    const provider1 = new ethers.providers.Web3Provider(window.ethereum);
-    await provider1.send("eth_requestAccounts", []); // <- this promps user to connect metamask
-    const signer = provider1.getSigner();
-    const meowContract = new ethers.Contract(
-      addresses.MEOW_ADDRESS,
-      meowContractABI,
-      signer
-    );
-
     let enterTx;
-    let unstackamount = parseInt(amount);
+    let stakeamount = parseInt(amount);
     try {
-      enterTx = await meowContract.unStake(unstackamount);
+      enterTx = await meowContract
+        .unStake(stakeamount)
+        .send({ feeLimit: 100000000 });
 
-      const text = "EnterRoom";
-      const pendingTxnType = "Entering";
+      let receipt = null;
+      while (receipt === 'REVERT' || receipt == null) {
+        if (window.tronWeb) {
+          const transaction = await window.tronWeb.trx.getTransaction(enterTx);
+          receipt = transaction.ret[0].contractRet;
+        }
+        if (receipt === 'REVERT') {
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
+        }
+      }
+      await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=${stakeamount * (-1)}&claimAmount=0&ownNfts=[]`);
 
-      dispatch(
-        fetchPendingTxns({ txnHash: enterTx.hash, text, type: pendingTxnType })
-      );
-      await enterTx.wait();
-      dispatch(success({ text: messages.tx_successfully_send }));
-      dispatch(info({ text: messages.your_balance_update_soon }));
-      dispatch(info({ text: messages.your_balance_updated }));
       return;
     } catch (err: any) {
+      console.log(err);
       return metamaskErrorWrap(err, dispatch);
     } finally {
-      if (enterTx) {
-        dispatch(clearPendingTxn(enterTx.hash));
-      }
+      return;
     }
   }
 );
@@ -122,7 +129,6 @@ const stakeSlice = createSlice({
   initialState,
   reducers: {
     fetchAppSuccess(state, action) {
-      setAll(state, action.payload);
       // console.log(action.payload);
     },
   },

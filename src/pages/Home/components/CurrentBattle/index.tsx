@@ -267,12 +267,6 @@ const CurrentBattle = () => {
     }
   }, [isLoading]);
 
-  // useEffect(() => {
-  //   if (gameLoading) {
-  //     reload();
-  //   }
-  // }, [gameLoading]);
-
   function reload() {
     socket.emit("enter");
   }

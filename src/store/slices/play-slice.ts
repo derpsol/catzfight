@@ -233,6 +233,8 @@ export const ClaimFight = createAsyncThunk(
       await axios
         .get(`http://localhost:8001/api/userinfo`)
         .then((res) => {usersData = res.data;});
+      
+      let totalStake;
 
       if(firstrandom === 77777) {
         if(secondrandom === 77777) {
@@ -242,7 +244,7 @@ export const ClaimFight = createAsyncThunk(
           await axios.post(`http://localhost:8001/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${jackpotAmount * 4 / 10}&ownNfts=[]`);
           await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${jackpotAmount * 1 / 10}&ownNfts=[]`);
         }
-        let totalStake = 0;
+        totalStake = 0;
         for(let i = 0; i < usersData.length; i ++) {
           totalStake += usersData[i].stakeAmount;
         }
@@ -261,7 +263,7 @@ export const ClaimFight = createAsyncThunk(
           await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${jackpotAmount * 4 / 10}&ownNfts=[]`);
           await axios.post(`http://localhost:8001/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${jackpotAmount * 1 / 10}&ownNfts=[]`);
         }
-        let totalStake = 0;
+        totalStake = 0;
         for(let i = 0; i < usersData.length; i ++) {
           totalStake += usersData[i].stakeAmount;
         }
