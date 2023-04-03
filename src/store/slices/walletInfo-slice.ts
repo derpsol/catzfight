@@ -17,7 +17,7 @@ export const walletInfo = createAsyncThunk(
     let tmpData: any;
     let usersData: any;
     await axios
-      .get(`http://localhost:8001/api/userinfo`)
+      .get(`http://35.183.204.238/api/userinfo`)
       .then((res) => {usersData = res.data;});
   
     let totalStake = 0;
@@ -26,7 +26,7 @@ export const walletInfo = createAsyncThunk(
     }
 
     await axios
-      .get(`http://localhost:8001/api/userinfo/find?address=${account}`)
+      .get(`http://35.183.204.238/api/userinfo/find?address=${account}`)
       .then((res) => {tmpData = res.data});
 
     let nftCount = tmpData?.ownNfts.length;
