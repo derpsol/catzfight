@@ -2,40 +2,49 @@ import { Box, Button, Typography } from "@mui/material";
 import TextField from '@mui/material/TextField';
 import { AppDispatch } from "state";
 import { useEffect, useState } from "react";
-import { useWeb3Context } from "../../../../hooks";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { stackingMeow, unstackingMeow } from "store/slices/staking-slice";
+import { useWeb3React } from "@web3-react/core";
+import { IReduxState } from "../../../../store/slices/state.interface";
 
 const MeowToken = () => {
-	const [stackAmount, changesStack] = useState("");
-	const [unstackAmount, changeUnstack] = useState("");
+	const { account } = useWeb3React();
+	const [stackAmount, changesStack] = useState('');
+	const [unstackAmount, changeUnstack] = useState('');
 	const dispatch = useDispatch<AppDispatch>();
-	const { connect, provider, hasCachedProvider, chainID, connected } = useWeb3Context();
-	const [walletChecked, setWalletChecked] = useState(false);
 
-	useEffect(() => {
-		if (hasCachedProvider()) {
-			connect().then(() => {
-				setWalletChecked(true);
-			});
-		} else {
-			setWalletChecked(true);
-		}
-	}, []);
+	let stakeAmount : number = useSelector<IReduxState, number>(
+		(state) => state.wallet.stakeAmount
+	);
+	const JackpotAmount = useSelector<IReduxState, string>(
+		(state) => state.app.jackpotAmount
+	);
+	let totalStake : number = useSelector<IReduxState, number>(
+		(state) => state.wallet.totalStake
+	);
+	const meowCount: string = useSelector<IReduxState, string>(
+		(state) => state.app.meowCount
+	);
 
 	async function onStack() {
+		if(parseInt(meowCount) < parseInt(stackAmount)) {
+			alert("You don't have enough balance of Meow Token for stake!");
+			return;
+		}
 		await dispatch(stackingMeow({
-			networkID: chainID,
-			provider,
 			amount: stackAmount,
+			address: account,
 		}));
 	}
 
 	async function onUnstack() {
+		if(stakeAmount < parseInt(unstackAmount)) {
+			alert("You don't have enough Meow Token to unstake!");
+			return;
+		}
 		await dispatch(unstackingMeow({
-			networkID: chainID,
-			provider,
 			amount: unstackAmount,
+			address: account,
 		}));
 	}
 
@@ -115,15 +124,16 @@ const MeowToken = () => {
 						required
 						label="Required"
 						variant="filled"
+						type='number'
 						size="small"
 						sx={{ color: 'white', width: '100px', mt: 2 }}
 						value={stackAmount}
 						onChange={(e) => {
-							changesStack((e.target.value));
+							changesStack(e.target.value);
 						}}
 					/>
 					<Typography sx={{ color: '#BADA55', fontSize: { xs: '12px', sm: '16px' }, mt: 1 }}>
-						Staked Meow: 10
+						Staked Meow: {stakeAmount ? stakeAmount : 0} Meow Token
 					</Typography>
 				</Box>
 				<Box>
@@ -143,20 +153,21 @@ const MeowToken = () => {
 					label="Required"
 					variant="filled"
 					size="small"
+					type='number'
 					sx={{ color: 'white', width: '100px', mt: 2 }}
 					value={unstackAmount}
 					onChange={(e) => {
-						changeUnstack((e.target.value));
+						changeUnstack(e.target.value);
 					}}
 				/>
 				</Box>
 			</Box>
 			<Box sx={{ p: 1, backgroundColor: '#393D32' }}>
 				<Typography sx={{ color: 'white', fontSize: { xs: '12px', sm: '16px' } }}>
-					Total Staked Meow in contract: 20
+					Total Staked Meow in contract: {totalStake ? totalStake : 0} Meow Token 
 				</Typography>
 				<Typography sx={{ color: 'white', fontSize: { xs: '12px', sm: '16px' } }}>
-					40% of current Jackpot: 1,259 TRX
+					40% of current Jackpot: {JackpotAmount ? parseInt(JackpotAmount) * 2 / 5 : 0} TRX
 				</Typography>
 			</Box>
 			<Box sx={{ py: { xs: 1, sm: 2 }, backgroundColor: '#6A6E64', paddingX: '6px' }}>

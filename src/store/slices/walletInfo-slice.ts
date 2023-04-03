@@ -15,15 +15,28 @@ export const walletInfo = createAsyncThunk(
   'nft/walletInfo',
   async ({ account }: IwalletInfo) => {
     let tmpData: any;
+    let usersData: any;
+    await axios
+      .get(`http://localhost:8001/api/userinfo`)
+      .then((res) => {usersData = res.data;});
+  
+    let totalStake = 0;
+    for(let i = 0; i < usersData.length; i ++) {
+      totalStake += usersData[i].stakeAmount;
+    }
+
     await axios
       .get(`http://localhost:8001/api/userinfo/find?address=${account}`)
       .then((res) => {tmpData = res.data});
 
     let nftCount = tmpData?.ownNfts.length;
     let trxAmount = tmpData?.claimAmount / 1000000;
+    let stakeAmount = tmpData?.stakeAmount;
     return {
       nftCount,
       trxAmount,
+      stakeAmount,
+      totalStake,
     };
   }
 )
@@ -31,6 +44,8 @@ export const walletInfo = createAsyncThunk(
 export interface IWalletInfoDetail {
   nftCount: number;
   trxAmount: number;
+  stakeAmount: number;
+  totalStake: number;
 }
 
 const initialState = {

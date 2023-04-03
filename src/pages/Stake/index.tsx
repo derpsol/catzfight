@@ -1,8 +1,14 @@
 import { Box, Typography } from "@mui/material";
 import MeowToken from "./components/MeowToken";
 import ChestInfo from "./components/ChestInfo";
+import { useDispatch, useSelector } from "react-redux";
+import { IReduxState } from "../../store/slices/state.interface";
 
 const Stake = () => {
+  const JackpotAmount = useSelector<IReduxState, string>(
+    (state) => state.app.jackpotAmount
+  );
+
   return (
     <Box sx={{backgroundColor: "#989E90", py: {xs: 2, sm: 4, md: 6, xl: 8}	}}>
       <Typography 
@@ -17,7 +23,7 @@ const Stake = () => {
             mb: 2                     									
 					}}
 			>
-				War Chest Jackpot: 2,518 Tron
+				War Chest Jackpot: {JackpotAmount ? JackpotAmount : 0} Tron
 			</Typography>   
       <MeowToken />
       <ChestInfo />
