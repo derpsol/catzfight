@@ -1,26 +1,61 @@
 import { Box, Button, Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { IReduxState } from "../../../../store/slices/state.interface";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { AppDispatch } from "state";
+import { useWeb3React } from "@web3-react/core";
+import { claimMoney, widrawNFT } from "store/slices/play-slice";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { walletInfo } from "store/slices/walletInfo-slice";
 
 const Jackpot = () => {
+  const { account } = useWeb3React();
+
   const JackpotAmount = useSelector<IReduxState, string>(
     (state) => state.app.jackpotAmount
-  );
-  const widrawAmount: number = useSelector<IReduxState, number>(
-    (state) => state.app.widrawAmount
   );
   const meowCount: string = useSelector<IReduxState, string>(
     (state) => state.app.meowCount
   );
-  const contractNFTs: number = useSelector<IReduxState, number>(
-    (state) => state.app.contractNFTs
+  let contractNFTs: number = useSelector<IReduxState, number>(
+    (state) => state.wallet.nftCount
+  );
+  let widrawAmount : number = useSelector<IReduxState, number>(
+    (state) => state.wallet.trxAmount
   );
 
   const history = useHistory();
   const handleClickStake = (link: string) => {
     history.push(link);
   };
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  async function onWidrawNFT() {
+    let widrawState = await dispatch(
+      widrawNFT({ address: account }));
+    if (widrawState.meta.requestStatus === "fulfilled") {
+      getAvailableData();
+    }
+  }
+
+  async function onClaimMoney() {
+    let claimState = await dispatch(claimMoney({ address: account }));
+    if(claimState.meta.requestStatus === 'fulfilled') {
+      getAvailableData();
+    }
+  }
+
+  function getAvailableData() {
+    dispatch(walletInfo({account: account}));
+  }
+
+  useEffect(() => {
+    if(account) {
+      getAvailableData();
+    }
+  }, [account])
 
   return (
     <Box
@@ -43,7 +78,7 @@ const Jackpot = () => {
           mx: "auto",
         }}
       >
-        War Chest Jackpot: {JackpotAmount} Ether
+        War Chest Jackpot: {JackpotAmount} TRX
       </Typography>
       <Box
         sx={{
@@ -71,7 +106,7 @@ const Jackpot = () => {
             </Button>
           </Box>
         </Box>
-        <Box sx={{ mr: 3 }}>
+        <Box sx={{ mr: 3, textAlign: 'center' }}>
           <Button
             sx={{
               paddingX: "16px",
@@ -81,6 +116,7 @@ const Jackpot = () => {
               color: "#52b202",
               backgroundColor: "#d0e7b7",
             }}
+            onClick={() => { onWidrawNFT() }}
           >
             Withdraw NFTs
           </Button>
@@ -92,10 +128,10 @@ const Jackpot = () => {
               color: "#F39B33",
             }}
           >
-            Available NFTs: {contractNFTs}
+            Available NFTs: {contractNFTs ? contractNFTs : 0} NFTs
           </Typography>
         </Box>
-        <Box sx={{ mr: 3 }}>
+        <Box sx={{ mr: 3, textAlign: 'center' }}>
           <Button
             sx={{
               paddingX: "16px",
@@ -105,6 +141,7 @@ const Jackpot = () => {
               color: "#52b202",
               backgroundColor: "#d0e7b7",
             }}
+            onClick={() => { onClaimMoney() }}
           >
             Withdraw TRX
           </Button>
@@ -116,7 +153,7 @@ const Jackpot = () => {
               color: "#F39B33",
             }}
           >
-            Available TRX: {widrawAmount}
+            Available TRX: {widrawAmount ? widrawAmount : 0} TRX
           </Typography>
         </Box>
         <Box sx={{ mr: 3 }}>

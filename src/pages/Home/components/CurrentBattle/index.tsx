@@ -1,6 +1,7 @@
 import { Box, Typography, Button, Skeleton } from "@mui/material";
 import { ClaimFight, EnterRoom } from "store/slices/play-slice";
-import { approveNFT, loadNFTDetails } from "store/slices/NFt-slice";
+import { approveNFT, loadNftAllowance } from "store/slices/NFt-slice";
+import { loadNftDetails } from "store/slices/Nftinfo-slice";
 import { loadGameDetails } from "store/slices/game-slice";
 import { useEffect, useState } from "react";
 import { AppDispatch } from "state";
@@ -10,6 +11,7 @@ import axios from "axios";
 import { IReduxState } from "../../../../store/slices/state.interface";
 import io from "socket.io-client";
 import { useWeb3React } from "@web3-react/core";
+import { walletInfo } from "store/slices/walletInfo-slice";
 
 const style = {
   position: "absolute" as "absolute",
@@ -39,15 +41,12 @@ const CurrentBattle = () => {
   const gamePrice: string = useSelector<IReduxState, string>(
     (state) => state.app.gameprice
   );
-  // let firRandomData: number[] = useSelector<IReduxState, number[]>(
-  //   (state) => state.fight.random1
-  // );
-  // let secRandomData: number[] = useSelector<IReduxState, number[]>(
-  //   (state) => state.fight.random2
-  // );
-  // let randomtmp: number = useSelector<IReduxState, number>(
-  //   (state) => state.fight.random_tmp
-  // )
+  let firRandomData: number[] = useSelector<IReduxState, number[]>(
+    (state) => state.fight.random1
+  );
+  let secRandomData: number[] = useSelector<IReduxState, number[]>(
+    (state) => state.fight.random2
+  );
   const gameLoading: boolean = useSelector<IReduxState, boolean>(
     (state) => state.app.loading
   );
@@ -58,10 +57,10 @@ const CurrentBattle = () => {
     (state) => state.nft.loading
   );
   const nftids: any[] = useSelector<IReduxState, any[]>(
-    (state) => state.app.nftids
+    (state) => state.nfts.nftids
   );
   const nfturis: any[] = useSelector<IReduxState, any[]>(
-    (state) => state.app.nfturis
+    (state) => state.nfts.nfturis
   );
 
   const Datas = [
@@ -182,9 +181,10 @@ const CurrentBattle = () => {
   const [whichroom, setWhichroom] = useState(0);
   const [whichfight, setWhichfight] = useState(0);
   const [waitingRandom, setWaitingRandom] = useState(0);
-  const [preTokenId, setPreTokenId] = useState(0);
   const [decide, setDecide] = useState(false);
-  var socket = io("http://192.168.106.175:8001");
+  const [address, setAddress] = useState('');
+
+  var socket = io("http://localhost:8001");
 
   const getDate = () => {
     let date = new Date();
@@ -205,11 +205,19 @@ const CurrentBattle = () => {
   };
 
   function getGameData() {
-    dispatch(loadGameDetails({ account: account }));
+    dispatch(loadGameDetails({ account: address }));
+  }
+
+  function getAvailableData() {
+    dispatch(walletInfo({ account: address }));
+  }
+
+  function getNftData() {
+    dispatch(loadNftDetails({ account: address }));
   }
 
   function getApprove() {
-    dispatch(loadNFTDetails({ tokenIds: nftids }));
+    dispatch(loadNftAllowance({ tokenIds: nftids }));
   }
 
   async function approve(id: Number) {
@@ -225,40 +233,32 @@ const CurrentBattle = () => {
 
   async function onEnterRoom(index: number) {
     let fightRoomnum = getDate();
-    let enterState = await dispatch(
+    await dispatch(
       EnterRoom({
         tokenId: nftids[index],
         fightRoom: fightRoomnum,
         whichroom: whichroom + 1,
         url: nfturis[index],
-        address: account,
+        address: address,
         gamePrice: Number(gamePrice),
-        socket,
       })
     );
-    if (enterState.meta.requestStatus === "fulfilled") {
-      // console.log(randomtmp);
-      reload();
-    }
+    reload();
   }
 
   async function onClaimFight(index: number) {
-    let fightState = await dispatch(
+    await dispatch(
       ClaimFight({
         tokenId: nftids[index],
-        preTokenId: preTokenId,
         fightRoom: whichfight,
         whichroom: whichroom + 1,
         url: nfturis[index],
         waitingRandom: waitingRandom,
-        address: account,
+        address: address,
         gamePrice: Number(gamePrice),
-        socket,
       })
     );
-    if (fightState.meta.requestStatus === "fulfilled") {
-      reload();
-    }
+    reload();
   }
 
   useEffect(() => {
@@ -267,36 +267,43 @@ const CurrentBattle = () => {
     }
   }, [isLoading]);
 
-  useEffect(() => {
-    if (gameLoading) {
-      reload();
-    }
-  }, [gameLoading]);
+  // useEffect(() => {
+  //   if (gameLoading) {
+  //     reload();
+  //   }
+  // }, [gameLoading]);
 
   function reload() {
     socket.emit("enter");
   }
 
   useEffect(() => {
-    socket.on("entered", () => {
-      console.log('broadcast from backend');
-      getGameData();
-      getApprove();
-    });
-  }, []);
+    if(account && account !== '') {
+      setAddress(account);
+    }
+  }, [account]);
 
-  // useEffect(() => {
-  //   if (secRandomData) {
-  //     setDecide(true);
-  //     setTimeout(() => {
-  //       axios.delete(
-  //         `http://192.168.106.175:8001/api/betting/delete/${secRandomData.length - 1}`
-  //       );
-  //       setDecide(false);
-  //       reload();
-  //     }, 4000);
-  //   }
-  // }, [secRandomData]);
+  useEffect(() => {
+    socket.on("entered", () => {
+      getGameData();
+      getNftData();
+      getApprove();
+      getAvailableData();
+    });
+  }, [address]);
+
+  useEffect(() => {
+    if (secRandomData) {
+      setDecide(true);
+      setTimeout(() => {
+        axios.delete(
+          `http://localhost:8001/api/betting/delete/${secRandomData.length - 1}`
+        );
+        setDecide(false);
+        reload();
+      }, 4000);
+    }
+  }, [secRandomData]);
 
   let isFightable = false;
   return (
@@ -389,8 +396,7 @@ const CurrentBattle = () => {
                     }}
                     disabled={data.firstNFt !== "" ? true : false}
                   >
-                    Fight
-                    {/* {firRandomData &&
+                    {firRandomData &&
                     decide &&
                     !(
                       firRandomData[index + 1] === undefined ||
@@ -409,7 +415,7 @@ const CurrentBattle = () => {
                             0,
                             4
                           )}...${data.firstaddress?.slice(-4)}`
-                      : "Fighting..."} */}
+                      : "Fighting..."}
                   </Button>
                 </Box>
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -444,7 +450,6 @@ const CurrentBattle = () => {
                       setWhichroom(index);
                       setWhichfight(data.fightroom);
                       setWaitingRandom(data.firstrandom);
-                      setPreTokenId(data.tokenId);
                       getGameData();
                       getApprove();
                       setClaimState(true);
@@ -463,8 +468,7 @@ const CurrentBattle = () => {
                         { color: "#FF1E1E" },
                     }}
                   >
-                    Fight
-                    {/* {secRandomData &&
+                    {secRandomData &&
                     decide &&
                     !(
                       secRandomData[index + 1] === undefined ||
@@ -478,7 +482,7 @@ const CurrentBattle = () => {
                       : data.secondaddress === '' ||
                         data.secondaddress === null || data.secondaddress === undefined
                       ? "Fight"
-                      : "Fighting..."} */}
+                      : "Fighting..."}
                   </Button>
                 </Box>
               </Box>

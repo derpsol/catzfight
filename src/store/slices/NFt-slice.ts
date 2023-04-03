@@ -1,17 +1,10 @@
-import { ethers } from "ethers";
-import { getAddresses } from "../../constants";
-import { NFTContractABI } from "../../abi";
 import { setAll } from "../../helpers/set-all";
 import {
   createSlice,
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
-import { JsonRpcProvider } from "@ethersproject/providers";
 import { RootState } from "../../state";
-import { messages } from "../../constants/messages";
-import { warning, success, info } from "./messages-slice";
-import { fetchPendingTxns, clearPendingTxn } from "./pending-txns-slice";
 import { metamaskErrorWrap } from "helpers/metamask-error-wrap";
 import { NILE_TESTNET } from '../../constants/addresses';
 import tronWeb from 'tronweb';
@@ -38,35 +31,34 @@ export const approveNFT = createAsyncThunk(
         NILE_TESTNET.MEOW_ADDRESS,
         tokenId
       ).send({ feeLimit: 100000000 });
-      const text = "Approve";
-      const pendingTxnType = "Approving";
 
-      dispatch(
-        fetchPendingTxns({ txnHash: enterTx.hash, text, type: pendingTxnType })
-      );
-      dispatch(success({ text: messages.tx_successfully_send }));
-      dispatch(info({ text: messages.your_balance_update_soon }));
-      dispatch(info({ text: messages.your_balance_updated }));
+      let receipt = null;
+      while (receipt === 'REVERT' || receipt == null) {
+        if (window.tronWeb) {
+          const transaction = await window.tronWeb.trx.getTransaction(enterTx);
+          receipt = transaction.ret[0].contractRet;
+        }
+        if (receipt === 'REVERT') {
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
+        }
+      }
       return;
     } catch (err: any) {
       console.log(metamaskErrorWrap(err, dispatch));
       return metamaskErrorWrap(err, dispatch);
     } finally {
-      if (enterTx) {
-        dispatch(clearPendingTxn(enterTx.hash));
-      }
     }
   }
 );
 
-interface ILoadNFTDetails {
+interface IloadNftAllowance {
   tokenIds: Number[];
 }
 
-export const loadNFTDetails = createAsyncThunk(
-  "app/loadNFTDetails",
+export const loadNftAllowance = createAsyncThunk(
+  "app/loadNftAllowance",
   //@ts-ignore
-  async ({ tokenIds }: ILoadNFTDetails) => {
+  async ({ tokenIds }: IloadNftAllowance) => {
     let nftContract: any;
     if(window) {
       if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
@@ -109,16 +101,16 @@ const nftSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loadNFTDetails.pending, (state, action) => {
-        state.loading = true;
-      })
-      .addCase(loadNFTDetails.fulfilled, (state, action) => {
-        setAll(state, action.payload);
-        state.loading = false;
-      })
-      .addCase(loadNFTDetails.rejected, (state, { error }) => {
-        state.loading = false;
-      });
+    .addCase(loadNftAllowance.pending, (state, action) => {
+      state.loading = true;
+    })
+    .addCase(loadNftAllowance.fulfilled, (state, action) => {
+      setAll(state, action.payload);
+      state.loading = false;
+    })
+    .addCase(loadNftAllowance.rejected, (state, { error }) => {
+      state.loading = false;
+    });
   },
 });
 

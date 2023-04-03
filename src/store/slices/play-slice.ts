@@ -1,20 +1,11 @@
-import { ethers } from "ethers";
-import { getAddresses, Networks } from "../../constants";
-import { meowContractABI } from "../../abi";
 import {
   createSlice,
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
-import {
-  JsonRpcProvider,
-  StaticJsonRpcProvider,
-} from "@ethersproject/providers";
 import { RootState } from "../../state";
 import { metamaskErrorWrap } from "helpers/metamask-error-wrap";
-import { fetchPendingTxns, clearPendingTxn } from "./pending-txns-slice";
-import { messages } from "../../constants/messages";
-import { warning, success, info } from "./messages-slice";
+import { clearPendingTxn } from "./pending-txns-slice";
 import axios from "axios";
 import { setAll } from "../../helpers/set-all";
 import { NILE_TESTNET } from "../../constants/addresses";
@@ -27,7 +18,6 @@ interface IenterRoomMeow {
   url: string;
   address: any;
   gamePrice: number;
-  socket: any;
 }
 
 declare var window: any;
@@ -43,7 +33,6 @@ export const EnterRoom = createAsyncThunk(
       url,
       address,
       gamePrice,
-      socket,
     }: IenterRoomMeow,
     { dispatch }
   ) => {
@@ -57,16 +46,23 @@ export const EnterRoom = createAsyncThunk(
     }
     let enterTx;
     try {
-      console.log("before enter room");
       enterTx = await meowContract
-      .enterRoom(tokenId)
-      .send({ feeLimit: 100000000, callValue: gamePrice })
-      console.log("before getting event: ", enterTx);
-      await enterTx.wait();
-      console.log("enterTx: ", enterTx);
+        .enterRoom(tokenId, fightRoom)
+        .send({ feeLimit: 100000000, callValue: gamePrice });
 
-      axios.post(
-        `http://localhost:8001/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}`
+      let receipt = null;
+      while (receipt === 'REVERT' || receipt == null) {
+        if (window.tronWeb) {
+          const transaction = await window.tronWeb.trx.getTransaction(enterTx);
+          receipt = transaction.ret[0].contractRet;
+        }
+        if (receipt === 'REVERT') {
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
+        }
+      }
+      const random_tmp = ((await meowContract.randoms(fightRoom, 0).call())).toNumber();
+      await axios.post(
+        `http://localhost:8001/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}&firstRandom=${random_tmp}&firstId=${tokenId}`
       );
       return;
     } catch (err: any) {
@@ -80,52 +76,98 @@ export const EnterRoom = createAsyncThunk(
 );
 
 interface IWidrawNFT {
-  networkID: Networks;
-  provider: StaticJsonRpcProvider | JsonRpcProvider;
+  address: any
 }
 
 export const widrawNFT = createAsyncThunk(
   "widrawNFT/widrawNFT",
 
-  async ({ networkID, provider }: IWidrawNFT, { dispatch }) => {
-    if (!provider) {
-      dispatch(warning({ text: messages.please_connect_wallet }));
-      return;
-    }
-    const addresses = getAddresses(networkID);
-    const provider1 = new ethers.providers.Web3Provider(window.ethereum);
-    await provider1.send("eth_requestAccounts", []); // <- this promps user to connect metamask
-    const signer = provider1.getSigner();
-    const meowContract = new ethers.Contract(
-      addresses.MEOW_ADDRESS,
-      meowContractABI,
-      signer
-    );
-    let enterTx;
-    try {
-      enterTx = await meowContract.claimNFT();
-
-      await enterTx.wait();
-    } catch (err: any) {
-      return metamaskErrorWrap(err, dispatch);
-    } finally {
-      if (enterTx) {
-        dispatch(clearPendingTxn(enterTx.hash));
+  async ({ address }: IWidrawNFT) => {
+    let meowContract: any;
+    if (window) {
+      if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+        meowContract = await window.tronWeb
+          .contract()
+          .at(tronWeb.address.toHex(NILE_TESTNET.MEOW_ADDRESS));
       }
+    }
+    let enterTx;
+    let usersData: any;
+    await axios
+      .get(`http://localhost:8001/api/userinfo/find?address=${address}`)
+      .then((res) => {usersData = res.data;});
+
+    try {
+      enterTx = await meowContract.claimNFT(usersData.ownNfts).send({ feeLimit: 100000000 });
+      let receipt = null;
+      while (receipt === 'REVERT' || receipt == null) {
+        if (window.tronWeb) {
+          const transaction = await window.tronWeb.trx.getTransaction(enterTx);
+          receipt = transaction.ret[0].contractRet;
+        }
+        if (receipt === 'REVERT') {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      }
+      await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=${0}&claimAmount=0&ownNfts=[-1]`);
+      return;
+    } catch (err: any) {
+      return;
+    } finally {
+    }
+  }
+);
+
+interface IClaimMoney {
+  address: any
+}
+
+export const claimMoney = createAsyncThunk(
+  "claimMoney/claimMoney",
+
+  async ({ address }: IClaimMoney) => {
+    let meowContract: any;
+    if (window) {
+      if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+        meowContract = await window.tronWeb
+          .contract()
+          .at(tronWeb.address.toHex(NILE_TESTNET.MEOW_ADDRESS));
+      }
+    }
+    let enterTx;
+    let usersData: any;
+    await axios
+      .get(`http://localhost:8001/api/userinfo/find?address=${address}`)
+      .then((res) => {usersData = res.data;});
+
+    try {
+      enterTx = await meowContract.claimMoney(usersData.claimAmount).send({ feeLimit: 100000000 });
+      let receipt = null;
+      while (receipt === 'REVERT' || receipt == null) {
+        if (window.tronWeb) {
+          const transaction = await window.tronWeb.trx.getTransaction(enterTx);
+          receipt = transaction.ret[0].contractRet;
+        }
+        if (receipt === 'REVERT') {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      }
+      await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=${0}&claimAmount=-1&ownNfts=[]`);
+    } catch (err: any) {
+      return;
+    } finally {
     }
   }
 );
 
 interface IclaimFightMeow {
   tokenId: number;
-  preTokenId: number;
   fightRoom: number;
   whichroom: number;
   url: string;
   waitingRandom: number;
   address: any;
   gamePrice: number;
-  socket: any;
 }
 
 export const ClaimFight = createAsyncThunk(
@@ -134,14 +176,12 @@ export const ClaimFight = createAsyncThunk(
   async (
     {
       tokenId,
-      preTokenId,
       fightRoom,
       whichroom,
       url,
       waitingRandom,
       address,
       gamePrice,
-      socket,
     }: IclaimFightMeow,
     { dispatch }
   ) => {
@@ -158,94 +198,118 @@ export const ClaimFight = createAsyncThunk(
     let random1: number[] = [];
     let random2: number[] = [];
     try {
-      enterTx = await meowContract.claimFight(tokenId, fightRoom, {
-        value: 50000000,
-      });
+      enterTx = await meowContract
+      .claimFight(tokenId, fightRoom)
+      .send({ feeLimit: 200000000, callValue: gamePrice });
 
-      // await enterTx.wait();
+      let receipt = null;
+      while (receipt === 'REVERT' || receipt == null) {
+        if (window.tronWeb) {
+          const transaction = await window.tronWeb.trx.getTransaction(enterTx);
+          receipt = transaction.ret[0].contractRet;
+        }
+        if (receipt === 'REVERT') {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      }
+      const random_tmp = ((await meowContract.randoms(fightRoom, 1).call())).toNumber();
 
-      // axios.post(
-      //   `http://localhost:8001/api/betting/update?roomnum=${whichroom}&secondNFT=${url}&secondaddress=${address}`
-      // );
-      // let room = await meowContractRead.room(fightRoom);
-      // let firstrandom = Number(room.random1);
-      // let secondrandom = Number(room.random2);
-      // random1[whichroom] = firstrandom;
-      // random2[whichroom] = secondrandom;
+      axios.post(`http://localhost:8001/api/betting/update?roomnum=${whichroom}&secondNFT=${url}&secondaddress=${address}&secondRandom=${random_tmp}&secondId=${tokenId}`);
+      let firstrandom = waitingRandom;
+      let secondrandom = random_tmp;
+      random1[whichroom] = firstrandom;
+      random2[whichroom] = secondrandom;
 
-      // let winnerData: any;
-      // let flag: boolean = false;
-      // let resultData: any;
-      // await axios
-      //   .get(
-      //     `http://localhost:8001/api/betting/find?fightRoom=${fightRoom}`
-      //   )
-      //   .then((res) => {
-      //     resultData = res.data;
-      //   });
+      let winnerData: any;
+      let flag: boolean = false;
+      let resultData: any;
+      let usersData: any;
 
-      // if (firstrandom > secondrandom) {
-      //   await axios
-      //     .get(
-      //       `http://localhost:8001/api/winner/find?address=${room.fighter1}`
-      //     )
-      //     .then((res) => {
-      //       winnerData = res.data;
-      //     });
-      // } else if (firstrandom < secondrandom) {
-      //   await axios
-      //     .get(
-      //       `http://localhost:8001/api/winner/find?address=${room.fighter2}`
-      //     )
-      //     .then((res) => {
-      //       winnerData = res.data;
-      //     });
-      // } else {
-      //   flag = true;
-      // }
+      await axios.post(`http://localhost:8001/api/random/create?randomNumber1=${firstrandom}&randomNumber2=${secondrandom}&roomnum=${fightRoom}`);
+      await axios
+        .get(`http://localhost:8001/api/betting/find?fightRoom=${fightRoom}`)
+        .then((res) => {resultData = res.data;});
+      const jackpotAmount = (await meowContract.jackpotAmount().call()).toNumber() / Math.pow(10, 6);
+      await axios
+        .get(`http://localhost:8001/api/userinfo`)
+        .then((res) => {usersData = res.data;});
 
-      // await axios.post(
-      //   `http://localhost:8001/api/random/create?randomNumber1=${room.random1}&randomNumber2=${room.random2}&roomnum=${fightRoom}`
-      // );
+      if(firstrandom === 77777) {
+        if(secondrandom === 77777) {
+          await axios.post(`http://localhost:8001/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${jackpotAmount * 5 / 20}&ownNfts=[]`);
+          await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${jackpotAmount * 5 / 20}&ownNfts=[]`);
+        } else {
+          await axios.post(`http://localhost:8001/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${jackpotAmount * 4 / 10}&ownNfts=[]`);
+          await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${jackpotAmount * 1 / 10}&ownNfts=[]`);
+        }
+        let totalStake = 0;
+        for(let i = 0; i < usersData.length; i ++) {
+          totalStake += usersData[i].stakeAmount;
+        }
+        for(let i = 0; i < usersData.length; i ++) {
+          await axios.post(`http://localhost:8001/api/userinfo/create?address=${usersData[i].address}&stakeAmount=0&claimAmount=${jackpotAmount * usersData[i].stakeAmount * 4 / totalStake / 10 }&ownNfts=[]`);
+        }
+        alert('You hit the Jackpot. Receive the award!!!!!');
+        await meowContract.setJackpot(jackpotAmount / 10);
+      }
 
-      // if (winnerData) {
-      //   await axios.post(
-      //     `http://localhost:8001/api/winner/update?address=${
-      //       winnerData.address
-      //     }&winCount=${winnerData.winCount + 1}`
-      //   );
-      // } else {
-      //   if (!flag) {
-      //     if (firstrandom > secondrandom) {
-      //       await axios.post(
-      //         `http://localhost:8001/api/winner/create?address=${
-      //           room.fighter1
-      //         }&winCount=${1}`
-      //       );
-      //     } else if (firstrandom < secondrandom) {
-      //       await axios.post(
-      //         `http://localhost:8001/api/winner/create?address=${
-      //           room.fighter2
-      //         }&winCount=${1}`
-      //       );
-      //     }
-      //   }
-      // }
+      if(secondrandom === 77777) {
+        if(firstrandom === 77777) {
+          await axios.post(`http://localhost:8001/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${jackpotAmount * 5 / 20}&ownNfts=[]`);
+          await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${jackpotAmount * 5 / 20}&ownNfts=[]`);
+        } else {
+          await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${jackpotAmount * 4 / 10}&ownNfts=[]`);
+          await axios.post(`http://localhost:8001/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${jackpotAmount * 1 / 10}&ownNfts=[]`);
+        }
+        let totalStake = 0;
+        for(let i = 0; i < usersData.length; i ++) {
+          totalStake += usersData[i].stakeAmount;
+        }
+        for(let i = 0; i < usersData.length; i ++) {
+          await axios.post(`http://localhost:8001/api/userinfo/create?address=${usersData[i].address}&stakeAmount=0&claimAmount=${jackpotAmount * usersData[i].stakeAmount * 4 / totalStake / 10 }&ownNfts=[]`);
+        }
+        alert('You hit the Jackpot. Receive the award!!!!!');
+        await meowContract.setJackpot(jackpotAmount / 10);
+      }
 
-      // await axios.post(
-      //   `http://localhost:8001/api/result/create?randomNumber1=${room.random1}&randomNumber2=${room.random2}&nftUrl1=${resultData.firstNFT}&nftUrl2=${resultData.secondNFT}&address1=${room.fighter1}&address2=${room.fighter2}&roomnum=${fightRoom}`
-      // );
+      if (firstrandom > secondrandom) {
+        await axios
+          .get(`http://localhost:8001/api/winner/find?address=${resultData.firstaddress}`)
+          .then((res) => {winnerData = res.data;});
+          await axios.post(`http://localhost:8001/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${whichroom < 3 ? gamePrice * 6 / 5 : gamePrice * 6}&ownNfts=[${tokenId},${resultData.firstId}]`);
+      } else if (firstrandom < secondrandom) {
+        await axios
+          .get(`http://localhost:8001/api/winner/find?address=${address}`)
+          .then((res) => {winnerData = res.data;});
+          await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${whichroom < 3 ? gamePrice * 6 / 5 : gamePrice * 6}&ownNfts=[${tokenId},${resultData.firstId}]`);
+      } else {
+        await axios.post(`http://localhost:8001/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${whichroom < 3 ? gamePrice : gamePrice * 5}&ownNfts=[${resultData.firstId}]`);
+        await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${whichroom < 3 ? gamePrice : gamePrice * 5}&ownNfts=[${tokenId}]`);
+        flag = true;
+      }
+
+      if (winnerData) {
+        await axios.post(`http://localhost:8001/api/winner/update?address=${winnerData.address}&winCount=${winnerData.winCount + 1}`);
+      } else {
+        if (!flag) {
+          if (firstrandom > secondrandom) {
+            await axios.post(`http://localhost:8001/api/winner/create?address=${resultData.firstaddress}&winCount=${1}`);
+          } else if (firstrandom < secondrandom) {
+            await axios.post(`http://localhost:8001/api/winner/create?address=${address}&winCount=${1}`);
+          }
+        }
+      }
+
+      await axios.post(`http://localhost:8001/api/result/create?randomNumber1=${firstrandom}&randomNumber2=${secondrandom}&nftUrl1=${resultData.firstNFT}&nftUrl2=${resultData.secondNFT}&address1=${resultData.firstaddress}&address2=${address}&roomnum=${fightRoom}`);
 
       return {
-        // random1,
-        // random2,
+        random1,
+        random2,
       };
     } catch (err: any) {
-      console.log(metamaskErrorWrap(err, dispatch));
-      return metamaskErrorWrap(err, dispatch);
     } finally {
       if (enterTx) {
-        dispatch(clearPendingTxn(enterTx.hash));
+        dispatch(clearPendingTxn(enterTx));
       }
     }
   }
