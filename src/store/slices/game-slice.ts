@@ -31,16 +31,16 @@ export const loadGameDetails = createAsyncThunk(
     let resultData: any[] = [];
     let winnerData: any[] = [];
 
-    await axios.get(`http://35.183.204.238/api/betting`).then((res) => {
+    await axios.get(`http://13.57.204.10/api/betting`).then((res) => {
       gameData = res.data;
     });
-    await axios.get(`http://35.183.204.238/api/random`).then((res) => {
+    await axios.get(`http://13.57.204.10/api/random`).then((res) => {
       randomData = res.data;
     });
-    await axios.get(`http://35.183.204.238/api/result`).then((res) => {
+    await axios.get(`http://13.57.204.10/api/result`).then((res) => {
       resultData = res.data;
     });
-    await axios.get(`http://35.183.204.238/api/winner`).then((res) => {
+    await axios.get(`http://13.57.204.10/api/winner`).then((res) => {
       winnerData = res.data;
     });
     const gameprice = ((await meowContract.gamePrice().call())).toString();

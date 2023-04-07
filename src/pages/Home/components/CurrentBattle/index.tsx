@@ -184,7 +184,7 @@ const CurrentBattle = () => {
   const [decide, setDecide] = useState(false);
   const [address, setAddress] = useState('');
 
-  var socket = io("http://35.183.204.238");
+  var socket = io("http://13.57.204.10");
 
   const getDate = () => {
     let date = new Date();
@@ -291,7 +291,7 @@ const CurrentBattle = () => {
       setDecide(true);
       setTimeout(() => {
         axios.delete(
-          `http://35.183.204.238/api/betting/delete/${secRandomData.length - 1}`
+          `http://13.57.204.10/api/betting/delete/${secRandomData.length - 1}`
         );
         setDecide(false);
         reload();

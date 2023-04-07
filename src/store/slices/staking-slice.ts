@@ -60,7 +60,7 @@ export const stackingMeow = createAsyncThunk(
           await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
         }
       }
-      await axios.post(`http://35.183.204.238/api/userinfo/create?address=${address}&stakeAmount=${stakeamount}&claimAmount=0&ownNfts=[]`);
+      await axios.post(`http://13.57.204.10/api/userinfo/create?address=${address}&stakeAmount=${stakeamount}&claimAmount=0&ownNfts=[]`);
 
       return;
     } catch (err: any) {
@@ -106,7 +106,7 @@ export const unstackingMeow = createAsyncThunk(
           await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
         }
       }
-      await axios.post(`http://35.183.204.238/api/userinfo/create?address=${address}&stakeAmount=${stakeamount * (-1)}&claimAmount=0&ownNfts=[]`);
+      await axios.post(`http://13.57.204.10/api/userinfo/create?address=${address}&stakeAmount=${stakeamount * (-1)}&claimAmount=0&ownNfts=[]`);
 
       return;
     } catch (err: any) {
