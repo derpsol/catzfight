@@ -23,8 +23,8 @@ export const roomStyleBack = {
 };
 
 export const roomStyleAvatar = {
-  width: { xs: "120px", sm: "160px", md: "200px" },
-  height: { xs: "120px", sm: "160px", md: "200px" },
+  width: { xs: "120px", sm: "120px", md: "200px" },
+  height: { xs: "110px", sm: "140px", md: "200px" },
   borderRadius: "12px",
 };
 
@@ -51,16 +51,16 @@ export const modalAvatarStyle = {
 };
 
 export const fightStyle = {
-  fontSize: "50px",
+  fontSize: {xs: '32px', sm: '34px', md: '50px'},
   fontFamily: "Georgia",
   fontWeight: "900",
   color: "white",
-  lineHeight: "64px",
+  lineHeight: {xs: '32px', sm: '40px', md: '64px'},
   textAlign: "center",
 };
 
 export const randomNumberStyle = {
-  fontSize: "20px",
+  fontSize: {xs: '12px', sm: '16px', md: '20px'},
   color: "white",
   fontWeight: "900",
   fontFamily: "Georgia",

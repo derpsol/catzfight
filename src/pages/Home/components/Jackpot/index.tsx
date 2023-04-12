@@ -78,7 +78,7 @@ const Jackpot = () => {
           py: 1,
           px: { xs: 1, sm: 3 },
           backgroundColor: "rgba(38,40,42,0.64)",
-          width: { xs: "450px", sm: "615px" },
+          width: { xs: "400px", sm: "615px" },
           textAlign: "center",
           mx: "auto",
         }}
@@ -183,7 +183,7 @@ const Jackpot = () => {
           py: 1,
           px: { xs: 1, xl: 2 },
           backgroundColor: "rgba(38,40,42,0.64)",
-          width: { xs: "450px", xl: "600px" },
+          width: { xs: "400px", xl: "600px" },
           textAlign: "center",
           position: { md: "absolute" },
           mx: "auto",
