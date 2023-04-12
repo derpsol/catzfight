@@ -92,7 +92,7 @@ export function BigRoom({
                   flexDirection="column"
                   position="absolute"
                   top="30px"
-                  alignItems='center'
+                  alignItems="center"
                 >
                   {data.firstNFt !== "" ? (
                     <Box
@@ -126,7 +126,9 @@ export function BigRoom({
                     </Box>
                   )}
                   <Box
-                    height="72px"
+                    sx={{
+                      height: { xs: "36px", sm: "50px", md: "72px" },
+                    }}
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
@@ -193,7 +195,7 @@ export function BigRoom({
                 <Box component="img" src={roomPic} sx={roomStyleBack} />
                 <Box
                   display="flex"
-                  alignItems='center'
+                  alignItems="center"
                   flexDirection="column"
                   position="absolute"
                   top="30px"
@@ -230,7 +232,9 @@ export function BigRoom({
                     </Box>
                   )}
                   <Box
-                    height="72px"
+                    sx={{
+                      height: { xs: "36px", sm: "50px", md: "72px" },
+                    }}
                     display="flex"
                     justifyContent="center"
                     alignItems="center"

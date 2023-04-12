@@ -8,7 +8,7 @@ import {
 import roomPic from "../../assets/images/Ui_box3.webp";
 import { Timeline, Tween } from "react-gsap";
 import buttonBack from "../../assets/images/button.png";
-import { fightStyle, randomNumberStyle } from './style';
+import { fightStyle, randomNumberStyle } from "./style";
 
 interface ISmallRooms {
   Datas: any[];
@@ -110,11 +110,7 @@ export function SmallRooms({
                     >
                       <Timeline
                         target={
-                          <Typography
-                            sx={fightStyle}
-                          >
-                            Let's FIGHT
-                          </Typography>
+                          <Typography sx={fightStyle}>Let's FIGHT</Typography>
                         }
                         repeat={10000}
                       >
@@ -132,21 +128,19 @@ export function SmallRooms({
                     </Box>
                   )}
                   <Box
-                    height="72px"
+                    sx={{
+                      height: { xs: "36px", sm: '50px', md: "72px" },
+                    }}
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
                   >
                     {data.firstNft !== "" && data.firstNft !== undefined ? (
-                      <Typography
-                        sx={randomNumberStyle}
-                      >
+                      <Typography sx={randomNumberStyle}>
                         {random[index * 2]}
                       </Typography>
                     ) : (
-                      <Typography
-                        sx={randomNumberStyle}
-                      >
+                      <Typography sx={randomNumberStyle}>
                         Random Number
                       </Typography>
                     )}
@@ -167,11 +161,7 @@ export function SmallRooms({
                     <Box component="img" src={buttonBack} width="100%" />
                     <Typography
                       sx={buttonStyle}
-                      color={
-                        data.firstNft
-                          ? "white"
-                          : "yellow"
-                      }
+                      color={data.firstNft ? "white" : "yellow"}
                     >
                       {firRandomData &&
                       decide &&
@@ -242,11 +232,7 @@ export function SmallRooms({
                     >
                       <Timeline
                         target={
-                          <Typography
-                            sx={fightStyle}
-                          >
-                            Let's FIGHT
-                          </Typography>
+                          <Typography sx={fightStyle}>Let's FIGHT</Typography>
                         }
                         repeat={10000}
                       >
@@ -264,14 +250,14 @@ export function SmallRooms({
                     </Box>
                   )}
                   <Box
-                    height="72px"
+                    sx={{
+                      height: { xs: "36px", sm: '50px', md: "72px" },
+                    }}
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
                   >
-                    <Typography
-                      sx={randomNumberStyle}
-                    >
+                    <Typography sx={randomNumberStyle}>
                       Random Number
                     </Typography>
                   </Box>

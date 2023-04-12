@@ -67,7 +67,7 @@ const CurrentBattle = () => {
   const [decide, setDecide] = useState(false);
   const [address, setAddress] = useState("");
 
-  var socket = io("http://localhost:8001");
+  var socket = io("http://13.57.204.10");
 
   function getGameData() {
     dispatch(loadGameDetails({ account: address }));
@@ -160,7 +160,7 @@ const CurrentBattle = () => {
       setDecide(true);
       setTimeout(() => {
         axios.delete(
-          `http://localhost:8001/api/betting/delete/${secRandomData.length - 1}`
+          `http://13.57.204.10/api/betting/delete/${secRandomData.length - 1}`
         );
         setDecide(false);
         reload();
