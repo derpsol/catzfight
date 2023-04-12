@@ -17,24 +17,21 @@ export const style = {
   overflowY: "scroll",
 };
 
-export const roomStyle = {
+export const roomStyleBack = {
+  width: { xs: "180px", sm: "240px", md: "300px" },
+  height: { xs: "240px", sm: "300px", md: "400px" },
+};
+
+export const roomStyleAvatar = {
   width: { xs: "120px", sm: "160px", md: "200px" },
   height: { xs: "120px", sm: "160px", md: "200px" },
-  border: "4px solid #F39B33",
-  borderRadius: { xs: "10px", sm: "15px", md: "20px" },
+  borderRadius: "12px",
 };
 
 export const buttonStyle = {
   fontSize: { xs: "15px", sm: "18px" },
-  border: "2px solid white",
-  width: { xs: "120px", sm: "160px", md: "200px" },
-  backgroundColor: "rgba(38,40,42,0.64)",
-  paddingX: "0",
   textAlign: "center",
-  minWidth: "60px",
-  paddingY: { xs: "2px", sm: "4px" },
-  mt: { xs: 1, sm: 2 },
-  color: "#FF1E1E",
+  position: "absolute",
 };
 
 export const modalAvatarStyle = {
@@ -50,5 +47,21 @@ export const modalAvatarStyle = {
     md: "150px",
     lg: "230px",
   },
-  borderRadius: '12px',
+  borderRadius: "12px",
+};
+
+export const fightStyle = {
+  fontSize: "50px",
+  fontFamily: "Georgia",
+  fontWeight: "900",
+  color: "white",
+  lineHeight: "64px",
+  textAlign: "center",
+};
+
+export const randomNumberStyle = {
+  fontSize: "20px",
+  color: "white",
+  fontWeight: "900",
+  fontFamily: "Georgia",
 };

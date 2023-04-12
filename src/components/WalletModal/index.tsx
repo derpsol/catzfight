@@ -3,7 +3,6 @@ import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { Dialog, Typography, Box, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { isMobile } from "react-device-detect";
 import ReactGA from "react-ga";
 import AccountDetails from "components/AccountDetails";
 import Option from "./Option";
@@ -114,23 +113,20 @@ export default function WalletModal({
     return Object.keys(SUPPORTED_WALLETS).map((key) => {
       const option = SUPPORTED_WALLETS[key];
       return (
-        !isMobile &&
-        !option.mobileOnly && (
-          <Option
-            id={`connect-${key}`}
-            onClick={() => {
-              option.connector === connector
-                ? setWalletView(WALLET_VIEWS.ACCOUNT)
-                : !option.href && tryActivation(option.connector);
-            }}
-            key={key}
-            active={option.connector === connector}
-            color={option.color}
-            header={option.name}
-            subheader={null} //use option.descriptio to bring back multi-line
-            icon={require("../../assets/images/" + option.iconName).default}
-          />
-        )
+        <Option
+          id={`connect-${key}`}
+          onClick={() => {
+            option.connector === connector
+              ? setWalletView(WALLET_VIEWS.ACCOUNT)
+              : !option.href && tryActivation(option.connector);
+          }}
+          key={key}
+          active={option.connector === connector}
+          color={option.color}
+          header={option.name}
+          subheader={null} //use option.descriptio to bring back multi-line
+          icon={require("../../assets/images/" + option.iconName).default}
+        />
       );
     });
   }

@@ -5,9 +5,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "state";
 import { useWeb3React } from "@web3-react/core";
 import { claimMoney, widrawNFT } from "store/slices/play-slice";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { walletInfo } from "store/slices/walletInfo-slice";
+
+const availableStyle = {
+  paddingY: "4px",
+  textAlign: "center",
+  fontSize: "18px",
+  color: "#F39B33",
+};
 
 const Jackpot = () => {
   const { account } = useWeb3React();
@@ -21,7 +27,7 @@ const Jackpot = () => {
   let contractNFTs: number = useSelector<IReduxState, number>(
     (state) => state.wallet.nftCount
   );
-  let widrawAmount : number = useSelector<IReduxState, number>(
+  let widrawAmount: number = useSelector<IReduxState, number>(
     (state) => state.wallet.trxAmount
   );
 
@@ -33,8 +39,7 @@ const Jackpot = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   async function onWidrawNFT() {
-    let widrawState = await dispatch(
-      widrawNFT({ address: account }));
+    let widrawState = await dispatch(widrawNFT({ address: account }));
     if (widrawState.meta.requestStatus === "fulfilled") {
       getAvailableData();
     }
@@ -42,20 +47,20 @@ const Jackpot = () => {
 
   async function onClaimMoney() {
     let claimState = await dispatch(claimMoney({ address: account }));
-    if(claimState.meta.requestStatus === 'fulfilled') {
+    if (claimState.meta.requestStatus === "fulfilled") {
       getAvailableData();
     }
   }
 
   function getAvailableData() {
-    dispatch(walletInfo({account: account}));
+    dispatch(walletInfo({ account: account }));
   }
 
   useEffect(() => {
-    if(account) {
+    if (account) {
       getAvailableData();
     }
-  }, [account])
+  }, [account]);
 
   return (
     <Box
@@ -106,7 +111,7 @@ const Jackpot = () => {
             </Button>
           </Box>
         </Box>
-        <Box sx={{ mr: 3, textAlign: 'center' }}>
+        <Box sx={{ mr: 3, textAlign: "center" }}>
           <Button
             sx={{
               paddingX: "16px",
@@ -116,22 +121,17 @@ const Jackpot = () => {
               color: "#52b202",
               backgroundColor: "#d0e7b7",
             }}
-            onClick={() => { onWidrawNFT() }}
+            onClick={() => {
+              onWidrawNFT();
+            }}
           >
             Withdraw NFTs
           </Button>
-          <Typography
-            sx={{
-              paddingY: "4px",
-              textAlign: "center",
-              fontSize: "18px",
-              color: "#F39B33",
-            }}
-          >
+          <Typography sx={availableStyle}>
             Available NFTs: {contractNFTs ? contractNFTs : 0} NFTs
           </Typography>
         </Box>
-        <Box sx={{ mr: 3, textAlign: 'center' }}>
+        <Box sx={{ mr: 3, textAlign: "center" }}>
           <Button
             sx={{
               paddingX: "16px",
@@ -141,18 +141,13 @@ const Jackpot = () => {
               color: "#52b202",
               backgroundColor: "#d0e7b7",
             }}
-            onClick={() => { onClaimMoney() }}
+            onClick={() => {
+              onClaimMoney();
+            }}
           >
             Withdraw TRX
           </Button>
-          <Typography
-            sx={{
-              paddingY: "4px",
-              textAlign: "center",
-              fontSize: "18px",
-              color: "#F39B33",
-            }}
-          >
+          <Typography sx={availableStyle}>
             Available TRX: {widrawAmount ? widrawAmount : 0} TRX
           </Typography>
         </Box>
@@ -164,7 +159,6 @@ const Jackpot = () => {
               paddingY: "6px",
               border: "1px solid white",
               color: "white",
-              // backgroundColor: "rgba(38,40,42,0.64)",
               mx: "auto",
               fontSize: "18px",
               marginTop: "8px",
@@ -176,14 +170,7 @@ const Jackpot = () => {
           >
             Meow Staking
           </Button>
-          <Typography
-            sx={{
-              paddingY: "4px",
-              textAlign: "center",
-              fontSize: "18px",
-              color: "#F39B33",
-            }}
-          >
+          <Typography sx={availableStyle}>
             Available Meow: {meowCount}
           </Typography>
         </Box>
