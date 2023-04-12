@@ -17,6 +17,7 @@ function App() {
   const toggleWalletModal = useWalletModalToggle();
 
   const loadData = useCallback(() => {
+    console.log('getting game data');
     dispatch(loadGameDetails({ account: account }));
     dispatch(loadNftDetails({ account: account }));
   }, [active]);
