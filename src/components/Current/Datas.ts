@@ -1,8 +1,8 @@
 export const Datas = [
     {
       roomnum: 1,
-      firstNFt: "",
-      secondNFt: "",
+      firstNFT: "",
+      secondNFT: "",
       firstaddress: "",
       secondaddress: "",
       firstrandom: 0,
@@ -13,8 +13,8 @@ export const Datas = [
     },
     {
       roomnum: 2,
-      firstNFt: "",
-      secondNFt: "",
+      firstNFT: "",
+      secondNFT: "",
       firstaddress: "",
       secondaddress: "",
       firstrandom: 0,
@@ -25,8 +25,8 @@ export const Datas = [
     },
     {
       roomnum: 3,
-      firstNFt: "",
-      secondNFt: "",
+      firstNFT: "",
+      secondNFT: "",
       firstaddress: "",
       secondaddress: "",
       firstrandom: 0,
@@ -37,8 +37,8 @@ export const Datas = [
     },
     {
       roomnum: 4,
-      firstNFt: "",
-      secondNFt: "",
+      firstNFT: "",
+      secondNFT: "",
       firstaddress: "",
       secondaddress: "",
       firstrandom: 0,
@@ -49,8 +49,8 @@ export const Datas = [
     },
     {
       roomnum: 5,
-      firstNFt: "",
-      secondNFt: "",
+      firstNFT: "",
+      secondNFT: "",
       firstaddress: "",
       secondaddress: "",
       firstrandom: 0,
@@ -61,8 +61,8 @@ export const Datas = [
     },
     {
       roomnum: 6,
-      firstNFt: "",
-      secondNFt: "",
+      firstNFT: "",
+      secondNFT: "",
       firstaddress: "",
       secondaddress: "",
       firstrandom: 0,
@@ -73,8 +73,8 @@ export const Datas = [
     },
     {
       roomnum: 7,
-      firstNFt: "",
-      secondNFt: "",
+      firstNFT: "",
+      secondNFT: "",
       firstaddress: "",
       secondaddress: "",
       firstrandom: 0,
@@ -85,8 +85,8 @@ export const Datas = [
     },
     {
       roomnum: 8,
-      firstNFt: "",
-      secondNFt: "",
+      firstNFT: "",
+      secondNFT: "",
       firstaddress: "",
       secondaddress: "",
       firstrandom: 0,

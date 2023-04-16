@@ -6,8 +6,10 @@ import {
 } from "@reduxjs/toolkit";
 import { RootState } from "../../state";
 import { metamaskErrorWrap } from "helpers/metamask-error-wrap";
-import { NILE_TESTNET } from '../../constants/addresses';
+import { SHASTA_TESTNET } from '../../constants/addresses';
 import tronWeb from 'tronweb';
+import { success } from "./messages-slice";
+import { messages } from "constants/messages";
 
 interface IapproveNFT {
   tokenId: Number;
@@ -22,26 +24,27 @@ export const approveNFT = createAsyncThunk(
     let nftContract;
     if(window) {
       if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
-        nftContract = await window.tronWeb.contract().at(tronWeb.address.toHex(NILE_TESTNET.NFT_ADDRESS));
+        nftContract = await window.tronWeb.contract().at(tronWeb.address.toHex(SHASTA_TESTNET.NFT_ADDRESS));
       }
     }
     let enterTx;
     try {
       enterTx = await nftContract.approve(
-        NILE_TESTNET.MEOW_ADDRESS,
+        SHASTA_TESTNET.MEOW_ADDRESS,
         tokenId
       ).send({ feeLimit: 100000000 });
 
-      let receipt = null;
-      while (receipt === 'REVERT' || receipt == null) {
-        if (window.tronWeb) {
-          const transaction = await window.tronWeb.trx.getTransaction(enterTx);
-          receipt = transaction.ret[0].contractRet;
-        }
-        if (receipt === 'REVERT') {
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
-        }
-      }
+      // let receipt = null;
+      // while (receipt === 'REVERT' || receipt == null) {
+      //   if (window.tronWeb) {
+      //     const transaction = await window.tronWeb.trx.getTransaction(enterTx);
+      //     receipt = transaction.ret[0].contractRet;
+      //   }
+      //   if (receipt === 'REVERT') {
+      //     await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
+      //   }
+      // }
+      dispatch(success({ text: messages.tx_successfully_send }));
       return;
     } catch (err: any) {
       console.log(metamaskErrorWrap(err, dispatch));
@@ -62,7 +65,7 @@ export const loadNftAllowance = createAsyncThunk(
     let nftContract: any;
     if(window) {
       if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
-        nftContract = await window.tronWeb.contract().at(tronWeb.address.toHex(NILE_TESTNET.NFT_ADDRESS));
+        nftContract = await window.tronWeb.contract().at(tronWeb.address.toHex(SHASTA_TESTNET.NFT_ADDRESS));
       }
     }
     let allowtmp: String[] = [];
@@ -73,7 +76,7 @@ export const loadNftAllowance = createAsyncThunk(
     );
     let allows: boolean[] = [];
     allowtmp.map((allow, index) => {
-      allows[index] = allow === tronWeb.address.toHex(NILE_TESTNET.MEOW_ADDRESS);
+      allows[index] = allow === tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS);
     });
     return {
       allowances: allows,

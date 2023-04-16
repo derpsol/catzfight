@@ -7,7 +7,7 @@ import {
 import { RootState } from "../../state";
 import axios from "axios";
 import TronWeb from "tronweb";
-import { NILE_TESTNET } from "../../constants/addresses";
+import { SHASTA_TESTNET } from "../../constants/addresses";
 
 interface ILoadGameDetails {
   account: any;
@@ -21,8 +21,8 @@ export const loadGameDetails = createAsyncThunk(
     let meowContract, meowTokenContract;
     if(window) {
       if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
-        meowContract = await window.tronWeb.contract().at(TronWeb.address.toHex(NILE_TESTNET.MEOW_ADDRESS));
-        meowTokenContract = await window.tronWeb.contract().at(TronWeb.address.toHex(NILE_TESTNET.MEOWTOKEN_ADDRESS));
+        meowContract = await window.tronWeb.contract().at(TronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS));
+        meowTokenContract = await window.tronWeb.contract().at(TronWeb.address.toHex(SHASTA_TESTNET.MEOWTOKEN_ADDRESS));
       }
     }
 
@@ -31,16 +31,16 @@ export const loadGameDetails = createAsyncThunk(
     let resultData: any[] = [];
     let winnerData: any[] = [];
 
-    await axios.get(`http://13.57.204.10/api/betting`).then((res) => {
+    await axios.get(`http://localhost:8001/api/betting`).then((res) => {
       gameData = res.data;
     });
-    await axios.get(`http://13.57.204.10/api/random`).then((res) => {
+    await axios.get(`http://localhost:8001/api/random`).then((res) => {
       randomData = res.data;
     });
-    await axios.get(`http://13.57.204.10/api/result`).then((res) => {
+    await axios.get(`http://localhost:8001/api/result`).then((res) => {
       resultData = res.data;
     });
-    await axios.get(`http://13.57.204.10/api/winner`).then((res) => {
+    await axios.get(`http://localhost:8001/api/winner`).then((res) => {
       winnerData = res.data;
     });
     const gameprice = ((await meowContract.gamePrice().call())).toString();
@@ -60,6 +60,7 @@ export const loadGameDetails = createAsyncThunk(
 
 const initialState = {
   loading: true,
+  
 };
 
 export interface IAppSlice {

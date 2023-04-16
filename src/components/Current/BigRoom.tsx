@@ -1,60 +1,93 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import {
-  roomStyleBack,
-  roomStyleAvatar,
-  buttonStyle,
-} from "components/Current/style";
 import roomPic from "../../assets/images/Ui_box3.webp";
 import { Timeline, Tween } from "react-gsap";
-import { fightStyle, randomNumberStyle } from "./style";
 import buttonBack from "../../assets/images/button.png";
+import { IReduxState } from "../../store/slices/state.interface";
+import { useDispatch, useSelector } from "react-redux";
+import { loadBattleDetails } from "store/slices/battle-slice";
+import { loadNftDetails } from "store/slices/Nftinfo-slice";
+import { useWeb3React } from "@web3-react/core";
+import { AppDispatch } from "state";
+import { Datas } from "./Datas";
+import {
+  fightStyle,
+  randomNumberStyle,
+  roomStyleAvatar,
+  roomStyleBack,
+  buttonStyle,
+} from "./style";
+import { loadNftAllowance } from "store/slices/NFt-slice";
 
-interface IBigRooms {
-  Datas: any[];
-  setWhichroom: Function;
-  getGameData: Function;
-  getApprove: Function;
-  setOpenState: Function;
-  setWhichfight: Function;
-  setWaitingRandom: Function;
-  setClaimState: Function;
-  firRandomData: number[];
-  secRandomData: number[];
-  decide: boolean;
-}
-
-export function BigRoom({
-  Datas,
-  setWhichroom,
-  getGameData,
-  getApprove,
-  setOpenState,
-  firRandomData,
-  secRandomData,
-  decide,
-  setWhichfight,
-  setWaitingRandom,
-  setClaimState,
-}: IBigRooms) {
+export function BigRoom() {
   const [random, setRandom] = useState([0]);
-  const [mouseIn, setMouseIn] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const { account } = useWeb3React();
 
-  const handleMouseEnter = () => {
-    setMouseIn(true);
-  };
+  const firRandomData: number[] = useSelector<IReduxState, number[]>(
+    (state) => state.fight.random1
+  );
+  const secRandomData: number[] = useSelector<IReduxState, number[]>(
+    (state) => state.fight.random2
+  );
+  const gameData: any[] = useSelector<IReduxState, any[]>(
+    (state) => state.app.gameData
+  );
+  const decide: boolean = useSelector<IReduxState, boolean>(
+    (state) => state.battle.decide
+  );
+  const nftids: any[] = useSelector<IReduxState, any[]>(
+    (state) => state.nfts.nftids
+  );
 
-  const handleMouseLeave = () => {
-    setMouseIn(false);
-  };
-  setInterval(() => {
-    let rand = [];
-    rand[0] = Math.floor(Math.random() * 1000);
-    rand[1] = Math.floor(Math.random() * 1000);
-    rand[2] = Math.floor(Math.random() * 1000);
-    rand[3] = Math.floor(Math.random() * 1000);
-    setRandom(rand);
-  }, 100);
+  gameData &&
+  gameData.forEach((data) => {
+    if (Datas[data.roomnum]) {
+      Datas[data.roomnum].firstNFT = data.firstNFT;
+      Datas[data.roomnum].secondNFT = data.secondNFT;
+      Datas[data.roomnum].firstaddress = data.firstaddress;
+      Datas[data.roomnum].secondaddress = data.secondaddress;
+      Datas[data.roomnum].firstrandom = data.firstRandom;
+      Datas[data.roomnum].secondrandom = data.secondRandom;
+      Datas[data.roomnum].fightroom = data.fightRoom;
+      Datas[data.roomnum].whichfight = data.whichFight;
+      Datas[data.roomnum].tokenId = data.tokenId;
+    }
+  });
+
+  const onEnterModal = useCallback(async (index: number) => {
+    await dispatch(
+      loadBattleDetails({
+        openState: true,
+        whichroom: index,
+        claimState: false,
+        whichfight: 0,
+        waitingRandom: 0,
+        decide: false,
+      })
+    );
+    await dispatch(loadNftDetails({ account: account }));
+    await dispatch(loadNftAllowance({ tokenIds: nftids }));
+  }, []);
+
+  const onClaimModal = useCallback(
+    async (index: number, fightRoom: number, firstRandom: number) => {
+      await dispatch(
+        loadBattleDetails({
+          openState: false,
+          whichroom: index,
+          claimState: true,
+          whichfight: fightRoom,
+          waitingRandom: firstRandom,
+          decide: false,
+        })
+      );
+      await dispatch(loadNftDetails({ account: account }));
+      await dispatch(loadNftAllowance({ tokenIds: nftids }));
+    },
+    []
+  );
+
   return (
     <Box
       sx={{
@@ -94,10 +127,10 @@ export function BigRoom({
                   top="30px"
                   alignItems="center"
                 >
-                  {data.firstNFt !== "" ? (
+                  {data.firstNFT !== "" ? (
                     <Box
                       component="img"
-                      src={data.firstNFt}
+                      src={data.firstNFT}
                       sx={roomStyleAvatar}
                     />
                   ) : (
@@ -133,7 +166,7 @@ export function BigRoom({
                     justifyContent="center"
                     alignItems="center"
                   >
-                    {data.firstNft !== "" && data.firstNft !== undefined ? (
+                    {data.firstNFT !== "" && data.firstNFT !== undefined ? (
                       <Typography sx={randomNumberStyle}>
                         {random[index * 2]}
                       </Typography>
@@ -145,12 +178,9 @@ export function BigRoom({
                   </Box>
                   <Button
                     onClick={() => {
-                      setWhichroom(index);
-                      getGameData();
-                      getApprove();
-                      setOpenState(true);
+                      onEnterModal(index);
                     }}
-                    disabled={data.firstNFt !== "" ? true : false}
+                    disabled={data.firstNFT !== "" ? true : false}
                     sx={{
                       position: "relative",
                       width: "62%",
@@ -159,7 +189,7 @@ export function BigRoom({
                     <Box component="img" src={buttonBack} width="100%" />
                     <Typography
                       sx={buttonStyle}
-                      color={data.firstNft ? "white" : "yellow"}
+                      color={data.firstNFT ? "white" : "yellow"}
                     >
                       {firRandomData &&
                       decide &&
@@ -200,10 +230,10 @@ export function BigRoom({
                   position="absolute"
                   top="30px"
                 >
-                  {data.secondNFt !== "" && data.secondNft !== undefined ? (
+                  {data.secondNFT !== "" && data.secondNFT !== undefined ? (
                     <Box
                       component="img"
-                      src={data.secondNFt}
+                      src={data.secondNFT}
                       sx={roomStyleAvatar}
                     />
                   ) : (
@@ -246,7 +276,7 @@ export function BigRoom({
                   <Button
                     disabled={
                       !(
-                        data.firstNFt !== "" ||
+                        data.firstNFT !== "" ||
                         data.secondaddress !== null ||
                         data.secondaddress === undefined
                       )
@@ -254,12 +284,7 @@ export function BigRoom({
                         : false
                     }
                     onClick={() => {
-                      setWhichroom(index);
-                      setWhichfight(data.fightroom);
-                      setWaitingRandom(data.firstrandom);
-                      getGameData();
-                      getApprove();
-                      setClaimState(true);
+                      onClaimModal(index, data.fightroom, data.firstrandom);
                     }}
                     sx={{
                       position: "relative",

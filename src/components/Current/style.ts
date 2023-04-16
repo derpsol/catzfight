@@ -1,3 +1,36 @@
+export const fightStyle = {
+  fontSize: { xs: "32px", sm: "34px", md: "50px" },
+  fontFamily: "Georgia",
+  fontWeight: "900",
+  color: "white",
+  lineHeight: { xs: "32px", sm: "40px", md: "64px" },
+  textAlign: "center",
+};
+
+export const randomNumberStyle = {
+  fontSize: { xs: "12px", sm: "16px", md: "20px" },
+  color: "white",
+  fontWeight: "900",
+  fontFamily: "Georgia",
+};
+
+export const roomStyleAvatar = {
+  width: { xs: "120px", sm: "120px", md: "200px" },
+  height: { xs: "110px", sm: "140px", md: "200px" },
+  borderRadius: "12px",
+};
+
+export const buttonStyle = {
+  fontSize: { xs: "15px", sm: "18px" },
+  textAlign: "center",
+  position: "absolute",
+};
+
+export const roomStyleBack = {
+  width: { xs: "180px", sm: "240px", md: "300px" },
+  height: { xs: "240px", sm: "300px", md: "400px" },
+};
+
 export const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -15,23 +48,14 @@ export const style = {
   backgroundColor: "rgba(38,40,42)",
   borderRadius: 8,
   overflowY: "scroll",
-};
-
-export const roomStyleBack = {
-  width: { xs: "180px", sm: "240px", md: "300px" },
-  height: { xs: "240px", sm: "300px", md: "400px" },
-};
-
-export const roomStyleAvatar = {
-  width: { xs: "120px", sm: "120px", md: "200px" },
-  height: { xs: "110px", sm: "140px", md: "200px" },
-  borderRadius: "12px",
-};
-
-export const buttonStyle = {
-  fontSize: { xs: "15px", sm: "18px" },
-  textAlign: "center",
-  position: "absolute",
+  "&::-webkit-scrollbar": {
+    width: "8px",
+    backgroundColor: "#555",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    borderRadius: "8px",
+    backgroundColor: "#333",
+  },
 };
 
 export const modalAvatarStyle = {
@@ -48,20 +72,4 @@ export const modalAvatarStyle = {
     lg: "230px",
   },
   borderRadius: "12px",
-};
-
-export const fightStyle = {
-  fontSize: {xs: '32px', sm: '34px', md: '50px'},
-  fontFamily: "Georgia",
-  fontWeight: "900",
-  color: "white",
-  lineHeight: {xs: '32px', sm: '40px', md: '64px'},
-  textAlign: "center",
-};
-
-export const randomNumberStyle = {
-  fontSize: {xs: '12px', sm: '16px', md: '20px'},
-  color: "white",
-  fontWeight: "900",
-  fontFamily: "Georgia",
 };

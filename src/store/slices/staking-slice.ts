@@ -1,4 +1,3 @@
-import { setAll } from "../../helpers/set-all";
 import {
   createSlice,
   createSelector,
@@ -7,7 +6,7 @@ import {
 import { RootState } from "../../state";
 import { metamaskErrorWrap } from "helpers/metamask-error-wrap";
 import tronWeb from "tronweb";
-import { NILE_TESTNET } from "../../constants/addresses";
+import { SHASTA_TESTNET } from "../../constants/addresses";
 import axios from "axios";
 
 interface IStackingMeow {
@@ -26,15 +25,15 @@ export const stackingMeow = createAsyncThunk(
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
         meowContract = await window.tronWeb
           .contract()
-          .at(tronWeb.address.toHex(NILE_TESTNET.MEOW_ADDRESS));
-          meowTokenContract = await window.tronWeb.contract().at(tronWeb.address.toHex(NILE_TESTNET.MEOWTOKEN_ADDRESS));
+          .at(tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS));
+          meowTokenContract = await window.tronWeb.contract().at(tronWeb.address.toHex(SHASTA_TESTNET.MEOWTOKEN_ADDRESS));
         }
     }
     let enterTx, approveTx;
     let stakeamount = parseInt(amount);
     try {
       console.log(stakeamount);
-      approveTx = await meowTokenContract.approve(NILE_TESTNET.MEOW_ADDRESS, stakeamount).send({ feeLimit: 100000000 });
+      approveTx = await meowTokenContract.approve(SHASTA_TESTNET.MEOW_ADDRESS, stakeamount).send({ feeLimit: 100000000 });
       let receipt = null;
       while (receipt === 'REVERT' || receipt == null) {
         if (window.tronWeb) {
@@ -60,7 +59,7 @@ export const stackingMeow = createAsyncThunk(
           await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
         }
       }
-      await axios.post(`http://13.57.204.10/api/userinfo/create?address=${address}&stakeAmount=${stakeamount}&claimAmount=0&ownNfts=[]`);
+      await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=${stakeamount}&claimAmount=0&ownNfts=[]`);
 
       return;
     } catch (err: any) {
@@ -86,7 +85,7 @@ export const unstackingMeow = createAsyncThunk(
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
         meowContract = await window.tronWeb
           .contract()
-          .at(tronWeb.address.toHex(NILE_TESTNET.MEOW_ADDRESS));
+          .at(tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS));
       }
     }
     let enterTx;
@@ -106,7 +105,7 @@ export const unstackingMeow = createAsyncThunk(
           await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
         }
       }
-      await axios.post(`http://13.57.204.10/api/userinfo/create?address=${address}&stakeAmount=${stakeamount * (-1)}&claimAmount=0&ownNfts=[]`);
+      await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=${stakeamount * (-1)}&claimAmount=0&ownNfts=[]`);
 
       return;
     } catch (err: any) {

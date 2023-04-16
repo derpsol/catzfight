@@ -10,6 +10,7 @@ import { loadNftDetails } from "store/slices/Nftinfo-slice";
 import { useDispatch } from "react-redux";
 import { useEffect, useCallback } from "react";
 import { useWalletModalToggle } from "state/application/hooks";
+import Messages from "components/Messages";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -17,7 +18,6 @@ function App() {
   const toggleWalletModal = useWalletModalToggle();
 
   const loadData = useCallback(() => {
-    console.log('getting game data');
     dispatch(loadGameDetails({ account: account }));
     dispatch(loadNftDetails({ account: account }));
   }, [active]);
@@ -37,6 +37,7 @@ function App() {
     <>
       <Provider store={store}>
         <Header />
+        <Messages />
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/stake" component={Stake} />
