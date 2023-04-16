@@ -13,7 +13,9 @@ import stackReducer from "../store/slices/staking-slice";
 import nftReducer from "../store/slices/NFt-slice";
 import nftInfoReducer from '../store/slices/Nftinfo-slice';
 import walletInfoReducer from '../store/slices/walletInfo-slice';
-  
+import messagesReducer from "../store/slices/messages-slice";
+import battleReducer from '../store/slices/battle-slice';
+
 const PERSISTED_KEYS: string[] = ["user", "transactions", "lists"];
 
 const store = configureStore({
@@ -28,6 +30,8 @@ const store = configureStore({
     nft: nftReducer,
     nfts: nftInfoReducer,
     wallet: walletInfoReducer,
+    messages: messagesReducer,
+    battle: battleReducer,
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false }),
   preloadedState: load({ states: PERSISTED_KEYS }),

@@ -5,7 +5,7 @@ import {
   createAsyncThunk,
 } from "@reduxjs/toolkit";
 import { RootState } from "../../state";
-import { NILE_TESTNET } from '../../constants/addresses';
+import { SHASTA_TESTNET } from '../../constants/addresses';
 import tronWeb from 'tronweb';
 
 declare var window: any
@@ -20,8 +20,8 @@ export const loadNftDetails = createAsyncThunk(
     let meowContract, nftContract;
     if(window) {
       if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
-        meowContract = await window.tronWeb.contract().at(tronWeb.address.toHex(NILE_TESTNET.MEOW_ADDRESS));
-        nftContract = await window.tronWeb.contract().at(tronWeb.address.toHex(NILE_TESTNET.NFT_ADDRESS));
+        meowContract = await window.tronWeb.contract().at(tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS));
+        nftContract = await window.tronWeb.contract().at(tronWeb.address.toHex(SHASTA_TESTNET.NFT_ADDRESS));
       }
     }
     let nftids: any[] = [];
@@ -29,30 +29,30 @@ export const loadNftDetails = createAsyncThunk(
     let nfturis: any[] = [];
     const contractNFTCount = await meowContract.tokenOwnerLength(account).call();
     const nft_counts = await nftContract.balanceOf(account).call();
-    for (let i = 0; i < Math.min(nft_counts, 4); i++) {
+    for (let i = 0; i < Math.min(nft_counts, 6); i++) {
       let tmptokenID = await nftContract.tokenOfOwnerByIndex(account, i).call();
       nftids[i] = tronWeb.toDecimal(tmptokenID);
     }
 
-    for (let i = 0; i < Math.min(nft_counts, 4); i++) {
+    for (let i = 0; i < Math.min(nft_counts, 6); i++) {
       nfturls[i] = await nftContract.tokenURI(nftids[i]).call();
     }
 
-    for (let i = 0; i < Math.min(nft_counts, 4); i++) {
+    for (let i = 0; i < Math.min(nft_counts, 6); i++) {
       nfturis[i] = `https://ipfs.io/ipfs/${nfturls[i].slice(7, 53)}/${
         nftids[i]
       }.png`;
     }
     let contractNFTs = 0;
-    for (let i = contractNFTCount - 1; i >= 0; i--) {
-      let tmp = await meowContract.tokenOwner(account, i).call();
-      if (tmp === 0) break;
-      contractNFTs++;
-    }
+    // for (let i = contractNFTCount - 1; i >= 0; i--) {
+    //   let tmp = await meowContract.tokenOwner(account, i).call();
+    //   if (tmp === 0) break;
+    //   contractNFTs++;
+    // }
     return {
       nftids,
       nfturis,
-      contractNFTs,
+      // contractNFTs,
     };
   }
 )
@@ -60,7 +60,7 @@ export const loadNftDetails = createAsyncThunk(
 export interface INftDetailSlice {
   nftids: any[];
   nfturis: any[];
-  contractNFTs: number;
+  // contractNFTs: number;
 }
 
 const initialState = {

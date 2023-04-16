@@ -5,14 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "state";
 import { loadBattleDetails } from "store/slices/battle-slice";
 import { IReduxState } from "../../store/slices/state.interface";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { approveNFT, loadNftAllowance } from "store/slices/NFt-slice";
-import { getDate } from "./getDate";
-import { EnterRoom } from "store/slices/play-slice";
+import { ClaimFight } from "store/slices/play-slice";
 import { useWeb3React } from "@web3-react/core";
 import io from "socket.io-client";
 
-export function SampleModal() {
+export function BigRoomModal() {
   const dispatch = useDispatch<AppDispatch>();
   const { account } = useWeb3React();
   var socket = io("http://localhost:8001");
@@ -28,21 +27,21 @@ export function SampleModal() {
   const allowFlg: boolean[] = useSelector<IReduxState, boolean[]>(
     (state) => state.nft.allowances
   );
-  const openState: boolean = useSelector<IReduxState, boolean>(
-    (state) => state.battle.openState
-  );
   const whichroom: number = useSelector<IReduxState, number>(
     (state) => state.battle.whichroom
   );
   const gamePrice: string = useSelector<IReduxState, string>(
     (state) => state.app.gameprice
   );
-
-  useEffect(() => {
-    if(isLoading){
-      dispatch(loadNftAllowance({ tokenIds: nftids }));
-    }
-  }, [isLoading])
+  const claimState: boolean = useSelector<IReduxState, boolean>(
+    (state) => state.battle.claimState
+  );
+  const whichfight: number = useSelector<IReduxState, number>(
+    (state) => state.battle.whichfight
+  );
+  const waitingRandom: number = useSelector<IReduxState, number>(
+    (state) => state.battle.waitingRandom
+  );
 
   const approve = useCallback(async (id: Number) => {
     await dispatch(
@@ -66,22 +65,23 @@ export function SampleModal() {
     );
   }, []);
 
-  const onEnterRoom = useCallback(async(index: number) => {
-    let fightRoomnum = getDate();
-    await dispatch(EnterRoom({
-      tokenId: nftids[index],
-      fightRoom: fightRoomnum,
-      whichroom: whichroom,
-      url: nfturis[index],
-      address: account,
-      gamePrice: Number(gamePrice),
-    }));
+  const onClaimFight = useCallback(async (index: number) => {
+    await dispatch(
+      ClaimFight({
+        tokenId: nftids[index],
+        fightRoom: whichfight,
+        whichroom: whichroom + 1,
+        url: nfturis[index],
+        waitingRandom: waitingRandom,
+        address: account,
+        gamePrice: Number(gamePrice),
+      }));
     socket.emit("enter");
   }, [nftids, nfturis]);
 
   return (
     <Modal
-      open={openState}
+      open={claimState}
       onClose={() => {
         closeModal();
       }}
@@ -117,7 +117,7 @@ export function SampleModal() {
                     onClick={
                       allowFlg?.[index]
                         ? () => {
-                            onEnterRoom(index);
+                            onClaimFight(index);
                             closeModal();
                           }
                         : () => approve(id)

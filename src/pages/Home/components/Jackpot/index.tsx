@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "state";
 import { useWeb3React } from "@web3-react/core";
 import { claimMoney, widrawNFT } from "store/slices/play-slice";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { walletInfo } from "store/slices/walletInfo-slice";
 
 const availableStyle = {
@@ -38,23 +38,23 @@ const Jackpot = () => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  async function onWidrawNFT() {
+   const onWidrawNFT = useCallback(async() => {
     let widrawState = await dispatch(widrawNFT({ address: account }));
     if (widrawState.meta.requestStatus === "fulfilled") {
       getAvailableData();
     }
-  }
+  }, []);
 
-  async function onClaimMoney() {
+  const onClaimMoney = useCallback(async() => {
     let claimState = await dispatch(claimMoney({ address: account }));
     if (claimState.meta.requestStatus === "fulfilled") {
       getAvailableData();
     }
-  }
+  }, []);
 
-  function getAvailableData() {
+  const getAvailableData = useCallback(() => {
     dispatch(walletInfo({ account: account }));
-  }
+  }, []);
 
   useEffect(() => {
     if (account) {
@@ -183,7 +183,7 @@ const Jackpot = () => {
           py: 1,
           px: { xs: 1, xl: 2 },
           backgroundColor: "rgba(38,40,42,0.64)",
-          width: { xs: "400px", xl: "600px" },
+          width: { xs: "400px", sm: '450px', xl: "600px" },
           textAlign: "center",
           position: { md: "absolute" },
           mx: "auto",

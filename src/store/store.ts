@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import appReducer from "./slices/game-slice";
+import messagesReducer from "./slices/messages-slice";
 
 const store = configureStore({
     reducer: {
         app: appReducer,
+        messages: messagesReducer,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false }),
 });
