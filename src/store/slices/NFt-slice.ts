@@ -8,8 +8,7 @@ import { RootState } from "../../state";
 import { metamaskErrorWrap } from "helpers/metamask-error-wrap";
 import { SHASTA_TESTNET } from '../../constants/addresses';
 import tronWeb from 'tronweb';
-import { success } from "./messages-slice";
-import { messages } from "constants/messages";
+import { notification } from "utils/notification";
 
 interface IapproveNFT {
   tokenId: Number;
@@ -27,27 +26,16 @@ export const approveNFT = createAsyncThunk(
         nftContract = await window.tronWeb.contract().at(tronWeb.address.toHex(SHASTA_TESTNET.NFT_ADDRESS));
       }
     }
-    let enterTx;
     try {
-      enterTx = await nftContract.approve(
+      await nftContract.approve(
         SHASTA_TESTNET.MEOW_ADDRESS,
         tokenId
       ).send({ feeLimit: 100000000 });
 
-      // let receipt = null;
-      // while (receipt === 'REVERT' || receipt == null) {
-      //   if (window.tronWeb) {
-      //     const transaction = await window.tronWeb.trx.getTransaction(enterTx);
-      //     receipt = transaction.ret[0].contractRet;
-      //   }
-      //   if (receipt === 'REVERT') {
-      //     await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
-      //   }
-      // }
-      dispatch(success({ text: messages.tx_successfully_send }));
+      notification({ title: "Successfully approved!", type: "success"});
       return;
     } catch (err: any) {
-      console.log(metamaskErrorWrap(err, dispatch));
+      notification({ title: `${err}`, type: "danger"});
       return metamaskErrorWrap(err, dispatch);
     } finally {
     }

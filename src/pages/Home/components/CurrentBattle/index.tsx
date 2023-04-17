@@ -55,11 +55,11 @@ const CurrentBattle = () => {
           waitingRandom: 0,
         })
       );
-      setTimeout(() => {
-        axios.delete(
+      setTimeout(async() => {
+        await axios.delete(
           `http://localhost:8001/api/betting/delete/${secRandomData.length - 1}`
         );
-        dispatch(
+        await dispatch(
           loadBattleDetails({
             decide: false,
             openState: false,
@@ -69,8 +69,8 @@ const CurrentBattle = () => {
             waitingRandom: 0,
           })
         );
+        socket.emit("enter");
       }, 4000);
-      socket.emit("enter");
     }
   }, [secRandomData]);
 
