@@ -10,7 +10,7 @@ import axios from "axios";
 import { setAll } from "../../helpers/set-all";
 import { SHASTA_TESTNET } from "../../constants/addresses";
 import tronWeb from "tronweb";
-import { meowContractABI } from '../../abi';
+import io from "socket.io-client";
 
 interface IenterRoomMeow {
   tokenId: number;
@@ -25,7 +25,6 @@ declare var window: any;
 
 export const EnterRoom = createAsyncThunk(
   "enterRoom/enterRoomMeow",
-
   async (
     {
       tokenId,
@@ -37,8 +36,8 @@ export const EnterRoom = createAsyncThunk(
     }: IenterRoomMeow,
     { dispatch }
   ) => {
+    const socket = io("http://localhost:8001");
     let meowContract;
-    console.log('before getting contract');
     if (window) {
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
         meowContract = await window.tronWeb
@@ -46,7 +45,6 @@ export const EnterRoom = createAsyncThunk(
           .at(tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS));
       }
     }
-    console.log('after getting contract');
     let enterTx;
     try {
       enterTx = await meowContract
@@ -54,7 +52,6 @@ export const EnterRoom = createAsyncThunk(
         .send({ feeLimit: 1000000000, callValue: gamePrice });
 
       let receipt = null;
-      console.log('after contract');
       while (receipt === 'REVERT' || receipt == null) {
         if (window.tronWeb) {
           const transaction = await window.tronWeb.trx.getTransaction(enterTx);
@@ -65,13 +62,11 @@ export const EnterRoom = createAsyncThunk(
           await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
         }
       }
-      console.log('after contract finish');
       const random_tmp = ((await meowContract.randoms(fightRoom, 0).call())).toNumber();
-      console.log('reading contract finish');
       await axios.post(
         `http://localhost:8001/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}&firstRandom=${random_tmp}&firstId=${tokenId}`
       );
-      console.log('writing data contract finish');
+      socket.emit("enter");
       return;
     } catch (err: any) {
       console.log('there is an error onEnterRoom: ', err);
@@ -194,6 +189,7 @@ export const ClaimFight = createAsyncThunk(
     }: IclaimFightMeow,
     { dispatch }
   ) => {
+    const socket = io("http://localhost:8001");
     let meowContract: any;
     if (window) {
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
@@ -307,6 +303,7 @@ export const ClaimFight = createAsyncThunk(
       }
 
       await axios.post(`http://localhost:8001/api/result/create?randomNumber1=${firstrandom}&randomNumber2=${secondrandom}&nftUrl1=${resultData.firstNFT}&nftUrl2=${resultData.secondNFT}&address1=${resultData.firstaddress}&address2=${address}&roomnum=${fightRoom}`);
+      socket.emit("enter");
 
       return {
         random1,

@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import TextField from '@mui/material/TextField';
 import { AppDispatch } from "state";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { stackingMeow, unstackingMeow } from "store/slices/staking-slice";
 import { useWeb3React } from "@web3-react/core";

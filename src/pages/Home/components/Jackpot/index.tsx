@@ -43,18 +43,18 @@ const Jackpot = () => {
     if (widrawState.meta.requestStatus === "fulfilled") {
       getAvailableData();
     }
-  }, []);
+  }, [account]);
 
   const onClaimMoney = useCallback(async() => {
     let claimState = await dispatch(claimMoney({ address: account }));
     if (claimState.meta.requestStatus === "fulfilled") {
       getAvailableData();
     }
-  }, []);
+  }, [account]);
 
   const getAvailableData = useCallback(() => {
     dispatch(walletInfo({ account: account }));
-  }, []);
+  }, [account]);
 
   useEffect(() => {
     if (account) {
