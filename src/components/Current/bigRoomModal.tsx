@@ -70,13 +70,12 @@ export function BigRoomModal() {
       ClaimFight({
         tokenId: nftids[index],
         fightRoom: whichfight,
-        whichroom: whichroom + 1,
+        whichroom: whichroom,
         url: nfturis[index],
         waitingRandom: waitingRandom,
         address: account,
         gamePrice: Number(gamePrice),
       }));
-    socket.emit("enter");
   }, [nftids, nfturis]);
 
   return (

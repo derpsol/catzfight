@@ -27,28 +27,21 @@ const CurrentBattle = () => {
   );
 
   const dispatch = useDispatch<AppDispatch>();
-  const [address, setAddress] = useState("");
 
   var socket = io("http://localhost:8001");
 
   const getWholeData = useCallback(async () => {
-    await dispatch(loadGameDetails({ account: address }));
-    await dispatch(walletInfo({ account: address }));
-    await dispatch(loadNftDetails({ account: address }));
+    await dispatch(loadGameDetails({ account: account }));
+    await dispatch(walletInfo({ account: account }));
+    await dispatch(loadNftDetails({ account: account }));
     await dispatch(loadNftAllowance({ tokenIds: nftids }));
   }, []);
-
-  useEffect(() => {
-    if (account && account !== "") {
-      setAddress(account);
-    }
-  }, [account]);
 
   useEffect(() => {
     socket.on("entered", () => {
       getWholeData();
     });
-  }, [address]);
+  }, [account]);
 
   useEffect(() => {
     if (secRandomData) {
@@ -76,8 +69,8 @@ const CurrentBattle = () => {
             waitingRandom: 0,
           })
         );
-        socket.emit("enter");
       }, 4000);
+      socket.emit("enter");
     }
   }, [secRandomData]);
 

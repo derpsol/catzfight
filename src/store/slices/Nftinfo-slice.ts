@@ -17,17 +17,15 @@ interface IloadNftDetails {
 export const loadNftDetails = createAsyncThunk(
   'nft/loadNftDetails',
   async ({ account }: IloadNftDetails) => {
-    let meowContract, nftContract;
+    let nftContract;
     if(window) {
       if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
-        meowContract = await window.tronWeb.contract().at(tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS));
         nftContract = await window.tronWeb.contract().at(tronWeb.address.toHex(SHASTA_TESTNET.NFT_ADDRESS));
       }
     }
     let nftids: any[] = [];
     let nfturls: any[] = [];
     let nfturis: any[] = [];
-    const contractNFTCount = await meowContract.tokenOwnerLength(account).call();
     const nft_counts = await nftContract.balanceOf(account).call();
     for (let i = 0; i < Math.min(nft_counts, 6); i++) {
       let tmptokenID = await nftContract.tokenOfOwnerByIndex(account, i).call();
@@ -43,16 +41,9 @@ export const loadNftDetails = createAsyncThunk(
         nftids[i]
       }.png`;
     }
-    let contractNFTs = 0;
-    // for (let i = contractNFTCount - 1; i >= 0; i--) {
-    //   let tmp = await meowContract.tokenOwner(account, i).call();
-    //   if (tmp === 0) break;
-    //   contractNFTs++;
-    // }
     return {
       nftids,
       nfturis,
-      // contractNFTs,
     };
   }
 )

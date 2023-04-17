@@ -10,12 +10,10 @@ import { approveNFT, loadNftAllowance } from "store/slices/NFt-slice";
 import { getDate } from "./getDate";
 import { EnterRoom } from "store/slices/play-slice";
 import { useWeb3React } from "@web3-react/core";
-import io from "socket.io-client";
 
 export function SampleModal() {
   const dispatch = useDispatch<AppDispatch>();
   const { account } = useWeb3React();
-  var socket = io("http://localhost:8001");
   const nftids: any[] = useSelector<IReduxState, any[]>(
     (state) => state.nfts.nftids
   );
@@ -76,7 +74,6 @@ export function SampleModal() {
       address: account,
       gamePrice: Number(gamePrice),
     }));
-    socket.emit("enter");
   }, [nftids, nfturis]);
 
   return (

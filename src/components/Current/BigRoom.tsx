@@ -42,16 +42,16 @@ export function BigRoom() {
 
   gameData &&
   gameData.forEach((data) => {
-    if (Datas[data.roomnum]) {
-      Datas[data.roomnum].firstNFT = data.firstNFT;
-      Datas[data.roomnum].secondNFT = data.secondNFT;
-      Datas[data.roomnum].firstaddress = data.firstaddress;
-      Datas[data.roomnum].secondaddress = data.secondaddress;
-      Datas[data.roomnum].firstrandom = data.firstRandom;
-      Datas[data.roomnum].secondrandom = data.secondRandom;
-      Datas[data.roomnum].fightroom = data.fightRoom;
-      Datas[data.roomnum].whichfight = data.whichFight;
-      Datas[data.roomnum].tokenId = data.tokenId;
+    if (Datas[data.roomnum - 1]) {
+      Datas[data.roomnum - 1].firstNFT = data.firstNFT;
+      Datas[data.roomnum - 1].secondNFT = data.secondNFT;
+      Datas[data.roomnum - 1].firstaddress = data.firstaddress;
+      Datas[data.roomnum - 1].secondaddress = data.secondaddress;
+      Datas[data.roomnum - 1].firstrandom = data.firstRandom;
+      Datas[data.roomnum - 1].secondrandom = data.secondRandom;
+      Datas[data.roomnum - 1].fightroom = data.fightRoom;
+      Datas[data.roomnum - 1].whichfight = data.whichFight;
+      Datas[data.roomnum - 1].tokenId = data.tokenId;
     }
   });
 
@@ -59,7 +59,7 @@ export function BigRoom() {
     await dispatch(
       loadBattleDetails({
         openState: true,
-        whichroom: index,
+        whichroom: index + 1,
         claimState: false,
         whichfight: 0,
         waitingRandom: 0,
@@ -75,7 +75,7 @@ export function BigRoom() {
       await dispatch(
         loadBattleDetails({
           openState: false,
-          whichroom: index,
+          whichroom: index + 1,
           claimState: true,
           whichfight: fightRoom,
           waitingRandom: firstRandom,
@@ -101,13 +101,16 @@ export function BigRoom() {
           if (index < 4) return;
           return (
             <Box
+              display="flex"
+              justifyContent="flex-start"
               sx={{
-                display: "flex",
-                justifyContent: "flex-start",
                 mr: { xs: 1, sm: 2 },
                 ml: { xs: 1, sm: 2 },
                 mb: { xs: 1, sm: 2 },
               }}
+              border='1px solid white'
+              bgcolor='RGB(255,255,255,0.1)'
+              padding={2}
               key={index}
             >
               <Box
