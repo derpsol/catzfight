@@ -10,7 +10,8 @@ import { loadNftDetails } from "store/slices/Nftinfo-slice";
 import { useDispatch } from "react-redux";
 import { useEffect, useCallback } from "react";
 import { useWalletModalToggle } from "state/application/hooks";
-import Messages from "components/Messages";
+import { ReactNotifications } from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -36,8 +37,8 @@ function App() {
   return (
     <>
       <Provider store={store}>
+        <ReactNotifications />
         <Header />
-        <Messages />
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/stake" component={Stake} />

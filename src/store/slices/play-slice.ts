@@ -11,6 +11,7 @@ import { setAll } from "../../helpers/set-all";
 import { SHASTA_TESTNET } from "../../constants/addresses";
 import tronWeb from "tronweb";
 import io from "socket.io-client";
+import { notification } from "utils/notification";
 
 interface IenterRoomMeow {
   tokenId: number;
@@ -52,24 +53,30 @@ export const EnterRoom = createAsyncThunk(
         .send({ feeLimit: 1000000000, callValue: gamePrice });
 
       let receipt = null;
-      while (receipt === 'REVERT' || receipt == null) {
+      let attempts = 0;
+      while ((receipt === 'REVERT' || receipt == null) && attempts < 1000) { // give up after 10 attempts
         if (window.tronWeb) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
           const transaction = await window.tronWeb.trx.getTransaction(enterTx);
-          receipt = transaction.ret[0].contractRet;
+          if (transaction && transaction.ret && transaction.ret.length > 0) {
+            receipt = transaction.ret[0].contractRet;
+          }
           console.log('receipt: ', receipt, enterTx);
         }
         if (receipt === 'REVERT') {
           await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
         }
+        attempts++;
       }
       const random_tmp = ((await meowContract.randoms(fightRoom, 0).call())).toNumber();
       await axios.post(
         `http://localhost:8001/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}&firstRandom=${random_tmp}&firstId=${tokenId}`
       );
+      notification({ title: "Successfully Entered!", type: "success"});
       socket.emit("enter");
       return;
     } catch (err: any) {
-      console.log('there is an error onEnterRoom: ', err);
+      notification({ title: `${err}`, type: "danger"});
       return metamaskErrorWrap(err, dispatch);
     } finally {
       if (enterTx) {
@@ -95,27 +102,18 @@ export const widrawNFT = createAsyncThunk(
           .at(tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS));
       }
     }
-    let enterTx;
     let usersData: any;
     await axios
       .get(`http://localhost:8001/api/userinfo/find?address=${address}`)
       .then((res) => {usersData = res.data;});
 
     try {
-      enterTx = await meowContract.claimNFT(usersData.ownNfts).send({ feeLimit: 100000000 });
-      let receipt = null;
-      while (receipt === 'REVERT' || receipt == null) {
-        if (window.tronWeb) {
-          const transaction = await window.tronWeb.trx.getTransaction(enterTx);
-          receipt = transaction.ret[0].contractRet;
-        }
-        if (receipt === 'REVERT') {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-      }
+      meowContract.claimNFT(usersData.ownNfts).send({ feeLimit: 100000000 });
       await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=${0}&claimAmount=0&ownNfts=[-1]`);
+      notification({ title: "Successfully Withdrew!", type: "success"});
       return;
     } catch (err: any) {
+      notification({ title: `${err}`, type: "danger"});
       return;
     } finally {
     }
@@ -138,26 +136,17 @@ export const claimMoney = createAsyncThunk(
           .at(tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS));
       }
     }
-    let enterTx;
     let usersData: any;
     await axios
       .get(`http://localhost:8001/api/userinfo/find?address=${address}`)
       .then((res) => {usersData = res.data;});
 
     try {
-      enterTx = await meowContract.claimMoney(usersData.claimAmount).send({ feeLimit: 100000000 });
-      let receipt = null;
-      while (receipt === 'REVERT' || receipt == null) {
-        if (window.tronWeb) {
-          const transaction = await window.tronWeb.trx.getTransaction(enterTx);
-          receipt = transaction.ret[0].contractRet;
-        }
-        if (receipt === 'REVERT') {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-      }
+      await meowContract.claimMoney(usersData.claimAmount).send({ feeLimit: 100000000 });
       await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=${0}&claimAmount=-1&ownNfts=[]`);
+      notification({ title: "Successfully Withdrew!", type: "success"});
     } catch (err: any) {
+      notification({ title: `${err}`, type: "danger"});
       return;
     } finally {
     }
@@ -208,15 +197,21 @@ export const ClaimFight = createAsyncThunk(
       .send({ feeLimit: 200000000, callValue: gamePrice });
 
       let receipt = null;
-      while (receipt === 'REVERT' || receipt == null) {
+      while ((receipt === 'REVERT' || receipt == null)) {
         if (window.tronWeb) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+
           const transaction = await window.tronWeb.trx.getTransaction(enterTx);
-          receipt = transaction.ret[0].contractRet;
+          if (transaction && transaction.ret && transaction.ret.length > 0) {
+            receipt = transaction.ret[0].contractRet;
+          }
+          console.log('receipt: ', receipt, enterTx);
         }
         if (receipt === 'REVERT') {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
         }
       }
+
       const random_tmp = ((await meowContract.randoms(fightRoom, 1).call())).toNumber();
 
       axios.post(`http://localhost:8001/api/betting/update?roomnum=${whichroom}&secondNFT=${url}&secondaddress=${address}&secondRandom=${random_tmp}&secondId=${tokenId}`);
@@ -305,11 +300,13 @@ export const ClaimFight = createAsyncThunk(
       await axios.post(`http://localhost:8001/api/result/create?randomNumber1=${firstrandom}&randomNumber2=${secondrandom}&nftUrl1=${resultData.firstNFT}&nftUrl2=${resultData.secondNFT}&address1=${resultData.firstaddress}&address2=${address}&roomnum=${fightRoom}`);
       socket.emit("enter");
 
+      notification({ title: "Successfully Entered!", type: "success"});
       return {
         random1,
         random2,
       };
     } catch (err: any) {
+      notification({ title: `${err}`, type: "danger"});
     } finally {
       if (enterTx) {
         dispatch(clearPendingTxn(enterTx));

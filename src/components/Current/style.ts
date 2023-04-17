@@ -42,9 +42,6 @@ export const style = {
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
-  display: "flex",
-  justifyContent: "space-around",
-  flexWrap: "wrap",
   backgroundColor: "rgba(38,40,42)",
   borderRadius: 8,
   overflowY: "scroll",
@@ -57,6 +54,12 @@ export const style = {
     backgroundColor: "#333",
   },
 };
+
+export const avatarsStyle = {
+  display: "flex",
+  justifyContent: "space-around",
+  flexWrap: "wrap",
+}
 
 export const modalAvatarStyle = {
   width: {

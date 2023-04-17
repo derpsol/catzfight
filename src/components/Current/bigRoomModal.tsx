@@ -1,6 +1,6 @@
 import { Box, Button, Skeleton } from "@mui/material";
 import Modal from "@mui/material/Modal";
-import { modalAvatarStyle, style } from "./style";
+import { avatarsStyle, modalAvatarStyle, style } from "./style";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "state";
 import { loadBattleDetails } from "store/slices/battle-slice";
@@ -42,6 +42,12 @@ export function BigRoomModal() {
   const waitingRandom: number = useSelector<IReduxState, number>(
     (state) => state.battle.waitingRandom
   );
+  const nftInfo: number[] = useSelector<IReduxState, number[]>(
+    (state) => state.wallet.nftInfo
+  );
+  const baseUri: string = useSelector<IReduxState, string>(
+    (state) => state.nfts.nfturl
+  );
 
   const approve = useCallback(async (id: Number) => {
     await dispatch(
@@ -65,18 +71,22 @@ export function BigRoomModal() {
     );
   }, []);
 
-  const onClaimFight = useCallback(async (index: number) => {
-    await dispatch(
-      ClaimFight({
-        tokenId: nftids[index],
-        fightRoom: whichfight,
-        whichroom: whichroom,
-        url: nfturis[index],
-        waitingRandom: waitingRandom,
-        address: account,
-        gamePrice: Number(gamePrice),
-      }));
-  }, [nftids, nfturis]);
+  const onClaimFight = useCallback(
+    async (id: number) => {
+      await dispatch(
+        ClaimFight({
+          tokenId: id,
+          fightRoom: whichfight,
+          whichroom: whichroom,
+          url: `https://ipfs.io/ipfs/${baseUri?.slice(7, 53)}/${id}.png`,
+          waitingRandom: waitingRandom,
+          address: account,
+          gamePrice: Number(gamePrice),
+        })
+      );
+    },
+    [gamePrice, baseUri, account, whichroom, whichfight, waitingRandom]
+  );
 
   return (
     <Modal
@@ -88,46 +98,78 @@ export function BigRoomModal() {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        {nftids &&
-          nftids.map((id: Number, index) => {
-            return (
-              <Box
-                sx={{ m: 2, display: "flex", flexDirection: "column" }}
-                key={index}
-              >
-                <Box sx={{ mb: 2, display: "flex", flexDirection: "column" }}>
-                  {nfturis ? (
+      <Box sx={avatarsStyle}>
+          {nftInfo &&
+            nftInfo.map((id: number, index) => {
+              return (
+                <Box
+                  sx={{ m: 2, display: "flex", flexDirection: "column" }}
+                  key={index}
+                >
+                  <Box sx={{ mb: 2, display: "flex", flexDirection: "column" }}>
                     <Box
                       component="img"
-                      src={nfturis?.[index]}
+                      src={`https://ipfs.io/ipfs/${baseUri?.slice(7,53)}/${id}.png`}
                       alt="NFT_avatar"
                       sx={modalAvatarStyle}
                     />
-                  ) : (
-                    <Skeleton sx={modalAvatarStyle} />
-                  )}
-                </Box>
-                {isLoading ? (
-                  <Skeleton height="36px" />
-                ) : (
+                  </Box>
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={
-                      allowFlg?.[index]
-                        ? () => {
-                            onClaimFight(index);
-                            closeModal();
-                          }
-                        : () => approve(id)
-                    }
+                    onClick={() => {
+                      onClaimFight(id);
+                      closeModal();
+                    }}
                   >
-                    {allowFlg?.[index] ? "Fight" : "Approve"}
+                    Fight
                   </Button>
-                )}
-              </Box>
-            );
-          })}
+                </Box>
+              );
+            })}
+        </Box>
+        <Box sx={avatarsStyle}>
+          {nftids &&
+            nftids.map((id: number, index) => {
+              return (
+                <Box
+                  sx={{ m: 2, display: "flex", flexDirection: "column" }}
+                  key={index}
+                >
+                  <Box sx={{ mb: 2, display: "flex", flexDirection: "column" }}>
+                    {nfturis ? (
+                      <Box
+                        component="img"
+                        src={`https://ipfs.io/ipfs/${baseUri?.slice(7,53)}/${id}.png`}
+                        alt="NFT_avatar"
+                        sx={modalAvatarStyle}
+                      />
+                    ) : (
+                      <Skeleton sx={modalAvatarStyle} />
+                    )}
+                  </Box>
+                  {isLoading ? (
+                    <Skeleton height="36px" />
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={
+                        allowFlg?.[index]
+                          ? () => {
+                              onClaimFight(id);
+                              closeModal();
+                            }
+                          : () => approve(id)
+                      }
+                    >
+                      {allowFlg?.[index] ? "Fight" : "Approve"}
+                    </Button>
+                  )}
+                </Box>
+              );
+            })}
+        </Box>
       </Box>
     </Modal>
   );

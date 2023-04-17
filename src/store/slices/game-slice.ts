@@ -46,6 +46,7 @@ export const loadGameDetails = createAsyncThunk(
     const gameprice = ((await meowContract.gamePrice().call())).toString();
     const jackpotAmount = ((await meowContract.jackpotAmount().call()) / Math.pow(10, 6)).toString();
     const meowCount = (await meowTokenContract.balanceOf(account).call()).toString();
+    console.log('gameData in slice', gameData);
     return {
       gameprice,
       jackpotAmount,
