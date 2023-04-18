@@ -68,7 +68,7 @@ export function BigRoom() {
     );
     await dispatch(loadNftDetails({ account: account }));
     await dispatch(loadNftAllowance({ tokenIds: nftids }));
-  }, []);
+  }, [account]);
 
   const onClaimModal = useCallback(
     async (index: number, fightRoom: number, firstRandom: number) => {
@@ -85,7 +85,7 @@ export function BigRoom() {
       await dispatch(loadNftDetails({ account: account }));
       await dispatch(loadNftAllowance({ tokenIds: nftids }));
     },
-    []
+    [account]
   );
 
   return (

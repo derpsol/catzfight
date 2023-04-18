@@ -10,7 +10,13 @@ import { Datas } from "./Datas";
 import { loadBattleDetails } from "store/slices/battle-slice";
 import { loadNftDetails } from "store/slices/Nftinfo-slice";
 import { useWeb3React } from "@web3-react/core";
-import { fightStyle, randomNumberStyle, roomStyleAvatar, roomStyleBack, buttonStyle } from "./style";
+import {
+  fightStyle,
+  randomNumberStyle,
+  roomStyleAvatar,
+  roomStyleBack,
+  buttonStyle,
+} from "./style";
 import { loadNftAllowance } from "store/slices/NFt-slice";
 import { loadGameDetails } from "store/slices/game-slice";
 import { walletInfo } from "store/slices/walletInfo-slice";
@@ -35,81 +41,84 @@ export function SmallRooms() {
     (state) => state.nfts.nftids
   );
   var socket = io("http://localhost:8001");
-  
+
   const getWholeData = useCallback(async () => {
     await dispatch(loadGameDetails({ account: account }));
     await dispatch(walletInfo({ account: account }));
     await dispatch(loadNftDetails({ account: account }));
     await dispatch(loadNftAllowance({ tokenIds: nftids }));
-  }, []);
+  }, [account]);
 
   useEffect(() => {
     socket.on("entered", () => {
-      console.log('get socket signal');
       getWholeData();
     });
   }, [account]);
 
-  gameData &&
-    gameData.forEach((data) => {
-      if (Datas[data.roomnum - 1]) {
-        Datas[data.roomnum - 1].firstNFT = data.firstNFT;
-        Datas[data.roomnum - 1].secondNFT = data.secondNFT;
-        Datas[data.roomnum - 1].firstaddress = data.firstaddress;
-        Datas[data.roomnum - 1].secondaddress = data.secondaddress;
-        Datas[data.roomnum - 1].firstrandom = data.firstRandom;
-        Datas[data.roomnum - 1].secondrandom = data.secondRandom;
-        Datas[data.roomnum - 1].fightroom = data.fightRoom;
-        Datas[data.roomnum - 1].whichfight = data.whichFight;
-        Datas[data.roomnum - 1].tokenId = data.tokenId;
-      }
-    });
-
   useEffect(() => {
-    console.log('gameData: ', gameData);
-
     gameData &&
-    gameData.forEach((data) => {
-      if (Datas[data.roomnum - 1]) {
-        Datas[data.roomnum - 1].firstNFT = data.firstNFT;
-        Datas[data.roomnum - 1].secondNFT = data.secondNFT;
-        Datas[data.roomnum - 1].firstaddress = data.firstaddress;
-        Datas[data.roomnum - 1].secondaddress = data.secondaddress;
-        Datas[data.roomnum - 1].firstrandom = data.firstRandom;
-        Datas[data.roomnum - 1].secondrandom = data.secondRandom;
-        Datas[data.roomnum - 1].fightroom = data.fightRoom;
-        Datas[data.roomnum - 1].whichfight = data.whichFight;
-        Datas[data.roomnum - 1].tokenId = data.tokenId;
-      }
-    });
-    console.log('Datas: ', Datas);
-  }, [firRandomData, secRandomData, account]);
+      gameData.forEach((data) => {
+        if (Datas[data.roomnum - 1]) {
+          Datas[data.roomnum - 1].firstNFT = data.firstNFT;
+          Datas[data.roomnum - 1].secondNFT = data.secondNFT;
+          Datas[data.roomnum - 1].firstaddress = data.firstaddress;
+          Datas[data.roomnum - 1].secondaddress = data.secondaddress;
+          Datas[data.roomnum - 1].firstrandom = data.firstRandom;
+          Datas[data.roomnum - 1].secondrandom = data.secondRandom;
+          Datas[data.roomnum - 1].fightroom = data.fightRoom;
+          Datas[data.roomnum - 1].whichfight = data.whichFight;
+          Datas[data.roomnum - 1].tokenId = data.tokenId;
+        }
+      });
+
+    if(gameData?.length === 0) {
+      Datas.forEach((obj) => {
+        obj.firstNFT = '';
+        obj.secondNFT = '';
+        obj.firstaddress = '';
+        obj.secondaddress = '';
+        obj.firstrandom = 0;
+        obj.secondrandom = 0;
+        obj.fightroom = 0;
+        obj.whichfight = 0;
+        obj.tokenId = 0;
+      })
+    }
+      console.log('gameData and Datas: ', gameData, Datas);
+  }, [firRandomData, secRandomData, account, gameData, decide]);
 
   const onEnterModal = useCallback(async (index: number) => {
     await dispatch(loadNftDetails({ account: account }));
     await dispatch(loadNftAllowance({ tokenIds: nftids }));
-    await dispatch(loadBattleDetails({
-      openState: true,
-      whichroom: index + 1,
-      claimState: false,
-      whichfight: 0,
-      waitingRandom: 0,
-      decide: false
-    }));
-  }, []);
+    await dispatch(
+      loadBattleDetails({
+        openState: true,
+        whichroom: index + 1,
+        claimState: false,
+        whichfight: 0,
+        waitingRandom: 0,
+        decide: false,
+      })
+    );
+  }, [account]);
 
-  const onClaimModal = useCallback(async(index: number, fightRoom: number, firstRandom: number) => {
-    await dispatch(loadNftDetails({ account: account }));
-    await dispatch(loadNftAllowance({ tokenIds: nftids }));
-    await dispatch(loadBattleDetails({
-      openState: false,
-      whichroom: index + 1,
-      claimState: true,
-      whichfight: fightRoom,
-      waitingRandom: firstRandom,
-      decide: false
-    }));
-  }, []);
+  const onClaimModal = useCallback(
+    async (index: number, fightRoom: number, firstRandom: number) => {
+      await dispatch(loadNftDetails({ account: account }));
+      await dispatch(loadNftAllowance({ tokenIds: nftids }));
+      await dispatch(
+        loadBattleDetails({
+          openState: false,
+          whichroom: index + 1,
+          claimState: true,
+          whichfight: fightRoom,
+          waitingRandom: firstRandom,
+          decide: false,
+        })
+      );
+    },
+    [account]
+  );
 
   return (
     <Box
@@ -130,8 +139,8 @@ export function SmallRooms() {
               ml: { xs: 1, sm: 2 },
               mb: { xs: 1, sm: 2 },
             }}
-            border='1px solid white'
-            bgcolor='RGB(255,255,255,0.1)'
+            border="1px solid white"
+            bgcolor="RGB(255,255,255,0.1)"
             padding={2}
             key={index}
           >
@@ -252,27 +261,11 @@ export function SmallRooms() {
                 top="30px"
               >
                 {data.secondNFT !== "" && data.secondNFT !== undefined ? (
-                  <Timeline
-                    target={
-                      <Box
-                        component="img"
-                        src={data.secondNFT}
-                        sx={roomStyleAvatar}
-                      />
-                    }
-                    repeat={10000}
-                  >
-                    <Tween
-                      from={{ scaleX: 1.1, scaleY: 1.1 }}
-                      to={{ scaleX: 1, scaleY: 1 }}
-                      duration={1.5}
-                    />
-                    <Tween
-                      from={{ scaleX: 1, scaleY: 1 }}
-                      to={{ scaleX: 1.1, scaleY: 1.1 }}
-                      duration={1.5}
-                    />
-                  </Timeline>
+                  <Box
+                    component="img"
+                    src={data.secondNFT}
+                    sx={roomStyleAvatar}
+                  />
                 ) : (
                   <Box sx={roomStyleAvatar} display="flex" alignItems="center">
                     <Timeline
@@ -302,7 +295,15 @@ export function SmallRooms() {
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <Typography sx={randomNumberStyle}>Random Number</Typography>
+                  {data.secondNFT !== "" && data.secondNFT !== undefined ? (
+                    <Typography sx={randomNumberStyle}>
+                      {data.secondrandom}
+                    </Typography>
+                  ) : (
+                    <Typography sx={randomNumberStyle}>
+                      Random Number
+                    </Typography>
+                  )}
                 </Box>
                 <Button
                   disabled={

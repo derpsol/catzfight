@@ -26,16 +26,12 @@ export const loadNftDetails = createAsyncThunk(
     let nftids: any[] = [];
     let nfturl: string;
     let nfturis: any[] = [];
+    nfturl = await nftContract.tokenURI(1).call();
     const nft_counts = await nftContract.balanceOf(account).call();
     for (let i = 0; i < Math.min(nft_counts, 6); i++) {
       let tmptokenID = await nftContract.tokenOfOwnerByIndex(account, i).call();
       nftids[i] = tronWeb.toDecimal(tmptokenID);
     }
-
-    // for (let i = 0; i < Math.min(nft_counts, 6); i++) {
-      nfturl = await nftContract.tokenURI(nftids[0]).call();
-    // }
-
     for (let i = 0; i < Math.min(nft_counts, 6); i++) {
       nfturis[i] = `https://ipfs.io/ipfs/${nfturl.slice(7, 53)}/${
         nftids[i]

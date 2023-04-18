@@ -35,7 +35,7 @@ const CurrentBattle = () => {
     await dispatch(walletInfo({ account: account }));
     await dispatch(loadNftDetails({ account: account }));
     await dispatch(loadNftAllowance({ tokenIds: nftids }));
-  }, []);
+  }, [account]);
 
   useEffect(() => {
     socket.on("entered", () => {
