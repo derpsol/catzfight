@@ -23,6 +23,7 @@ interface IenterRoomMeow {
 }
 
 declare var window: any;
+const socket = io("http://localhost:8001");
 
 export const EnterRoom = createAsyncThunk(
   "enterRoom/enterRoomMeow",
@@ -37,7 +38,6 @@ export const EnterRoom = createAsyncThunk(
     }: IenterRoomMeow,
     { dispatch }
   ) => {
-    const socket = io("http://localhost:8001");
     let meowContract;
     if (window) {
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
@@ -108,9 +108,10 @@ export const widrawNFT = createAsyncThunk(
       .then((res) => {usersData = res.data;});
 
     try {
-      meowContract.claimNFT(usersData.ownNfts).send({ feeLimit: 100000000 });
+      await meowContract.claimNFT(usersData.ownNfts).send({ feeLimit: 100000000 });
       await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=${0}&claimAmount=0&ownNfts=[-1]`);
       notification({ title: "Successfully Withdrew!", type: "success"});
+      socket.emit("enter");
       return;
     } catch (err: any) {
       notification({ title: `${err}`, type: "danger"});
@@ -145,6 +146,7 @@ export const claimMoney = createAsyncThunk(
       await meowContract.claimMoney(usersData.claimAmount).send({ feeLimit: 100000000 });
       await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=${0}&claimAmount=-1&ownNfts=[]`);
       notification({ title: "Successfully Withdrew!", type: "success"});
+      socket.emit("enter");
     } catch (err: any) {
       notification({ title: `${err}`, type: "danger"});
       return;
@@ -178,7 +180,6 @@ export const ClaimFight = createAsyncThunk(
     }: IclaimFightMeow,
     { dispatch }
   ) => {
-    const socket = io("http://localhost:8001");
     let meowContract: any;
     if (window) {
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {

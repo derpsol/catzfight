@@ -21,7 +21,7 @@ function App() {
   const loadData = useCallback(() => {
     dispatch(loadGameDetails({ account: account }));
     dispatch(loadNftDetails({ account: account }));
-  }, [active]);
+  }, [active, account]);
 
   useEffect(() => {
     if (active) {
