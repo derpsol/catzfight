@@ -10,7 +10,6 @@ import store from "./state";
 import ThemeProvider from "./theme";
 import getLibrary from "./utils/getLibrary";
 import { NetworkContextName } from "./constants";
-import { Web3ContextProvider } from "./hooks";
 import reportWebVitals from "./reportWebVitals";
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
@@ -21,9 +20,7 @@ ReactDOM.render(
         <Web3ProviderNetwork getLibrary={getLibrary}>
           <Provider store={store}>
             <HashRouter>
-              <Web3ContextProvider>
                 <App />
-              </Web3ContextProvider>
             </HashRouter>
           </Provider>
         </Web3ProviderNetwork>

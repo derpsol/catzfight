@@ -21,18 +21,18 @@ function App() {
   const loadData = useCallback(() => {
     dispatch(loadGameDetails({ account: account }));
     dispatch(loadNftDetails({ account: account }));
-  }, [active, account]);
+  }, [account, dispatch]);
 
   useEffect(() => {
     if (active) {
       loadData();
     }
-  }, [active]);
+  }, [active, loadData]);
   useEffect(() => {
     if (!active) {
       toggleWalletModal();
     }
-  }, [active]);
+  }, [active, toggleWalletModal]);
 
   return (
     <>

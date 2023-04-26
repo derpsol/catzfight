@@ -23,7 +23,7 @@ interface IenterRoomMeow {
 }
 
 declare var window: any;
-const socket = io("http://localhost:8001");
+const socket = io("http://54.176.107.208");
 
 export const EnterRoom = createAsyncThunk(
   "enterRoom/enterRoomMeow",
@@ -70,7 +70,7 @@ export const EnterRoom = createAsyncThunk(
       }
       const random_tmp = ((await meowContract.randoms(fightRoom, 0).call())).toNumber();
       await axios.post(
-        `http://localhost:8001/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}&firstRandom=${random_tmp}&firstId=${tokenId}`
+        `http://54.176.107.208/api/betting/create?roomnum=${whichroom}&firstNFT=${url}&firstaddress=${address}&fightRoom=${fightRoom}&firstRandom=${random_tmp}&firstId=${tokenId}`
       );
       notification({ title: "Successfully Entered!", type: "success"});
       socket.emit("enter");
@@ -104,12 +104,12 @@ export const widrawNFT = createAsyncThunk(
     }
     let usersData: any;
     await axios
-      .get(`http://localhost:8001/api/userinfo/find?address=${address}`)
+      .get(`http://54.176.107.208/api/userinfo/find?address=${address}`)
       .then((res) => {usersData = res.data;});
 
     try {
       await meowContract.claimNFT(usersData.ownNfts).send({ feeLimit: 100000000 });
-      await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=${0}&claimAmount=0&ownNfts=[-1]`);
+      await axios.post(`http://54.176.107.208/api/userinfo/create?address=${address}&stakeAmount=${0}&claimAmount=0&ownNfts=[-1]`);
       notification({ title: "Successfully Withdrew!", type: "success"});
       socket.emit("enter");
       return;
@@ -139,12 +139,12 @@ export const claimMoney = createAsyncThunk(
     }
     let usersData: any;
     await axios
-      .get(`http://localhost:8001/api/userinfo/find?address=${address}`)
+      .get(`http://54.176.107.208/api/userinfo/find?address=${address}`)
       .then((res) => {usersData = res.data;});
 
     try {
       await meowContract.claimMoney(usersData.claimAmount).send({ feeLimit: 100000000 });
-      await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=${0}&claimAmount=-1&ownNfts=[]`);
+      await axios.post(`http://54.176.107.208/api/userinfo/create?address=${address}&stakeAmount=${0}&claimAmount=-1&ownNfts=[]`);
       notification({ title: "Successfully Withdrew!", type: "success"});
       socket.emit("enter");
     } catch (err: any) {
@@ -215,7 +215,7 @@ export const ClaimFight = createAsyncThunk(
 
       const random_tmp = ((await meowContract.randoms(fightRoom, 1).call())).toNumber();
 
-      axios.post(`http://localhost:8001/api/betting/update?roomnum=${whichroom}&secondNFT=${url}&secondaddress=${address}&secondRandom=${random_tmp}&secondId=${tokenId}`);
+      axios.post(`http://54.176.107.208/api/betting/update?roomnum=${whichroom}&secondNFT=${url}&secondaddress=${address}&secondRandom=${random_tmp}&secondId=${tokenId}`);
       let firstrandom = waitingRandom;
       let secondrandom = random_tmp;
       random1[whichroom] = firstrandom;
@@ -226,13 +226,13 @@ export const ClaimFight = createAsyncThunk(
       let resultData: any;
       let usersData: any;
 
-      await axios.post(`http://localhost:8001/api/random/create?randomNumber1=${firstrandom}&randomNumber2=${secondrandom}&roomnum=${fightRoom}`);
+      await axios.post(`http://54.176.107.208/api/random/create?randomNumber1=${firstrandom}&randomNumber2=${secondrandom}&roomnum=${fightRoom}`);
       await axios
-        .get(`http://localhost:8001/api/betting/find?fightRoom=${fightRoom}`)
+        .get(`http://54.176.107.208/api/betting/find?fightRoom=${fightRoom}`)
         .then((res) => {resultData = res.data;});
       const jackpotAmount = (await meowContract.jackpotAmount().call()).toNumber() / Math.pow(10, 6);
       await axios
-        .get(`http://localhost:8001/api/userinfo`)
+        .get(`http://54.176.107.208/api/userinfo`)
         .then((res) => {usersData = res.data;});
       
       let totalStake = 0;
@@ -241,15 +241,15 @@ export const ClaimFight = createAsyncThunk(
       }
       if(firstrandom === 77777) {
         if(secondrandom === 77777) {
-          await axios.post(`http://localhost:8001/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${jackpotAmount * 5 / 20}&ownNfts=[]`);
-          await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${jackpotAmount * 5 / 20}&ownNfts=[]`);
+          await axios.post(`http://54.176.107.208/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${jackpotAmount * 5 / 20}&ownNfts=[]`);
+          await axios.post(`http://54.176.107.208/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${jackpotAmount * 5 / 20}&ownNfts=[]`);
         } else {
-          await axios.post(`http://localhost:8001/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${jackpotAmount * 4 / 10}&ownNfts=[]`);
-          await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${jackpotAmount * 1 / 10}&ownNfts=[]`);
+          await axios.post(`http://54.176.107.208/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${jackpotAmount * 4 / 10}&ownNfts=[]`);
+          await axios.post(`http://54.176.107.208/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${jackpotAmount * 1 / 10}&ownNfts=[]`);
         }
         
         for(let i = 0; i < usersData.length; i ++) {
-          await axios.post(`http://localhost:8001/api/userinfo/create?address=${usersData[i].address}&stakeAmount=0&claimAmount=${jackpotAmount * usersData[i].stakeAmount * 4 / totalStake / 10 }&ownNfts=[]`);
+          await axios.post(`http://54.176.107.208/api/userinfo/create?address=${usersData[i].address}&stakeAmount=0&claimAmount=${jackpotAmount * usersData[i].stakeAmount * 4 / totalStake / 10 }&ownNfts=[]`);
         }
         alert('You hit the Jackpot. Receive the award!!!!!');
         await meowContract.setJackpot(jackpotAmount / 10);
@@ -257,14 +257,14 @@ export const ClaimFight = createAsyncThunk(
 
       if(secondrandom === 77777) {
         if(firstrandom === 77777) {
-          await axios.post(`http://localhost:8001/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${jackpotAmount * 5 / 20}&ownNfts=[]`);
-          await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${jackpotAmount * 5 / 20}&ownNfts=[]`);
+          await axios.post(`http://54.176.107.208/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${jackpotAmount * 5 / 20}&ownNfts=[]`);
+          await axios.post(`http://54.176.107.208/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${jackpotAmount * 5 / 20}&ownNfts=[]`);
         } else {
-          await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${jackpotAmount * 4 / 10}&ownNfts=[]`);
-          await axios.post(`http://localhost:8001/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${jackpotAmount * 1 / 10}&ownNfts=[]`);
+          await axios.post(`http://54.176.107.208/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${jackpotAmount * 4 / 10}&ownNfts=[]`);
+          await axios.post(`http://54.176.107.208/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${jackpotAmount * 1 / 10}&ownNfts=[]`);
         }
         for(let i = 0; i < usersData.length; i ++) {
-          await axios.post(`http://localhost:8001/api/userinfo/create?address=${usersData[i].address}&stakeAmount=0&claimAmount=${jackpotAmount * usersData[i].stakeAmount * 4 / totalStake / 10 }&ownNfts=[]`);
+          await axios.post(`http://54.176.107.208/api/userinfo/create?address=${usersData[i].address}&stakeAmount=0&claimAmount=${jackpotAmount * usersData[i].stakeAmount * 4 / totalStake / 10 }&ownNfts=[]`);
         }
         alert('You hit the Jackpot. Receive the award!!!!!');
         await meowContract.setJackpot(jackpotAmount / 10);
@@ -272,33 +272,33 @@ export const ClaimFight = createAsyncThunk(
 
       if (firstrandom > secondrandom) {
         await axios
-          .get(`http://localhost:8001/api/winner/find?address=${resultData.firstaddress}`)
+          .get(`http://54.176.107.208/api/winner/find?address=${resultData.firstaddress}`)
           .then((res) => {winnerData = res.data;});
-          await axios.post(`http://localhost:8001/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${whichroom < 3 ? gamePrice * 6 / 5 : gamePrice * 6}&ownNfts=[${tokenId},${resultData.firstId}]`);
+          await axios.post(`http://54.176.107.208/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${whichroom < 3 ? gamePrice * 6 / 5 : gamePrice * 6}&ownNfts=[${tokenId},${resultData.firstId}]`);
       } else if (firstrandom < secondrandom) {
         await axios
-          .get(`http://localhost:8001/api/winner/find?address=${address}`)
+          .get(`http://54.176.107.208/api/winner/find?address=${address}`)
           .then((res) => {winnerData = res.data;});
-          await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${whichroom < 3 ? gamePrice * 6 / 5 : gamePrice * 6}&ownNfts=[${tokenId},${resultData.firstId}]`);
+          await axios.post(`http://54.176.107.208/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${whichroom < 3 ? gamePrice * 6 / 5 : gamePrice * 6}&ownNfts=[${tokenId},${resultData.firstId}]`);
       } else {
-        await axios.post(`http://localhost:8001/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${whichroom < 3 ? gamePrice : gamePrice * 5}&ownNfts=[${resultData.firstId}]`);
-        await axios.post(`http://localhost:8001/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${whichroom < 3 ? gamePrice : gamePrice * 5}&ownNfts=[${tokenId}]`);
+        await axios.post(`http://54.176.107.208/api/userinfo/create?address=${resultData.firstaddress}&stakeAmount=0&claimAmount=${whichroom < 3 ? gamePrice : gamePrice * 5}&ownNfts=[${resultData.firstId}]`);
+        await axios.post(`http://54.176.107.208/api/userinfo/create?address=${address}&stakeAmount=0&claimAmount=${whichroom < 3 ? gamePrice : gamePrice * 5}&ownNfts=[${tokenId}]`);
         flag = true;
       }
 
       if (winnerData) {
-        await axios.post(`http://localhost:8001/api/winner/update?address=${winnerData.address}&winCount=${winnerData.winCount + 1}`);
+        await axios.post(`http://54.176.107.208/api/winner/update?address=${winnerData.address}&winCount=${winnerData.winCount + 1}`);
       } else {
         if (!flag) {
           if (firstrandom > secondrandom) {
-            await axios.post(`http://localhost:8001/api/winner/create?address=${resultData.firstaddress}&winCount=${1}`);
+            await axios.post(`http://54.176.107.208/api/winner/create?address=${resultData.firstaddress}&winCount=${1}`);
           } else if (firstrandom < secondrandom) {
-            await axios.post(`http://localhost:8001/api/winner/create?address=${address}&winCount=${1}`);
+            await axios.post(`http://54.176.107.208/api/winner/create?address=${address}&winCount=${1}`);
           }
         }
       }
 
-      await axios.post(`http://localhost:8001/api/result/create?randomNumber1=${firstrandom}&randomNumber2=${secondrandom}&nftUrl1=${resultData.firstNFT}&nftUrl2=${resultData.secondNFT}&address1=${resultData.firstaddress}&address2=${address}&roomnum=${fightRoom}`);
+      await axios.post(`http://54.176.107.208/api/result/create?randomNumber1=${firstrandom}&randomNumber2=${secondrandom}&nftUrl1=${resultData.firstNFT}&nftUrl2=${resultData.secondNFT}&address1=${resultData.firstaddress}&address2=${address}&roomnum=${fightRoom}`);
       socket.emit("enter");
 
       notification({ title: "Successfully Entered!", type: "success"});

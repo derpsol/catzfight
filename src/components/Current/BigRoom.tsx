@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import roomPic from "../../assets/images/Ui_box3.webp";
-import { Timeline, Tween } from "react-gsap";
+import { Timeline } from "react-gsap";
 import buttonBack from "../../assets/images/button.png";
 import { IReduxState } from "../../store/slices/state.interface";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,7 +20,6 @@ import {
 import { loadNftAllowance } from "store/slices/NFt-slice";
 
 export function BigRoom() {
-  const [random, setRandom] = useState([0]);
   const dispatch = useDispatch<AppDispatch>();
   const { account } = useWeb3React();
 
@@ -68,7 +67,7 @@ export function BigRoom() {
     );
     await dispatch(loadNftDetails({ account: account }));
     await dispatch(loadNftAllowance({ tokenIds: nftids }));
-  }, [account]);
+  }, [account, dispatch, nftids]);
 
   const onClaimModal = useCallback(
     async (index: number, fightRoom: number, firstRandom: number) => {
@@ -85,7 +84,7 @@ export function BigRoom() {
       await dispatch(loadNftDetails({ account: account }));
       await dispatch(loadNftAllowance({ tokenIds: nftids }));
     },
-    [account]
+    [account, dispatch, nftids]
   );
 
   return (
@@ -171,7 +170,7 @@ export function BigRoom() {
                   >
                     {data.firstNFT !== "" && data.firstNFT !== undefined ? (
                       <Typography sx={randomNumberStyle}>
-                        {random[index * 2]}
+                        {/* {random[index * 2]} */}
                       </Typography>
                     ) : (
                       <Typography sx={randomNumberStyle}>
@@ -202,7 +201,7 @@ export function BigRoom() {
                       )
                         ? firRandomData[index + 1] > secRandomData[index + 1]
                           ? "Winner"
-                          : firRandomData[index + 1] == secRandomData[index + 1]
+                          : firRandomData[index + 1] === secRandomData[index + 1]
                           ? "Draw"
                           : "Loser"
                         : data.secondaddress === "" ||
@@ -311,7 +310,7 @@ export function BigRoom() {
                       )
                         ? firRandomData[index + 1] > secRandomData[index + 1]
                           ? "Loser"
-                          : firRandomData[index + 1] == secRandomData[index + 1]
+                          : firRandomData[index + 1] === secRandomData[index + 1]
                           ? "Draw"
                           : "Winner"
                         : data.secondaddress === "" ||

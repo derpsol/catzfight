@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import roomPic from "../../assets/images/Ui_box3.webp";
-import { Timeline, Tween } from "react-gsap";
+import { Timeline } from "react-gsap";
 import buttonBack from "../../assets/images/button.png";
 import { IReduxState } from "../../store/slices/state.interface";
 import { useDispatch, useSelector } from "react-redux";
@@ -40,20 +40,20 @@ export function SmallRooms() {
   const nftids: any[] = useSelector<IReduxState, any[]>(
     (state) => state.nfts.nftids
   );
-  var socket = io("http://localhost:8001");
+  var socket = io("http://54.176.107.208");
 
   const getWholeData = useCallback(async () => {
     await dispatch(loadGameDetails({ account: account }));
     await dispatch(walletInfo({ account: account }));
     await dispatch(loadNftDetails({ account: account }));
     await dispatch(loadNftAllowance({ tokenIds: nftids }));
-  }, [account]);
+  }, [account, dispatch, nftids]);
 
   useEffect(() => {
     socket.on("entered", () => {
       getWholeData();
     });
-  }, [account]);
+  }, [account, getWholeData, socket]);
 
   useEffect(() => {
     gameData &&
@@ -100,7 +100,7 @@ export function SmallRooms() {
         decide: false,
       })
     );
-  }, [account]);
+  }, [account, dispatch, nftids]);
 
   const onClaimModal = useCallback(
     async (index: number, fightRoom: number, firstRandom: number) => {
@@ -117,7 +117,7 @@ export function SmallRooms() {
         })
       );
     },
-    [account]
+    [account, dispatch, nftids]
   );
 
   return (
@@ -229,7 +229,7 @@ export function SmallRooms() {
                     )
                       ? firRandomData[index + 1] > secRandomData[index + 1]
                         ? "Winner"
-                        : firRandomData[index + 1] == secRandomData[index + 1]
+                        : firRandomData[index + 1] === secRandomData[index + 1]
                         ? "Draw"
                         : "Loser"
                       : data.secondaddress === "" ||
@@ -340,7 +340,7 @@ export function SmallRooms() {
                     )
                       ? firRandomData[index + 1] > secRandomData[index + 1]
                         ? "Loser"
-                        : firRandomData[index + 1] == secRandomData[index + 1]
+                        : firRandomData[index + 1] === secRandomData[index + 1]
                         ? "Draw"
                         : "Winner"
                       : data.secondaddress === "" ||
