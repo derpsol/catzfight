@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import { Activity } from "react-feather";
 import { Button, Typography } from "@mui/material";
 import { injected } from "connectors";
-import { NetworkContextName } from "../../constants";
 import useENSName from "hooks/useENSName";
 import { useWalletModalToggle } from "state/application/hooks";
 import {

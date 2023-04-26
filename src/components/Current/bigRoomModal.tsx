@@ -9,12 +9,12 @@ import { useCallback } from "react";
 import { approveNFT, loadNftAllowance } from "store/slices/NFt-slice";
 import { ClaimFight } from "store/slices/play-slice";
 import { useWeb3React } from "@web3-react/core";
-import io from "socket.io-client";
+// import io from "socket.io-client";
 
 export function BigRoomModal() {
   const dispatch = useDispatch<AppDispatch>();
   const { account } = useWeb3React();
-  var socket = io("http://localhost:8001");
+  // var socket = io("http://54.176.107.208");
   const nftids: any[] = useSelector<IReduxState, any[]>(
     (state) => state.nfts.nftids
   );
@@ -56,7 +56,7 @@ export function BigRoomModal() {
       })
     );
     await dispatch(loadNftAllowance({ tokenIds: nftids }));
-  }, []);
+  }, [dispatch, nftids]);
 
   const closeModal = useCallback(async () => {
     dispatch(
@@ -69,7 +69,7 @@ export function BigRoomModal() {
         decide: false,
       })
     );
-  }, []);
+  }, [dispatch]);
 
   const onClaimFight = useCallback(
     async (id: number) => {
@@ -85,7 +85,7 @@ export function BigRoomModal() {
         })
       );
     },
-    [gamePrice, baseUri, account, whichroom, whichfight, waitingRandom]
+    [gamePrice, baseUri, account, whichroom, whichfight, waitingRandom, dispatch]
   );
 
   return (
