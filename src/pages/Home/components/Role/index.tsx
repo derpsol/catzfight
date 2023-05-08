@@ -1,10 +1,11 @@
 import { Box, Typography } from "@mui/material";
-import { IReduxState } from "../../../../store/slices/state.interface";
+import { IReduxState } from "store/slices/state.interface";
 import { useSelector } from "react-redux";
+import { randomDataStyle } from "@types";
 
 const Role = () => {
-  const randomData: any[] = useSelector<IReduxState, any[]>(
-    (state) => state.app.randomData
+  const randomData: randomDataStyle[] = useSelector<IReduxState, randomDataStyle[]>(
+    (state) => state.random.randomData
   );
 
   return (

@@ -1,12 +1,12 @@
-import { setAll } from "../../helpers/set-all";
+import { setAll } from "helpers/set-all";
 import {
   createSlice,
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
-import { RootState } from "../../state";
+import { RootState } from "state";
 import { metamaskErrorWrap } from "helpers/metamask-error-wrap";
-import { SHASTA_TESTNET } from '../../constants/addresses';
+import { SHASTA_TESTNET } from 'constants/addresses';
 import tronWeb from 'tronweb';
 import { notification } from "utils/notification";
 
@@ -108,7 +108,5 @@ const nftSlice = createSlice({
 const baseInfo = (state: RootState) => state.nft;
 
 export default nftSlice.reducer;
-
-export const { fetchAppSuccess } = nftSlice.actions;
 
 export const getAppState = createSelector(baseInfo, (nft) => nft);

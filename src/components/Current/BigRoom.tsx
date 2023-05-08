@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import roomPic from "../../assets/images/Ui_box3.webp";
+import roomPic from "assets/images/Ui_box3.webp";
 import { Timeline } from "react-gsap";
-import buttonBack from "../../assets/images/button.png";
-import { IReduxState } from "../../store/slices/state.interface";
+import buttonBack from "assets/images/button.png";
+import { IReduxState } from "store/slices/state.interface";
 import { useDispatch, useSelector } from "react-redux";
 import { loadBattleDetails } from "store/slices/battle-slice";
 import { loadNftDetails } from "store/slices/Nftinfo-slice";
@@ -18,6 +18,7 @@ import {
   buttonStyle,
 } from "./style";
 import { loadNftAllowance } from "store/slices/NFt-slice";
+import { gameDataStyle } from "@types";
 
 export function BigRoom() {
   const dispatch = useDispatch<AppDispatch>();
@@ -29,7 +30,7 @@ export function BigRoom() {
   const secRandomData: number[] = useSelector<IReduxState, number[]>(
     (state) => state.fight.random2
   );
-  const gameData: any[] = useSelector<IReduxState, any[]>(
+  const gameData: gameDataStyle[] = useSelector<IReduxState, gameDataStyle[]>(
     (state) => state.app.gameData
   );
   const decide: boolean = useSelector<IReduxState, boolean>(
@@ -38,21 +39,6 @@ export function BigRoom() {
   const nftids: any[] = useSelector<IReduxState, any[]>(
     (state) => state.nfts.nftids
   );
-
-  gameData &&
-  gameData.forEach((data) => {
-    if (Datas[data.roomnum - 1]) {
-      Datas[data.roomnum - 1].firstNFT = data.firstNFT;
-      Datas[data.roomnum - 1].secondNFT = data.secondNFT;
-      Datas[data.roomnum - 1].firstaddress = data.firstaddress;
-      Datas[data.roomnum - 1].secondaddress = data.secondaddress;
-      Datas[data.roomnum - 1].firstrandom = data.firstRandom;
-      Datas[data.roomnum - 1].secondrandom = data.secondRandom;
-      Datas[data.roomnum - 1].fightroom = data.fightRoom;
-      Datas[data.roomnum - 1].whichfight = data.whichFight;
-      Datas[data.roomnum - 1].tokenId = data.tokenId;
-    }
-  });
 
   const onEnterModal = useCallback(async (index: number) => {
     await dispatch(
@@ -67,7 +53,7 @@ export function BigRoom() {
     );
     await dispatch(loadNftDetails({ account: account }));
     await dispatch(loadNftAllowance({ tokenIds: nftids }));
-  }, [account, dispatch, nftids]);
+  }, [account, nftids]);
 
   const onClaimModal = useCallback(
     async (index: number, fightRoom: number, firstRandom: number) => {
@@ -84,7 +70,7 @@ export function BigRoom() {
       await dispatch(loadNftDetails({ account: account }));
       await dispatch(loadNftAllowance({ tokenIds: nftids }));
     },
-    [account, dispatch, nftids]
+    [account, nftids]
   );
 
   return (
@@ -204,15 +190,15 @@ export function BigRoom() {
                           : firRandomData[index + 1] === secRandomData[index + 1]
                           ? "Draw"
                           : "Loser"
-                        : data.secondaddress === "" ||
-                          data.secondaddress === null ||
-                          data.secondaddress === undefined
-                        ? data.firstaddress === ""
+                        : data.secondAddress === "" ||
+                          data.secondAddress === null ||
+                          data.secondAddress === undefined
+                        ? data.firstAddress === ""
                           ? "Fight"
-                          : `${data.firstaddress?.slice(
+                          : `${data.firstAddress?.slice(
                               0,
                               4
-                            )}...${data.firstaddress?.slice(-4)}`
+                            )}...${data.firstAddress?.slice(-4)}`
                         : "Fighting..."}
                     </Typography>
                   </Button>
@@ -279,14 +265,14 @@ export function BigRoom() {
                     disabled={
                       !(
                         data.firstNFT !== "" ||
-                        data.secondaddress !== null ||
-                        data.secondaddress === undefined
+                        data.secondAddress !== null ||
+                        data.secondAddress === undefined
                       )
                         ? true
                         : false
                     }
                     onClick={() => {
-                      onClaimModal(index, data.fightroom, data.firstrandom);
+                      onClaimModal(index, data.fightRoom, data.firstRandom);
                     }}
                     sx={{
                       position: "relative",
@@ -313,9 +299,9 @@ export function BigRoom() {
                           : firRandomData[index + 1] === secRandomData[index + 1]
                           ? "Draw"
                           : "Winner"
-                        : data.secondaddress === "" ||
-                          data.secondaddress === null ||
-                          data.secondaddress === undefined
+                        : data.secondAddress === "" ||
+                          data.secondAddress === null ||
+                          data.secondAddress === undefined
                         ? "Fight"
                         : "Fighting..."}
                     </Typography>

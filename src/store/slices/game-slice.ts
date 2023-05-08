@@ -1,91 +1,103 @@
-import { setAll } from "../../helpers/set-all";
+import { setAll } from "helpers/set-all";
 import {
   createSlice,
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
-import { RootState } from "../../state";
-import axios from "axios";
-import TronWeb from "tronweb";
-import { SHASTA_TESTNET } from "../../constants/addresses";
-
-interface ILoadGameDetails {
-  account: any;
-}
-
-declare var window: any;
+import { RootState } from "state";
+import instance from "constants/axios";
+import { gameDataStyle } from "@types";
 
 export const loadGameDetails = createAsyncThunk(
-  "app/loadGameDetails",
-  async ({ account }: ILoadGameDetails ) => {
-    let meowContract, meowTokenContract;
-    if(window) {
-      if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
-        meowContract = await window.tronWeb.contract().at(TronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS));
-        meowTokenContract = await window.tronWeb.contract().at(TronWeb.address.toHex(SHASTA_TESTNET.MEOWTOKEN_ADDRESS));
+  "game/loadGameDetails",
+  async ({ gameData }: IAppSlice) => {
+    let tmpgameData: gameDataStyle[] = [];
+    await instance
+      .get("/api/betting")
+      .then((response) => {
+        tmpgameData = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    for (let i = 0; i < Math.max(4, tmpgameData.length + 2); i++) {
+      let newGameData: gameDataStyle = {
+        roomNum: 0,
+        firstNFT: "",
+        secondNFT: "",
+        firstAddress: "",
+        secondAddress: "",
+        firstRandom: 0,
+        secondRandom: 0,
+        tokenId: 0,
+        fightRoom: 0,
+        flag: false
+      };
+      if (tmpgameData[i] !== undefined) {
+        newGameData.firstNFT = tmpgameData[i]?.firstNFT;
+        newGameData.firstAddress = tmpgameData[i]?.firstAddress;
+        newGameData.firstRandom = tmpgameData[i]?.firstRandom;
+        newGameData.fightRoom = tmpgameData[i]?.fightRoom;
+        newGameData.tokenId = tmpgameData[i]?.tokenId;
+        newGameData.secondNFT = tmpgameData[i]?.secondNFT;
+        newGameData.secondAddress = tmpgameData[i]?.secondAddress;
+        newGameData.secondRandom = tmpgameData[i]?.secondRandom;
+        console.log("fightRoom", newGameData.fightRoom);
       }
+      gameData.push(newGameData);
     }
-
-    let gameData: any[] = [];
-    let randomData: any[] = [];
-    let resultData: any[] = [];
-    let winnerData: any[] = [];
-
-    await axios.get(`http://54.176.107.208/api/betting`).then((res) => {
-      gameData = res.data;
-    });
-    await axios.get(`http://54.176.107.208/api/random`).then((res) => {
-      randomData = res.data;
-    });
-    await axios.get(`http://54.176.107.208/api/result`).then((res) => {
-      resultData = res.data;
-    });
-    await axios.get(`http://54.176.107.208/api/winner`).then((res) => {
-      winnerData = res.data;
-    });
-    const gameprice = ((await meowContract.gamePrice().call())).toString();
-    const jackpotAmount = ((await meowContract.jackpotAmount().call()) / Math.pow(10, 6)).toString();
-    const meowCount = (await meowTokenContract.balanceOf(account).call()).toString();
     return {
-      gameprice,
-      jackpotAmount,
       gameData,
-      randomData,
-      resultData,
-      winnerData,
-      meowCount,
     };
   }
 );
 
-const initialState = {
+const initialState: {
+  loading: boolean;
+  gameData: gameDataStyle[];
+} = {
   loading: true,
-  
+  gameData: [],
 };
 
 export interface IAppSlice {
-  gameprice: string;
-  jackpotAmount: string;
-  gameData: any[];
-  allowflg: boolean;
-  currentData: any;
-  loading: boolean;
-  randomData: any[];
-  resultData: any[];
-  winnerData: any[];
-  widrawAmount: number;
-  meowCount: string;
+  gameData: gameDataStyle[];
 }
 
 const gameSlice = createSlice({
-  name: "app",
+  name: "game",
   initialState,
   reducers: {
-    fetchAppSuccess(state, action) {
-      setAll(state, action.payload);
-      // console.log(action.payload);
+    updateGameData(state, action) {
+      let updatedData: gameDataStyle = {
+        roomNum: 0,
+        firstNFT: "",
+        secondNFT: "",
+        firstAddress: "",
+        secondAddress: "",
+        firstRandom: 0,
+        secondRandom: 0,
+        tokenId: 0,
+        fightRoom: 0,
+        flag: false
+      };
+      console.log('payload: ', action.payload);
+      if(action.payload.delRoomNum > 0) {
+        updatedData.roomNum = action.payload.delRoomNum;
+      } else {
+        updatedData = action.payload;
+      }
+      const index = state.gameData.findIndex(
+        (data) => data.roomNum === updatedData.roomNum
+      );
+      if(index < 0) {
+        state.gameData[updatedData.roomNum - 1] = updatedData;
+      } else {
+        state.gameData[index] = updatedData;
+      }
     },
   },
+
   extraReducers: (builder) => {
     builder
       .addCase(loadGameDetails.pending, (state, action) => {
@@ -105,6 +117,6 @@ const baseInfo = (state: RootState) => state.app;
 
 export default gameSlice.reducer;
 
-export const { fetchAppSuccess } = gameSlice.actions;
+export const { updateGameData } = gameSlice.actions;
 
 export const getAppState = createSelector(baseInfo, (app) => app);

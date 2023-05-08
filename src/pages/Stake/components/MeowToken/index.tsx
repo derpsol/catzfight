@@ -17,13 +17,13 @@ const MeowToken = () => {
 		(state) => state.wallet.stakeAmount
 	);
 	const JackpotAmount = useSelector<IReduxState, string>(
-		(state) => state.app.jackpotAmount
+		(state) => state.jackpot.jackpotAmount
 	);
 	let totalStake : number = useSelector<IReduxState, number>(
 		(state) => state.wallet.totalStake
 	);
 	const meowCount: string = useSelector<IReduxState, string>(
-		(state) => state.app.meowCount
+		(state) => state.jackpot.meowCount
 	);
 
 	async function onStack() {

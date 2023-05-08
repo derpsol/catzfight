@@ -1,10 +1,10 @@
-import { setAll } from "../../helpers/set-all";
+import { setAll } from "helpers/set-all";
 import {
   createSlice,
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
-import { RootState } from "../../state";
+import { RootState } from "state";
 
 interface IBattleDetails {
   openState: boolean,
@@ -76,7 +76,5 @@ const battleSlice = createSlice({
 const baseInfo = (state: RootState) => state.battle;
 
 export default battleSlice.reducer;
-
-export const { fetchAppSuccess } = battleSlice.actions;
 
 export const getAppState = createSelector(baseInfo, (battle) => battle);

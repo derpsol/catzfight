@@ -1,47 +1,28 @@
 import { Box, Typography } from "@mui/material";
-import { loadNftAllowance } from "store/slices/NFt-slice";
-import { loadNftDetails } from "store/slices/Nftinfo-slice";
-import { loadGameDetails } from "store/slices/game-slice";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { AppDispatch } from "state";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
-import { IReduxState } from "../../../../store/slices/state.interface";
-import io from "socket.io-client";
-import { useWeb3React } from "@web3-react/core";
-import { walletInfo } from "store/slices/walletInfo-slice";
+import { IReduxState } from "store/slices/state.interface";
 import { SampleModal } from "components/Current/modal";
 import { BigRoomModal } from "components/Current/bigRoomModal";
 import { SmallRooms } from "components/Current/SmallRoom";
 import { BigRoom } from "components/Current/BigRoom";
 import { loadBattleDetails } from "store/slices/battle-slice";
+import instance from "constants/axios";
+import io from "socket.io-client";
+import { baseURL } from "constants/axios";
+import { updateGameData } from "store/slices/game-slice";
+import { updateRandomData } from "store/slices/random-slice";
+import { updateResultData } from "store/slices/result-slice";
+import { gameDataStyle } from "@types";
+import { updateWinnerData } from "store/slices/winner-slice";
 
 const CurrentBattle = () => {
-  const { account } = useWeb3React();
-
   const secRandomData: number[] = useSelector<IReduxState, number[]>(
     (state) => state.fight.random2
   );
-  const nftids: any[] = useSelector<IReduxState, any[]>(
-    (state) => state.nfts.nftids
-  );
 
   const dispatch = useDispatch<AppDispatch>();
-
-  var socket = io("http://54.176.107.208");
-
-  const getWholeData = useCallback(async () => {
-    await dispatch(loadGameDetails({ account: account }));
-    await dispatch(walletInfo({ account: account }));
-    await dispatch(loadNftDetails({ account: account }));
-    await dispatch(loadNftAllowance({ tokenIds: nftids }));
-  }, [account, dispatch, nftids]);
-
-  useEffect(() => {
-    socket.on("entered", () => {
-      getWholeData();
-    });
-  }, [account, socket, getWholeData]);
 
   useEffect(() => {
     if (secRandomData) {
@@ -55,10 +36,9 @@ const CurrentBattle = () => {
           waitingRandom: 0,
         })
       );
-      setTimeout(async() => {
-        await axios.delete(
-          `http://54.176.107.208/api/betting/delete/${secRandomData.length - 1}`
-        );
+      setTimeout(async () => {
+        instance.delete(`/api/betting/delete/${secRandomData.length - 1}`);
+
         await dispatch(
           loadBattleDetails({
             decide: false,
@@ -69,10 +49,36 @@ const CurrentBattle = () => {
             waitingRandom: 0,
           })
         );
-        socket.emit("enter");
       }, 4000);
     }
-  }, [secRandomData, dispatch, socket]);
+  }, [secRandomData]);
+
+  var socket = io(baseURL);
+
+  useEffect(() => {
+    socket.on("savedRoom", (data: gameDataStyle) => {
+      dispatch(updateGameData(data));
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.on("savedRandom", (data: gameDataStyle) => {
+      dispatch(updateRandomData(data));
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.on("savedResult", (data: gameDataStyle) => {
+      dispatch(updateResultData(data));
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.on("savedWinner", (data: gameDataStyle) => {
+      dispatch(updateWinnerData(data));
+    });
+  }, []);
+  
 
   return (
     <Box

@@ -7,6 +7,10 @@ import { Provider } from "react-redux";
 import store, { AppDispatch } from "./state";
 import { loadGameDetails } from "./store/slices/game-slice";
 import { loadNftDetails } from "store/slices/Nftinfo-slice";
+import { loadJackpotDetails } from "store/slices/jackpot-slice";
+import { loadRandomDetails } from "store/slices/random-slice";
+import { loadResultDetails } from "store/slices/result-slice";
+import { loadWinnerDetails } from "store/slices/winner-slice";
 import { useDispatch } from "react-redux";
 import { useEffect, useCallback } from "react";
 import { useWalletModalToggle } from "state/application/hooks";
@@ -19,20 +23,24 @@ function App() {
   const toggleWalletModal = useWalletModalToggle();
 
   const loadData = useCallback(() => {
-    dispatch(loadGameDetails({ account: account }));
+    dispatch(loadGameDetails({ gameData: [] }));
+    dispatch(loadRandomDetails({ randomData: [] }));
+    dispatch(loadResultDetails({ resultData: [] }));
+    dispatch(loadWinnerDetails({ winnerData: [] }));
     dispatch(loadNftDetails({ account: account }));
-  }, [account, dispatch]);
+    dispatch(loadJackpotDetails({ account: account }));
+  }, [account]);
 
   useEffect(() => {
     if (active) {
       loadData();
     }
-  }, [active, loadData]);
+  }, [active]);
   useEffect(() => {
     if (!active) {
       toggleWalletModal();
     }
-  }, [active, toggleWalletModal]);
+  }, [active]);
 
   return (
     <>

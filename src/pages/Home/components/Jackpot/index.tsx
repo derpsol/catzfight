@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
-import { IReduxState } from "../../../../store/slices/state.interface";
+import { IReduxState } from "store/slices/state.interface";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "state";
 import { useWeb3React } from "@web3-react/core";
@@ -19,10 +19,10 @@ const Jackpot = () => {
   const { account } = useWeb3React();
 
   const JackpotAmount = useSelector<IReduxState, string>(
-    (state) => state.app.jackpotAmount
+    (state) => state.jackpot.jackpotAmount
   );
   const meowCount: string = useSelector<IReduxState, string>(
-    (state) => state.app.meowCount
+    (state) => state.jackpot.meowCount
   );
   let contractNFTs: number = useSelector<IReduxState, number>(
     (state) => state.wallet.nftCount
@@ -40,27 +40,27 @@ const Jackpot = () => {
 
   const getAvailableData = useCallback(() => {
     dispatch(walletInfo({ account: account }));
-  }, [account, dispatch]);
+  }, [account]);
 
    const onWidrawNFT = useCallback(async() => {
     let widrawState = await dispatch(widrawNFT({ address: account }));
     if (widrawState.meta.requestStatus === "fulfilled") {
       getAvailableData();
     }
-  }, [account, dispatch, getAvailableData, ]);
+  }, [account]);
 
   const onClaimMoney = useCallback(async() => {
     let claimState = await dispatch(claimMoney({ address: account }));
     if (claimState.meta.requestStatus === "fulfilled") {
       getAvailableData();
     }
-  }, [account, dispatch, getAvailableData]);
+  }, [account]);
 
   useEffect(() => {
     if (account) {
       getAvailableData();
     }
-  }, [account, getAvailableData]);
+  }, [account]);
 
   return (
     <Box
@@ -94,23 +94,6 @@ const Jackpot = () => {
           pb: 6,
         }}
       >
-        <Box>
-          <Box>
-            <Button
-              sx={{
-                paddingX: "16px",
-                paddingY: "6px",
-                marginTop: "8px",
-                fontSize: "18px",
-                mr: 3,
-                color: "rgba(101,230,255,1)",
-                backgroundColor: "rgba(101,230,255,0.15)",
-              }}
-            >
-              Deposit
-            </Button>
-          </Box>
-        </Box>
         <Box sx={{ mr: 3, textAlign: "center" }}>
           <Button
             sx={{

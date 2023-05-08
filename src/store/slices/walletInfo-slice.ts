@@ -1,33 +1,43 @@
-import { setAll } from "../../helpers/set-all";
+import { setAll } from "helpers/set-all";
 import {
   createSlice,
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
-import { RootState } from "../../state";
-import axios from "axios";
+import { RootState } from "state";
+import instance from "constants/axios";
 
 interface IwalletInfo {
   account: any;
 }
 
 export const walletInfo = createAsyncThunk(
-  'nft/walletInfo',
+  "nft/walletInfo",
   async ({ account }: IwalletInfo) => {
     let tmpData: any;
     let usersData: any;
-    await axios
-      .get(`http://54.176.107.208/api/userinfo`)
-      .then((res) => {usersData = res.data;});
-  
+    await instance
+      .get(`/api/userinfo`)
+      .then((response) => {
+        usersData = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     let totalStake = 0;
-    for(let i = 0; i < usersData.length; i ++) {
+    for (let i = 0; i < usersData.length; i++) {
       totalStake += usersData[i].stakeAmount;
     }
 
-    await axios
-      .get(`http://54.176.107.208/api/userinfo/find?address=${account}`)
-      .then((res) => {tmpData = res.data});
+    await instance
+      .get(`/api/userinfo/find?address=${account}`)
+      .then((response) => {
+        tmpData = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     let nftCount = tmpData?.ownNfts.length;
     let nftInfo: number[] = tmpData?.ownNfts;
@@ -41,7 +51,7 @@ export const walletInfo = createAsyncThunk(
       nftInfo,
     };
   }
-)
+);
 
 export interface IWalletInfoDetail {
   nftCount: number;
@@ -66,23 +76,21 @@ const nftSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    .addCase(walletInfo.pending, (state, action) => {
-      state.loading = true;
-    })
-    .addCase(walletInfo.fulfilled, (state, action) => {
-      setAll(state, action.payload);
-      state.loading = false;
-    })
-    .addCase(walletInfo.rejected, (state, { error }) => {
-      state.loading = false;
-    });
+      .addCase(walletInfo.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(walletInfo.fulfilled, (state, action) => {
+        setAll(state, action.payload);
+        state.loading = false;
+      })
+      .addCase(walletInfo.rejected, (state, { error }) => {
+        state.loading = false;
+      });
   },
 });
 
 const baseInfo = (state: RootState) => state.nfts;
 
 export default nftSlice.reducer;
-
-export const { fetchAppSuccess } = nftSlice.actions;
 
 export const getAppState = createSelector(baseInfo, (nfts) => nfts);

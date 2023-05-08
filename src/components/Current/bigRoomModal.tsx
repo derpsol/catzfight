@@ -4,17 +4,15 @@ import { avatarsStyle, modalAvatarStyle, style } from "./style";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "state";
 import { loadBattleDetails } from "store/slices/battle-slice";
-import { IReduxState } from "../../store/slices/state.interface";
+import { IReduxState } from "store/slices/state.interface";
 import { useCallback } from "react";
 import { approveNFT, loadNftAllowance } from "store/slices/NFt-slice";
 import { ClaimFight } from "store/slices/play-slice";
 import { useWeb3React } from "@web3-react/core";
-// import io from "socket.io-client";
 
 export function BigRoomModal() {
   const dispatch = useDispatch<AppDispatch>();
   const { account } = useWeb3React();
-  // var socket = io("http://54.176.107.208");
   const nftids: any[] = useSelector<IReduxState, any[]>(
     (state) => state.nfts.nftids
   );
@@ -31,7 +29,7 @@ export function BigRoomModal() {
     (state) => state.battle.whichroom
   );
   const gamePrice: string = useSelector<IReduxState, string>(
-    (state) => state.app.gameprice
+    (state) => state.jackpot.gameprice
   );
   const claimState: boolean = useSelector<IReduxState, boolean>(
     (state) => state.battle.claimState
@@ -69,7 +67,7 @@ export function BigRoomModal() {
         decide: false,
       })
     );
-  }, [dispatch]);
+  }, []);
 
   const onClaimFight = useCallback(
     async (id: number) => {
@@ -85,7 +83,7 @@ export function BigRoomModal() {
         })
       );
     },
-    [gamePrice, baseUri, account, whichroom, whichfight, waitingRandom, dispatch]
+    [gamePrice, baseUri, account, whichroom, whichfight, waitingRandom]
   );
 
   return (
