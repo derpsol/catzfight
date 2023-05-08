@@ -1,11 +1,11 @@
-import { setAll } from "../../helpers/set-all";
+import { setAll } from "helpers/set-all";
 import {
   createSlice,
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
-import { RootState } from "../../state";
-import { SHASTA_TESTNET } from '../../constants/addresses';
+import { RootState } from "state";
+import { SHASTA_TESTNET } from 'constants/addresses';
 import tronWeb from 'tronweb';
 
 declare var window: any
@@ -83,7 +83,5 @@ const nftSlice = createSlice({
 const baseInfo = (state: RootState) => state.nfts;
 
 export default nftSlice.reducer;
-
-export const { fetchAppSuccess } = nftSlice.actions;
 
 export const getAppState = createSelector(baseInfo, (nfts) => nfts);

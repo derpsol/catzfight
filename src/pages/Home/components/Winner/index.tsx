@@ -7,11 +7,11 @@ import {
   TableCell,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import { IReduxState } from "../../../../store/slices/state.interface";
+import { IReduxState } from "store/slices/state.interface";
 
 const Winner = () => {
   const winnerData: any[] = useSelector<IReduxState, any[]>(
-    (state) => state.app.winnerData
+    (state) => state.winner.winnerData
   );
 
   return (

@@ -6,7 +6,7 @@ import { IReduxState } from "../../store/slices/state.interface";
 
 const Stake = () => {
   const JackpotAmount = useSelector<IReduxState, string>(
-    (state) => state.app.jackpotAmount
+    (state) => state.jackpot.jackpotAmount
   );
 
   return (

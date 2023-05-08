@@ -1,11 +1,11 @@
 import { Box, Skeleton, Typography } from "@mui/material";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import { IReduxState } from "../../../../store/slices/state.interface";
+import { IReduxState } from "store/slices/state.interface";
 import { useSelector } from "react-redux";
 
 const FinishedBattle = () => {
   const resultData: any[] = useSelector<IReduxState, any[]>(
-    (state) => state.app.resultData
+    (state) => state.result.resultData
   );
 
   return (

@@ -5,6 +5,11 @@ import { INftDetailSlice } from "./Nftinfo-slice";
 import { MessagesState } from "./messages-slice";
 import { IWalletInfoDetail } from "./walletInfo-slice";
 import { IBattleSlice } from "./battle-slice";
+import { IJackPotSlice } from "./jackpot-slice";
+import { IRandomSlice } from "./random-slice";
+import { IResultSlice } from "./result-slice";
+import { IWinnerSlice } from "./winner-slice";
+
 export interface IReduxState {
     battle: IBattleSlice;
     app: IAppSlice;
@@ -13,4 +18,8 @@ export interface IReduxState {
     nfts: INftDetailSlice;
     messages: MessagesState;
     wallet: IWalletInfoDetail;
+    jackpot: IJackPotSlice;
+    random: IRandomSlice;
+    result: IResultSlice;
+    winner: IWinnerSlice;
 }

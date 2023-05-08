@@ -10,7 +10,7 @@ const Banner = () => {
         <Box
           component="img"
           sx={{
-            width: { xs: "120px", sm: "150px" },
+            width: { xs: "150px", sm: "200px" },
             mr: { xs: 1, sm: 2, md: 3 },
           }}
           src={BannerImage1}
@@ -18,7 +18,7 @@ const Banner = () => {
         />
         <Box
           component="img"
-          sx={{ width: { xs: "120px", sm: "150px" } }}
+          sx={{ width: { xs: "150px", sm: "200px" } }}
           src={BannerImage2}
           alt="Banner Image"
         />

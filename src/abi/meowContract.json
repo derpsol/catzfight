@@ -101,7 +101,7 @@
       },
       {
         "outputs": [{ "type": "uint256" }],
-        "name": "secondrandom",
+        "name": "secondRandom",
         "stateMutability": "View",
         "type": "Function"
       },

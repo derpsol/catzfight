@@ -4,11 +4,11 @@ import { avatarsStyle, modalAvatarStyle, style } from "./style";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "state";
 import { loadBattleDetails } from "store/slices/battle-slice";
-import { IReduxState } from "../../store/slices/state.interface";
+import { IReduxState } from "store/slices/state.interface";
 import { useCallback, useEffect } from "react";
 import { approveNFT, loadNftAllowance } from "store/slices/NFt-slice";
 import { getDate } from "./getDate";
-import { EnterRoom } from "store/slices/play-slice";
+import { EnterRoom } from "store/slices/enter-room-slice";
 import { useWeb3React } from "@web3-react/core";
 
 export function SampleModal() {
@@ -33,7 +33,7 @@ export function SampleModal() {
     (state) => state.battle.whichroom
   );
   const gamePrice: string = useSelector<IReduxState, string>(
-    (state) => state.app.gameprice
+    (state) => state.jackpot.gameprice
   );
   const nftInfo: number[] = useSelector<IReduxState, number[]>(
     (state) => state.wallet.nftInfo
@@ -46,7 +46,7 @@ export function SampleModal() {
     if (isLoading) {
       dispatch(loadNftAllowance({ tokenIds: nftids }));
     }
-  }, [isLoading, dispatch, nftids]);
+  }, [isLoading, nftids]);
 
   const approve = useCallback(async (id: Number) => {
     await dispatch(
@@ -55,7 +55,7 @@ export function SampleModal() {
       })
     );
     await dispatch(loadNftAllowance({ tokenIds: nftids }));
-  }, [dispatch, nftids]);
+  }, [nftids]);
 
   const closeModal = useCallback(async () => {
     dispatch(
@@ -68,22 +68,22 @@ export function SampleModal() {
         decide: false,
       })
     );
-  }, [dispatch]);
+  }, []);
 
   const onEnterRoom = useCallback(
     async (id: number) => {
-      let fightRoomnum = getDate();
+      let fightRoomNum = getDate();
       await dispatch(
         EnterRoom({
           tokenId: id,
-          fightRoom: fightRoomnum,
+          fightRoom: fightRoomNum,
           whichroom: whichroom,
           url: `https://ipfs.io/ipfs/${baseUri?.slice(7, 53)}/${id}.png`,
           address: account,
           gamePrice: Number(gamePrice),
         })
       );
-    }, [gamePrice, baseUri, account, whichroom, dispatch]);
+    }, [gamePrice, baseUri, account, whichroom]);
 
   return (
     <Modal

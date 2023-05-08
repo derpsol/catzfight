@@ -3,11 +3,11 @@ import {
   createSelector,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
-import { RootState } from "../../state";
+import { RootState } from "state";
 import { metamaskErrorWrap } from "helpers/metamask-error-wrap";
 import tronWeb from "tronweb";
-import { SHASTA_TESTNET } from "../../constants/addresses";
-import axios from "axios";
+import { SHASTA_TESTNET } from "constants/addresses";
+import instance from "constants/axios";
 
 interface IStackingMeow {
   address: any;
@@ -26,21 +26,27 @@ export const stackingMeow = createAsyncThunk(
         meowContract = await window.tronWeb
           .contract()
           .at(tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS));
-          meowTokenContract = await window.tronWeb.contract().at(tronWeb.address.toHex(SHASTA_TESTNET.MEOWTOKEN_ADDRESS));
-        }
+        meowTokenContract = await window.tronWeb
+          .contract()
+          .at(tronWeb.address.toHex(SHASTA_TESTNET.MEOWTOKEN_ADDRESS));
+      }
     }
     let enterTx, approveTx;
     let stakeamount = parseInt(amount);
     try {
       console.log(stakeamount);
-      approveTx = await meowTokenContract.approve(SHASTA_TESTNET.MEOW_ADDRESS, stakeamount).send({ feeLimit: 100000000 });
+      approveTx = await meowTokenContract
+        .approve(SHASTA_TESTNET.MEOW_ADDRESS, stakeamount)
+        .send({ feeLimit: 100000000 });
       let receipt = null;
-      while (receipt === 'REVERT' || receipt == null) {
+      while (receipt === "REVERT" || receipt == null) {
         if (window.tronWeb) {
-          const transaction = await window.tronWeb.trx.getTransaction(approveTx);
+          const transaction = await window.tronWeb.trx.getTransaction(
+            approveTx
+          );
           receipt = transaction.ret[0].contractRet;
         }
-        if (receipt === 'REVERT') {
+        if (receipt === "REVERT") {
           await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
         }
       }
@@ -50,16 +56,21 @@ export const stackingMeow = createAsyncThunk(
         .send({ feeLimit: 100000000 });
 
       receipt = null;
-      while (receipt === 'REVERT' || receipt == null) {
+      while (receipt === "REVERT" || receipt == null) {
         if (window.tronWeb) {
           const transaction = await window.tronWeb.trx.getTransaction(enterTx);
           receipt = transaction.ret[0].contractRet;
         }
-        if (receipt === 'REVERT') {
+        if (receipt === "REVERT") {
           await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
         }
       }
-      await axios.post(`http://54.176.107.208/api/userinfo/create?address=${address}&stakeAmount=${stakeamount}&claimAmount=0&ownNfts=[]`);
+      await instance.post("/api/userinfo/create", {
+        address: address,
+        stakeAmount: stakeamount,
+        claimAmount: 0,
+        ownNfts: [],
+      });
 
       return;
     } catch (err: any) {
@@ -96,16 +107,22 @@ export const unstackingMeow = createAsyncThunk(
         .send({ feeLimit: 100000000 });
 
       let receipt = null;
-      while (receipt === 'REVERT' || receipt == null) {
+      while (receipt === "REVERT" || receipt == null) {
         if (window.tronWeb) {
           const transaction = await window.tronWeb.trx.getTransaction(enterTx);
           receipt = transaction.ret[0].contractRet;
         }
-        if (receipt === 'REVERT') {
+        if (receipt === "REVERT") {
           await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
         }
       }
-      await axios.post(`http://54.176.107.208/api/userinfo/create?address=${address}&stakeAmount=${stakeamount * (-1)}&claimAmount=0&ownNfts=[]`);
+
+      await instance.post("/api/userinfo/create", {
+        address: address,
+        stakeAmount: stakeamount * -1,
+        claimAmount: 0,
+        ownNfts: [],
+      });
 
       return;
     } catch (err: any) {
@@ -157,7 +174,5 @@ const stakeSlice = createSlice({
 const baseInfo = (state: RootState) => state.stack;
 
 export default stakeSlice.reducer;
-
-export const { fetchAppSuccess } = stakeSlice.actions;
 
 export const getAppState = createSelector(baseInfo, (stack) => stack);

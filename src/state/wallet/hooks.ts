@@ -7,9 +7,9 @@ import {
   TokenAmount,
 } from "@intercroneswap/v2-sdk";
 import { useMemo } from "react";
-import ERC20_INTERFACE from "../../constants/abis/erc20";
-import { useMulticallContract } from "../../hooks/useContract";
-import { isAddress } from "../../utils";
+import ERC20_INTERFACE from "constants/abis/erc20";
+import { useMulticallContract } from "hooks/useContract";
+import { isAddress } from "utils";
 import {
   useSingleContractMultipleData,
   useMultipleContractSingleData,
