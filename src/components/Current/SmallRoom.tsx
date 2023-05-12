@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import roomPic from "assets/images/Ui_box3.webp";
 import { Timeline } from "react-gsap";
