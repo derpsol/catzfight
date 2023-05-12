@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import "./banner.scss";
-import BannerImage1 from "assets/images/ban1.png";
-import BannerImage2 from "assets/images/ban2.png";
+import BannerImage1 from "assets/images/ban1.jpg";
+import BannerImage2 from "assets/images/ban2.jpg";
 
 const Banner = () => {
   return (

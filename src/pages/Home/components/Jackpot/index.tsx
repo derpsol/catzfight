@@ -38,29 +38,29 @@ const Jackpot = () => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const getAvailableData = useCallback(() => {
-    dispatch(walletInfo({ account: account }));
-  }, [account, dispatch]);
-
-   const onWidrawNFT = useCallback(async() => {
+  const onWidrawNFT = useCallback(async () => {
     let widrawState = await dispatch(widrawNFT({ address: account }));
     if (widrawState.meta.requestStatus === "fulfilled") {
       getAvailableData();
     }
-  }, [account, dispatch, getAvailableData, ]);
+  }, [account]);
 
-  const onClaimMoney = useCallback(async() => {
+  const onClaimMoney = useCallback(async () => {
     let claimState = await dispatch(claimMoney({ address: account }));
     if (claimState.meta.requestStatus === "fulfilled") {
       getAvailableData();
     }
-  }, [account, dispatch, getAvailableData]);
+  }, [account]);
+
+  const getAvailableData = useCallback(() => {
+    dispatch(walletInfo({ account: account }));
+  }, [account]);
 
   useEffect(() => {
     if (account) {
       getAvailableData();
     }
-  }, [account, getAvailableData]);
+  }, [account]);
 
   return (
     <Box
@@ -183,7 +183,7 @@ const Jackpot = () => {
           py: 1,
           px: { xs: 1, xl: 2 },
           backgroundColor: "rgba(38,40,42,0.64)",
-          width: { xs: "400px", sm: '450px', xl: "600px" },
+          width: { xs: "400px", sm: "450px", xl: "600px" },
           textAlign: "center",
           position: { md: "absolute" },
           mx: "auto",

@@ -46,7 +46,7 @@ export function SampleModal() {
     if (isLoading) {
       dispatch(loadNftAllowance({ tokenIds: nftids }));
     }
-  }, [isLoading, dispatch, nftids]);
+  }, [isLoading]);
 
   const approve = useCallback(async (id: Number) => {
     await dispatch(
@@ -55,7 +55,7 @@ export function SampleModal() {
       })
     );
     await dispatch(loadNftAllowance({ tokenIds: nftids }));
-  }, [dispatch, nftids]);
+  }, []);
 
   const closeModal = useCallback(async () => {
     dispatch(
@@ -68,7 +68,7 @@ export function SampleModal() {
         decide: false,
       })
     );
-  }, [dispatch]);
+  }, []);
 
   const onEnterRoom = useCallback(
     async (id: number) => {
@@ -83,7 +83,7 @@ export function SampleModal() {
           gamePrice: Number(gamePrice),
         })
       );
-    }, [gamePrice, baseUri, account, whichroom, dispatch]);
+    }, [gamePrice, baseUri, account, whichroom]);
 
   return (
     <Modal

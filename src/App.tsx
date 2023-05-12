@@ -15,24 +15,24 @@ import 'react-notifications-component/dist/theme.css';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
-  const { active, account } = useWeb3React();
+  const { account } = useWeb3React();
   const toggleWalletModal = useWalletModalToggle();
 
   const loadData = useCallback(() => {
     dispatch(loadGameDetails({ account: account }));
     dispatch(loadNftDetails({ account: account }));
-  }, [account, dispatch]);
+  }, [account]);
 
   useEffect(() => {
-    if (active) {
+    if (account) {
       loadData();
     }
-  }, [active, loadData]);
+  }, [account]);
   useEffect(() => {
-    if (!active) {
+    if (!account) {
       toggleWalletModal();
     }
-  }, [active, toggleWalletModal]);
+  }, [account]);
 
   return (
     <>

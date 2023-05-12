@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { Activity } from "react-feather";
 import { Button, Typography } from "@mui/material";
 import { injected } from "connectors";
+import { NetworkContextName } from "../../constants";
 import useENSName from "hooks/useENSName";
 import { useWalletModalToggle } from "state/application/hooks";
 import {
@@ -90,7 +91,19 @@ function Web3StatusInner() {
   } else {
     return (
       <>
-        <Button variant="contained" color="primary" onClick={toggleWalletModal}>
+        <Button variant="contained" onClick={toggleWalletModal}
+          sx={{
+            color: "rgb(236, 232, 227)",
+            background: "rgb(29, 26, 21)",
+            border: "1px solid rgba(255, 255, 255, 0.12)",
+            height: "40px",
+            p: "8px 16px",
+            fontSize: "14px",
+            borderRadius: "8px",
+            textTransform: "none",
+            '&:hover': {background: "rgb(43, 42, 42)"}
+          }}
+        >
           Connect Wallet
         </Button>
       </>

@@ -28,20 +28,20 @@ const CurrentBattle = () => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  var socket = io("http://54.176.107.208");
+  var socket = io("http://localhost:8001");
 
   const getWholeData = useCallback(async () => {
     await dispatch(loadGameDetails({ account: account }));
     await dispatch(walletInfo({ account: account }));
     await dispatch(loadNftDetails({ account: account }));
     await dispatch(loadNftAllowance({ tokenIds: nftids }));
-  }, [account, dispatch, nftids]);
+  }, [account]);
 
   useEffect(() => {
     socket.on("entered", () => {
       getWholeData();
     });
-  }, [account, socket, getWholeData]);
+  }, [account]);
 
   useEffect(() => {
     if (secRandomData) {
@@ -57,7 +57,7 @@ const CurrentBattle = () => {
       );
       setTimeout(async() => {
         await axios.delete(
-          `http://54.176.107.208/api/betting/delete/${secRandomData.length - 1}`
+          `http://localhost:8001/api/betting/delete/${secRandomData.length - 1}`
         );
         await dispatch(
           loadBattleDetails({
@@ -72,7 +72,7 @@ const CurrentBattle = () => {
         socket.emit("enter");
       }, 4000);
     }
-  }, [secRandomData, dispatch, socket]);
+  }, [secRandomData]);
 
   return (
     <Box

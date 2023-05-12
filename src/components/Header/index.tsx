@@ -29,7 +29,6 @@ const menuLists = [
     link: "/stake",
     text: "Meow Staking",
   },
-  
 ];
 
 const Header = () => {
@@ -54,19 +53,26 @@ const Header = () => {
     <AppBar
       position="static"
       className="appbar"
-      sx={{ backgroundColor: "rgba(9,9,10,1)" }}
+      sx={{ backgroundColor: "rgb(0,0,0)" }}
     >
       <Container maxWidth="xl">
         <Toolbar
           disableGutters
           sx={{ justifyContent: "space-between", columnGap: "8px" }}
         >
-          <Link href="/" className="logo" sx={{textDecoration: 'none'}}>
+          <Link href="/" className="logo" sx={{ textDecoration: "none" }}>
             {/* <Box component="img" src={LogoImage} alt="logo" /> */}
-            <Typography fontFamily="Audiowide" sx={{fontSize: {xs: '24px', sm: '36px', md: '40px'}}}>Catz Fight</Typography>
-          </Link>   
+            <Typography
+              fontFamily="Audiowide"
+              color="rgb(236, 232, 227)"
+              textTransform="uppercase"
+              sx={{ fontSize: { xs: "24px", sm: "28px", md: "32px" } }}
+            >
+              Catz Fight
+            </Typography>
+          </Link>
           <Box sx={{ display: "flex", alignItems: "center", columnGap: "8px" }}>
-            <Box
+            {/* <Box
               className="social-buttons"
               sx={{ display: { xs: "none", sm: "flex" } }}
             >
@@ -75,12 +81,12 @@ const Header = () => {
                 target="_blank"
                 rel="noreferrer"
                 className="social-button"
-                variant="contained"               
-                sx={{ 
+                variant="contained"
+                sx={{
                   backgroundColor: "transparent",
-                  '&: hover': {
-                    backgroundColor: 'rgba(38,40,42,0.95)'
-                  } 
+                  "&: hover": {
+                    backgroundColor: "rgba(38,40,42,0.95)",
+                  },
                 }}
               >
                 <TwitterIcon sx={{ color: "#fff" }} />
@@ -92,11 +98,11 @@ const Header = () => {
                 className="social-button"
                 variant="contained"
                 color="primary"
-                sx={{ 
+                sx={{
                   backgroundColor: "transparent",
-                  '&: hover': {
-                    backgroundColor: 'rgba(38,40,42,0.95)'
-                  } 
+                  "&: hover": {
+                    backgroundColor: "rgba(38,40,42,0.95)",
+                  },
                 }}
               >
                 <TelegramIcon sx={{ color: "#fff" }} />
@@ -108,38 +114,39 @@ const Header = () => {
                 className="social-button"
                 variant="contained"
                 color="primary"
-                sx={{ 
+                sx={{
                   backgroundColor: "transparent",
-                  '&: hover': {
-                    backgroundColor: 'rgba(38,40,42,0.95)'
-                  } 
+                  "&: hover": {
+                    backgroundColor: "rgba(38,40,42,0.95)",
+                  },
                 }}
               >
                 <Box component="img" src={DiscordIcon} alt="" />
               </Button>
-            </Box>
-            <Web3Status />            
-            <Button
+            </Box> */}
+            <Web3Status />
+            {/* <Button
               onClick={handleOpenUserMenu}
               className="menu-button"
               variant="contained"
               color="primary"
               sx={{
-                backgroundColor: 'rgba(101,230,255,0.12)', 
-                '&: hover': {
-                  backgroundColor: 'rgba(101,230,255,0.15)'                                     
-                }          
-              }} 
+                backgroundColor: "rgba(101,230,255,0.12)",
+                "&: hover": {
+                  backgroundColor: "rgba(101,230,255,0.15)",
+                },
+              }}
             >
-              <MenuIcon sx={{ 
-                color: 'rgba(101,230,255,0.9)',
-                '&: hover': {
-                  color: 'rgba(101,230,255,1)',
-                }
-              }} 
+              <MenuIcon
+                sx={{
+                  color: "rgba(101,230,255,0.9)",
+                  "&: hover": {
+                    color: "rgba(101,230,255,1)",
+                  },
+                }}
               />
-            </Button>            
-            <Menu              
+            </Button>
+            <Menu
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
@@ -154,27 +161,32 @@ const Header = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
               sx={{
-                mt: "45px"                        
-              }} 
+                mt: "45px",
+              }}
             >
-              <MenuItem component="a" href="https://www.cryptomooncatz.com"
+              <MenuItem
+                component="a"
+                href="https://www.cryptomooncatz.com"
                 sx={{
-                  backgroundColor: 'rgba(101,230,255,0.12)',
-                  color: 'rgba(101,230,255,0.9)'
-                }}>
+                  backgroundColor: "rgba(101,230,255,0.12)",
+                  color: "rgba(101,230,255,0.9)",
+                }}
+              >
                 Home
               </MenuItem>
               {menuLists.map((list, key) => (
-                <MenuItem key={key} 
+                <MenuItem
+                  key={key}
                   sx={{
-                    backgroundColor: 'rgba(101,230,255,0.12)',
-                    color: 'rgba(101,230,255,0.9)'
+                    backgroundColor: "rgba(101,230,255,0.12)",
+                    color: "rgba(101,230,255,0.9)",
                   }}
-                onClick={() => handleClickMenu(list.link)}>
+                  onClick={() => handleClickMenu(list.link)}
+                >
                   {list.text}
                 </MenuItem>
               ))}
-            </Menu>
+            </Menu> */}
           </Box>
         </Toolbar>
       </Container>
