@@ -19,6 +19,7 @@ import JackpotReducer from 'store/slices/jackpot-slice';
 import RandomReducer from 'store/slices/random-slice';
 import ResultReducer from 'store/slices/result-slice';
 import WinnerReducer from 'store/slices/winner-slice';
+import WaitingReducer from 'store/slices/getnft-slice';
 
 const PERSISTED_KEYS: string[] = ["user", "transactions", "lists"];
 
@@ -40,6 +41,7 @@ const store = configureStore({
     random: RandomReducer,
     result: ResultReducer,
     winner: WinnerReducer,
+    waiting: WaitingReducer,
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false }),
   preloadedState: load({ states: PERSISTED_KEYS }),

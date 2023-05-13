@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { IReduxState } from "store/slices/state.interface";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,6 +7,8 @@ import { useWeb3React } from "@web3-react/core";
 import { claimMoney, widrawNFT } from "store/slices/play-slice";
 import { useCallback, useEffect } from "react";
 import { walletInfo } from "store/slices/walletInfo-slice";
+import React from "react";
+import { AddNft } from "store/slices/addnft-slice";
 
 const availableStyle = {
   paddingY: "4px",
@@ -15,8 +17,28 @@ const availableStyle = {
   color: "#F39B33",
 };
 
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
+  backgroundColor: "rgba(38,40,42)",
+  border: "none",
+  boxShadow: 24,
+  p: 4,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+};
+
 const Jackpot = () => {
   const { account } = useWeb3React();
+  const [open, setOpen] = React.useState(false);
+  const [walletAddress, setWalletAddress] = React.useState("");
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const dispatch = useDispatch<AppDispatch>();
 
   const JackpotAmount = useSelector<IReduxState, string>(
     (state) => state.jackpot.jackpotAmount
@@ -36,20 +58,18 @@ const Jackpot = () => {
     history.push(link);
   };
 
-  const dispatch = useDispatch<AppDispatch>();
-
   const getAvailableData = useCallback(() => {
     dispatch(walletInfo({ account: account }));
   }, [account]);
 
-   const onWidrawNFT = useCallback(async() => {
+  const onWidrawNFT = useCallback(async () => {
     let widrawState = await dispatch(widrawNFT({ address: account }));
     if (widrawState.meta.requestStatus === "fulfilled") {
       getAvailableData();
     }
   }, [account]);
 
-  const onClaimMoney = useCallback(async() => {
+  const onClaimMoney = useCallback(async () => {
     let claimState = await dispatch(claimMoney({ address: account }));
     if (claimState.meta.requestStatus === "fulfilled") {
       getAvailableData();
@@ -61,6 +81,10 @@ const Jackpot = () => {
       getAvailableData();
     }
   }, [account]);
+
+  const handleRequest = useCallback(async () => {
+    await dispatch(AddNft({ address: walletAddress }));
+  }, [walletAddress]);
 
   return (
     <Box
@@ -94,6 +118,9 @@ const Jackpot = () => {
           pb: 6,
         }}
       >
+        <Button onClick={handleOpen} variant="contained" color="success">
+          NFT Request
+        </Button>
         <Box sx={{ mr: 3, textAlign: "center" }}>
           <Button
             sx={{
@@ -166,7 +193,7 @@ const Jackpot = () => {
           py: 1,
           px: { xs: 1, xl: 2 },
           backgroundColor: "rgba(38,40,42,0.64)",
-          width: { xs: "400px", sm: '450px', xl: "600px" },
+          width: { xs: "400px", sm: "450px", xl: "600px" },
           textAlign: "center",
           position: { md: "absolute" },
           mx: "auto",
@@ -176,6 +203,47 @@ const Jackpot = () => {
       >
         MEOW left to be mined: 99,999,980
       </Typography>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography
+            color="white"
+            fontFamily="Georgia"
+            fontWeight="700"
+            fontSize="30px"
+          >
+            Please insert NFT Address
+          </Typography>
+          <TextField
+            sx={{
+              mt: "20px",
+              width: "100%",
+            }}
+            value={walletAddress}
+            onChange={(e) => {
+              setWalletAddress(e.target.value);
+            }}
+          />
+          <Button
+            variant="contained"
+            color="info"
+            sx={{
+              mt: "20px",
+              width: "50%",
+            }}
+            onClick={() => {
+              handleRequest();
+              handleClose();
+            }}
+          >
+            Send Reqeust
+          </Button>
+        </Box>
+      </Modal>
     </Box>
   );
 };
