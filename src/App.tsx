@@ -3,6 +3,7 @@ import { useWeb3React } from "@web3-react/core";
 import Header from "components/Header";
 import Home from "pages/Home";
 import Stake from "pages/Stake";
+import Admin from "pages/admin";
 import { Provider } from "react-redux";
 import store, { AppDispatch } from "./state";
 import { loadGameDetails } from "./store/slices/game-slice";
@@ -16,6 +17,7 @@ import { useEffect, useCallback } from "react";
 import { useWalletModalToggle } from "state/application/hooks";
 import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
+import { loadWaitingDetails } from "store/slices/getnft-slice";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -27,6 +29,10 @@ function App() {
     dispatch(loadRandomDetails({ randomData: [] }));
     dispatch(loadResultDetails({ resultData: [] }));
     dispatch(loadWinnerDetails({ winnerData: [] }));
+    dispatch(loadWaitingDetails({
+      waitingList: [],
+      approvedList: []
+    }));
     dispatch(loadNftDetails({ account: account }));
     dispatch(loadJackpotDetails({ account: account }));
   }, [account]);
@@ -50,6 +56,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/stake" component={Stake} />
+          <Route exact path='/admin' component={Admin} />
           <Route path="*">
             <Redirect to="/" />
           </Route>

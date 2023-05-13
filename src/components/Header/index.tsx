@@ -10,17 +10,12 @@ import {
   MenuItem,
   Container,
   Typography,
-  Modal,
-  TextField,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import TwitterIcon from "@mui/icons-material/Twitter";
-import { AppDispatch } from "state";
 import DiscordIcon from "assets/images/discord-brands.svg";
 import "./header.scss";
-import { useDispatch } from "react-redux";
-import { AddNft } from "store/slices/addnft-slice";
 
 import Web3Status from "components/Web3Status";
 
@@ -35,28 +30,10 @@ const menuLists = [
   },
 ];
 
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 500,
-  backgroundColor: "rgba(38,40,42)",
-  border: "none",
-  boxShadow: 24,
-  p: 4,
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-};
+
 
 const Header = () => {
   const history = useHistory();
-  const [open, setOpen] = React.useState(false);
-  const [walletAddress, setWalletAddress] = React.useState("");
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const dispatch = useDispatch<AppDispatch>();
 
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -72,10 +49,6 @@ const Header = () => {
     handleCloseUserMenu();
     history.push(link);
   };
-
-  const handleRequest = useCallback(async () => {
-    await dispatch(AddNft({ address: walletAddress }));
-  }, [walletAddress]);
 
   return (
     <AppBar
@@ -151,9 +124,6 @@ const Header = () => {
               </Button>
             </Box>
             <Web3Status />
-            <Button onClick={handleOpen} variant="contained" color="success">
-              NFT Request
-            </Button>
             <Button
               onClick={handleOpenUserMenu}
               className="menu-button"
@@ -219,47 +189,6 @@ const Header = () => {
           </Box>
         </Toolbar>
       </Container>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography
-            color="white"
-            fontFamily="Georgia"
-            fontWeight="700"
-            fontSize="30px"
-          >
-            Please insert NFT Address
-          </Typography>
-          <TextField
-            sx={{
-              mt: "20px",
-              width: "100%",
-            }}
-            value={walletAddress}
-            onChange={(e) => {
-              setWalletAddress(e.target.value);
-            }}
-          />
-          <Button
-            variant="contained"
-            color="info"
-            sx={{
-              mt: "20px",
-              width: "50%",
-            }}
-            onClick={() => {
-              handleRequest();
-              handleClose();
-            }}
-          >
-            Send Reqeust
-          </Button>
-        </Box>
-      </Modal>
     </AppBar>
   );
 };
