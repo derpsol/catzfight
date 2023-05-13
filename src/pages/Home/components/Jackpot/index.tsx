@@ -102,7 +102,7 @@ const Jackpot = () => {
           py: 1,
           px: { xs: 1, sm: 3 },
           backgroundColor: "rgba(38,40,42,0.64)",
-          width: { xs: "400px", sm: "615px" },
+          width: { xs: "320px", sm: "615px" },
           textAlign: "center",
           mx: "auto",
         }}
@@ -116,25 +116,16 @@ const Jackpot = () => {
           flexWrap: "wrap",
           alignItems: "self-start",
           pb: 6,
+          mt: "12px",
         }}
       >
-        <Button onClick={handleOpen} variant="contained" color="success">
-          NFT Request
-        </Button>
         <Box sx={{ mr: 3, textAlign: "center" }}>
-          <Button
-            sx={{
-              paddingX: "16px",
-              paddingY: "6px",
-              marginTop: "8px",
-              fontSize: "18px",
-              color: "#52b202",
-              backgroundColor: "#d0e7b7",
-            }}
-            onClick={() => {
-              onWidrawNFT();
-            }}
-          >
+          <Button onClick={handleOpen} variant="contained" color="success">
+            NFT Request
+          </Button>
+        </Box>
+        <Box sx={{ mr: 3, textAlign: "center" }}>
+          <Button variant="contained" color="info" onClick={onWidrawNFT}>
             Withdraw NFTs
           </Button>
           <Typography sx={availableStyle}>
@@ -142,38 +133,17 @@ const Jackpot = () => {
           </Typography>
         </Box>
         <Box sx={{ mr: 3, textAlign: "center" }}>
-          <Button
-            sx={{
-              paddingX: "16px",
-              paddingY: "6px",
-              marginTop: "8px",
-              fontSize: "18px",
-              color: "#52b202",
-              backgroundColor: "#d0e7b7",
-            }}
-            onClick={() => {
-              onClaimMoney();
-            }}
-          >
+          <Button variant="contained" color="info" onClick={onClaimMoney}>
             Withdraw TRX
           </Button>
           <Typography sx={availableStyle}>
             Available TRX: {widrawAmount ? widrawAmount : 0} TRX
           </Typography>
         </Box>
-        <Box sx={{ mr: 3 }}>
+        <Box sx={{ mr: 3, textAlign: "center" }}>
           <Button
-            sx={{
-              borderRadius: "24px",
-              paddingX: "16px",
-              paddingY: "6px",
-              border: "1px solid white",
-              color: "white",
-              mx: "auto",
-              fontSize: "18px",
-              marginTop: "8px",
-              display: "block",
-            }}
+            variant="contained"
+            color="primary"
             onClick={() => {
               handleClickStake("stake");
             }}
@@ -193,7 +163,7 @@ const Jackpot = () => {
           py: 1,
           px: { xs: 1, xl: 2 },
           backgroundColor: "rgba(38,40,42,0.64)",
-          width: { xs: "400px", sm: "450px", xl: "600px" },
+          width: { xs: "320px", sm: "450px", xl: "600px" },
           textAlign: "center",
           position: { md: "absolute" },
           mx: "auto",
