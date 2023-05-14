@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import roomPic from "assets/images/Ui_box3.webp";
-import { Timeline } from "react-gsap";
 import buttonBack from "assets/images/button.png";
 import { IReduxState } from "store/slices/state.interface";
 import { useDispatch, useSelector } from "react-redux";
@@ -84,7 +83,6 @@ export function SmallRooms() {
       }}
     >
       {(gameData ? gameData : Datas)?.map((data, index) => {
-        if (index > 3) return;
         return (
           <Box
             display="flex"
@@ -124,23 +122,7 @@ export function SmallRooms() {
                   />
                 ) : (
                   <Box sx={roomStyleAvatar} alignItems="center" display="flex">
-                    <Timeline
-                      target={
-                        <Typography sx={fightStyle}>Let's FIGHT</Typography>
-                      }
-                      repeat={10000}
-                    >
-                      {/* <Tween
-                          from={{ scaleX: 1.1, scaleY: 1.1 }}
-                          to={{ scaleX: 1, scaleY: 1 }}
-                          duration={1.5}
-                        />
-                        <Tween
-                          from={{ scaleX: 1, scaleY: 1 }}
-                          to={{ scaleX: 1.1, scaleY: 1.1 }}
-                          duration={1.5}
-                        /> */}
-                    </Timeline>
+                    <Typography sx={fightStyle}>Let's FIGHT</Typography>
                   </Box>
                 )}
                 <Box
@@ -223,23 +205,7 @@ export function SmallRooms() {
                   />
                 ) : (
                   <Box sx={roomStyleAvatar} display="flex" alignItems="center">
-                    <Timeline
-                      target={
-                        <Typography sx={fightStyle}>Let's FIGHT</Typography>
-                      }
-                      repeat={10000}
-                    >
-                      {/* <Tween
-                          from={{ scaleX: 1.1, scaleY: 1.1 }}
-                          to={{ scaleX: 1, scaleY: 1 }}
-                          duration={1.5}
-                        />
-                        <Tween
-                          from={{ scaleX: 1, scaleY: 1 }}
-                          to={{ scaleX: 1.1, scaleY: 1.1 }}
-                          duration={1.5}
-                        /> */}
-                    </Timeline>
+                    <Typography sx={fightStyle}>Let's FIGHT</Typography>
                   </Box>
                 )}
                 <Box

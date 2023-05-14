@@ -20,7 +20,11 @@ export const loadGameDetails = createAsyncThunk(
       .catch((error) => {
         console.log(error);
       });
-    for (let i = 0; i < Math.max(4, tmpgameData.length + 2); i++) {
+    let maxRoomNum = 0;
+    for (let i = 0; i < tmpgameData.length; i++) {
+      maxRoomNum = Math.max(tmpgameData[i].roomNum, maxRoomNum);
+    }
+    for (let i = 0; i < Math.max(4, maxRoomNum + 2); i++) {
       let newGameData: gameDataStyle = {
         roomNum: 0,
         firstNFT: "",
@@ -33,18 +37,22 @@ export const loadGameDetails = createAsyncThunk(
         fightRoom: 0,
         flag: false
       };
-      if (tmpgameData[i] !== undefined) {
-        newGameData.firstNFT = tmpgameData[i]?.firstNFT;
-        newGameData.firstAddress = tmpgameData[i]?.firstAddress;
-        newGameData.firstRandom = tmpgameData[i]?.firstRandom;
-        newGameData.fightRoom = tmpgameData[i]?.fightRoom;
-        newGameData.tokenId = tmpgameData[i]?.tokenId;
-        newGameData.secondNFT = tmpgameData[i]?.secondNFT;
-        newGameData.secondAddress = tmpgameData[i]?.secondAddress;
-        newGameData.secondRandom = tmpgameData[i]?.secondRandom;
-        console.log("fightRoom", newGameData.fightRoom);
-      }
       gameData.push(newGameData);
+    }
+    let tmpcnt = 0;
+    for (let i = 0; i < Math.max(4, maxRoomNum + 2); i++) {
+      if(i + 1 === tmpgameData[tmpcnt]?.roomNum) {
+        gameData[i].roomNum = tmpgameData[tmpcnt].roomNum;
+        gameData[i].firstNFT = tmpgameData[tmpcnt]?.firstNFT;
+        gameData[i].firstAddress = tmpgameData[tmpcnt]?.firstAddress;
+        gameData[i].firstRandom = tmpgameData[tmpcnt]?.firstRandom;
+        gameData[i].fightRoom = tmpgameData[tmpcnt]?.fightRoom;
+        gameData[i].tokenId = tmpgameData[tmpcnt]?.tokenId;
+        gameData[i].secondNFT = tmpgameData[tmpcnt]?.secondNFT;
+        gameData[i].secondAddress = tmpgameData[tmpcnt]?.secondAddress;
+        gameData[i].secondRandom = tmpgameData[tmpcnt]?.secondRandom;
+        tmpcnt ++;
+      }
     }
     return {
       gameData,
@@ -81,7 +89,6 @@ const gameSlice = createSlice({
         fightRoom: 0,
         flag: false
       };
-      console.log('payload: ', action.payload);
       if(action.payload.delRoomNum > 0) {
         updatedData.roomNum = action.payload.delRoomNum;
       } else {
@@ -94,6 +101,28 @@ const gameSlice = createSlice({
         state.gameData[updatedData.roomNum - 1] = updatedData;
       } else {
         state.gameData[index] = updatedData;
+      }
+
+      let maxRoomNum = 0;
+      let emptyData: gameDataStyle = {
+        roomNum: 0,
+        firstNFT: "",
+        secondNFT: "",
+        firstAddress: "",
+        secondAddress: "",
+        firstRandom: 0,
+        secondRandom: 0,
+        tokenId: 0,
+        fightRoom: 0,
+        flag: false
+      };
+      for(let i = 0; i < state.gameData.length; i ++) {
+        maxRoomNum = Math.max(state.gameData[i].roomNum, maxRoomNum);
+      }
+      for(let i = 0; i < Math.max(4, maxRoomNum + 2); i ++) {
+        if(state.gameData[i] === undefined) {
+          state.gameData[i] = emptyData;
+        }
       }
     },
   },

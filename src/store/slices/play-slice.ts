@@ -137,6 +137,7 @@ export const ClaimFight = createAsyncThunk(
     { dispatch }
   ) => {
     let meowContract: any;
+    console.log('claimFight Data: ', tokenId, fightRoom, whichroom, url, waitingRandom, address, gamePrice);
     if (window) {
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
         meowContract = await window.tronWeb
