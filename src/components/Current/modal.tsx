@@ -42,12 +42,6 @@ export function SampleModal() {
     (state) => state.nfts.nfturl
   );
 
-  useEffect(() => {
-    if (isLoading) {
-      dispatch(loadNftAllowance({ tokenIds: nftids }));
-    }
-  }, [isLoading, nftids]);
-
   const approve = useCallback(async (id: Number) => {
     await dispatch(
       approveNFT({

@@ -23,6 +23,7 @@ export const EnterRoom = createAsyncThunk(
     { tokenId, fightRoom, whichroom, url, address, gamePrice }: IenterRoomMeow,
     { dispatch }
   ) => {
+    console.log('enterRoom data: ', tokenId, fightRoom, whichroom, url, address, gamePrice);
     let meowContract;
     if (window) {
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {

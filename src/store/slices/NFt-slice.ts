@@ -17,7 +17,7 @@ interface IapproveNFT {
 declare var window: any
 
 export const approveNFT = createAsyncThunk(
-  "NFT/loadMFTDetails",
+  "NFT/approveMFT",
   //@ts-ignore
   async ({ tokenId }: IapproveNFT, { dispatch }) => {
     let nftContract;
@@ -27,10 +27,26 @@ export const approveNFT = createAsyncThunk(
       }
     }
     try {
-      await nftContract.approve(
+      let enterTx = await nftContract.approve(
         SHASTA_TESTNET.MEOW_ADDRESS,
         tokenId
       ).send({ feeLimit: 100000000 });
+
+      let receipt = null;
+      while (receipt === "REVERT" || receipt == null) {
+        if (window.tronWeb) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          const transaction = await window.tronWeb.trx.getTransaction(enterTx);
+          if (transaction && transaction.ret && transaction.ret.length > 0) {
+            receipt = transaction.ret[0].contractRet;
+          }
+          console.log("receipt: ", receipt, enterTx);
+        }
+        if (receipt === "REVERT") {
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second
+        }
+      }
 
       notification({ title: "Successfully approved!", type: "success"});
       return;
