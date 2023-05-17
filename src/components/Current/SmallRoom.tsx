@@ -82,7 +82,7 @@ export function SmallRooms() {
         flexWrap: "wrap",
       }}
     >
-      {(gameData ? gameData : Datas)?.map((data, index) => {
+      {(gameData.length !== 0 ? gameData : Datas)?.map((data, index) => {
         return (
           <Box
             display="flex"
