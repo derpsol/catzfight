@@ -33,15 +33,8 @@ const Home = () => {
           my: { xs: 1, sm: 2 },
         }}
       >
-        <Box sx={{ width: { xs: "100%", lg: "13%" } }}>
-          <Role />
-        </Box>
-        <Box sx={{ width: { xs: "100%", lg: "66%" } }}>
+        <Box>
           <CurrentBattle />
-          <FinishedBattle />
-        </Box>
-        <Box sx={{ width: { xs: "100%", lg: "15%" } }}>
-          <Winner />
         </Box>
       </Box>
     </Box>

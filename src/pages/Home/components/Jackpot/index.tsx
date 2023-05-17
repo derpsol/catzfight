@@ -43,9 +43,6 @@ const Jackpot = () => {
   const JackpotAmount = useSelector<IReduxState, string>(
     (state) => state.jackpot.jackpotAmount
   );
-  const meowCount: string = useSelector<IReduxState, string>(
-    (state) => state.jackpot.meowCount
-  );
   let contractNFTs: number = useSelector<IReduxState, number>(
     (state) => state.wallet.nftCount
   );
@@ -150,9 +147,6 @@ const Jackpot = () => {
           >
             Meow Staking
           </Button>
-          <Typography sx={availableStyle}>
-            Available Meow: {meowCount}
-          </Typography>
         </Box>
       </Box>
       <Typography

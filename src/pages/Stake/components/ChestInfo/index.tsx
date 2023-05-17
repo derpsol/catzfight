@@ -31,22 +31,22 @@ const ChestInfo = () => {
 					Battle players for NFTs and a chance at opening the War Chest Jackpot!
 				</Typography>
 				<Typography sx={{ fontSize: {xs: '12px', sm: '16px'}, color: 'white', pt: 2}}>
-					Each battle 2 users put up 1 Crypto Moon Catz NFT and 10 TRX each.
+					Each battle 2 users put up 1 Crypto Moon Catz NFT and 50 TRX each.
 				</Typography>
 				<Typography sx={{ fontSize: {xs: '12px', sm: '16px'}, color: 'white', pt: 1}}>
-					Users are the given a random nuber (1-100,000) Highest number wins!
+					Users are the given a random nuber (1-1,000) Highest number wins!
 				</Typography>
 				<Typography sx={{ fontSize: {xs: '12px', sm: '16px'}, color: '#BADA55', pt: 2}}>
-					Winner receives both NFT's and 10 TRX + (1 Meow token)
+					Winner receives both NFT's and 60 TRX + (1 Meow token)
 				</Typography>				
 				<Typography sx={{color: '#FF1313', fontSize: {xs: '12px', sm: '16px', pt: 1}}}>
 					Loser receives (1 Meow token)
 				</Typography>
 				<Typography sx={{color: '#FF1313', fontSize: {xs: '12px', sm: '16px', pt: 1}}}>
-					Loser 8 TRX is sent to the War Chest Jackpot until 77,777 is rolled!
+					Loser 30 TRX is sent to the War Chest Jackpot until 777 is rolled!
 				</Typography>
 				<Typography sx={{color: '#FF1313', fontSize: {xs: '12px', sm: '16px', pt: 1}}}>
-					2 TRX sent to team account
+					10 TRX sent to team account
 				</Typography>
 			</Box>
 			<Box sx={{py: {xs: 1, sm: 2}, backgroundColor: '#6A6E64', px: 2}}>
@@ -54,13 +54,16 @@ const ChestInfo = () => {
 					War Chest Jackpot distribution:
 				</Typography>				
 				<Typography sx={{color: '#F39B33', fontSize: {xs: '12px', sm: '16px'}, tp: 1}}>
-					50% goes to who rolled 77,777
+					40% goes to who rolled 777
 				</Typography>
 				<Typography sx={{color: '#F39B33', fontSize: {xs: '12px', sm: '16px'}, tp: 1}}>
 					10% goes to other user in that battle
 				</Typography>
 				<Typography sx={{color: '#F39B33', fontSize: {xs: '12px', sm: '16px'}, tp: 1}}>
 					40% goes to all users that have Meow tokens staked
+				</Typography>
+				<Typography sx={{color: '#F39B33', fontSize: {xs: '12px', sm: '16px'}, tp: 1}}>
+					10% remains in the jackpot
 				</Typography>
 			</Box>
 		</Box>
