@@ -28,9 +28,15 @@ const menuLists = [
     link: "/stake",
     text: "Meow Staking",
   },
+  {
+    link: "/result",
+    text: "Result"
+  },
+  {
+    link: "/admin",
+    text: "Admin",
+  }
 ];
-
-
 
 const Header = () => {
   const history = useHistory();
