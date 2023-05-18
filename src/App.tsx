@@ -4,6 +4,7 @@ import Header from "components/Header";
 import Home from "pages/Home";
 import Stake from "pages/Stake";
 import Admin from "pages/admin";
+import Result from "pages/result";
 import { Provider } from "react-redux";
 import store, { AppDispatch } from "./state";
 import { loadGameDetails } from "./store/slices/game-slice";
@@ -57,6 +58,7 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route exact path="/stake" component={Stake} />
           <Route exact path='/admin' component={Admin} />
+          <Route exact path='/result' component={Result} />
           <Route path="*">
             <Redirect to="/" />
           </Route>

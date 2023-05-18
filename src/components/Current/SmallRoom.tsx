@@ -158,27 +158,16 @@ export function SmallRooms() {
                     sx={buttonStyle}
                     color={data.firstNFT ? "white" : "yellow"}
                   >
-                    {firRandomData &&
-                    decide &&
-                    !(
-                      firRandomData[index + 1] === undefined ||
-                      firRandomData[index + 1] === 0
-                    )
-                      ? firRandomData[index + 1] > secRandomData[index + 1]
+                    {data.secondRandom
+                      ? data.firstRandom > data.secondRandom
                         ? "Winner"
-                        : firRandomData[index + 1] === secRandomData[index + 1]
-                        ? "Draw"
                         : "Loser"
-                      : data.secondAddress === "" ||
-                        data.secondAddress === null ||
-                        data.secondAddress === undefined
-                      ? data.firstAddress === ""
-                        ? "Fight"
-                        : `${data.firstAddress?.slice(
-                            0,
-                            4
-                          )}...${data.firstAddress?.slice(-4)}`
-                      : "Fighting..."}
+                      : data.firstAddress
+                      ? `${data.firstAddress.slice(
+                          0,
+                          4
+                        )}...${data.firstAddress.slice(-4)}`
+                      : "Fight"}
                   </Typography>
                 </Button>
               </Box>
@@ -247,28 +236,13 @@ export function SmallRooms() {
                   <Box component="img" src={buttonBack} width="100%" />
                   <Typography
                     sx={buttonStyle}
-                    color={
-                      secRandomData && secRandomData[index + 1]
-                        ? "white"
-                        : "yellow"
-                    }
+                    color={data.secondRandom ? "white" : "yellow"}
                   >
-                    {secRandomData &&
-                    decide &&
-                    !(
-                      secRandomData[index + 1] === undefined ||
-                      secRandomData[index + 1] === 0
-                    )
-                      ? firRandomData[index + 1] > secRandomData[index + 1]
+                    {data.secondRandom
+                      ? data.firstRandom > data.secondRandom
                         ? "Loser"
-                        : firRandomData[index + 1] === secRandomData[index + 1]
-                        ? "Draw"
                         : "Winner"
-                      : data.secondAddress === "" ||
-                        data.secondAddress === null ||
-                        data.secondAddress === undefined
-                      ? "Fight"
-                      : "Fighting..."}
+                      : "Fight"}
                   </Typography>
                 </Button>
               </Box>

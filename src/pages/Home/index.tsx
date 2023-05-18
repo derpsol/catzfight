@@ -2,10 +2,7 @@ import { Box, Typography } from "@mui/material";
 // import ActionFeed from "./components/ActionFeed";
 import Banner from "./components/Banner";
 import Jackpot from "./components/Jackpot";
-import Role from "./components/Role";
-import Winner from "./components/Winner";
 import CurrentBattle from "./components/CurrentBattle";
-import FinishedBattle from "./components/FinishedBattle";
 
 const Home = () => {
   return (
