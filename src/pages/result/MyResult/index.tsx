@@ -3,9 +3,9 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import { IReduxState } from "store/slices/state.interface";
 import { useSelector } from "react-redux";
 
-const FinishedBattle = () => {
+const MyResult = () => {
   const resultData: any[] = useSelector<IReduxState, any[]>(
-    (state) => state.result.resultData
+    (state) => state.result.myResultData
   );
 
   return (
@@ -26,7 +26,7 @@ const FinishedBattle = () => {
           mb: { xs: 1, sm: 2, md: 3, xl: 4 },
         }}
       >
-        Recent Finished Battles
+        My Results (Last 20 battles)
       </Typography>
       <Box
         sx={{
@@ -170,4 +170,4 @@ const FinishedBattle = () => {
   );
 };
 
-export default FinishedBattle;
+export default MyResult;

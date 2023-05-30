@@ -10,7 +10,7 @@ import { resultDataStyle } from "@types";
 
 export const loadResultDetails = createAsyncThunk(
   "result/loadResultDetails",
-  async ({ resultData }: IResultSlice) => {
+  async ({ resultData, myResultData, address }: IResultSlice) => {
     await instance
       .get("/api/result")
       .then((response) => {
@@ -20,22 +20,38 @@ export const loadResultDetails = createAsyncThunk(
         console.log(error);
       });
 
+    await instance
+      .get(`/api/result/myresult?address=${address}`)
+      .then((response) => {
+        myResultData = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     return {
       resultData,
+      myResultData,
     };
   }
 );
 
 const initialState: {
-  loading: boolean,
-  resultData: resultDataStyle[],
+  loading: boolean;
+  resultData: resultDataStyle[];
+  myResultData: resultDataStyle[];
+  address: any;
 } = {
   loading: true,
   resultData: [],
+  myResultData: [],
+  address: '',
 };
 
 export interface IResultSlice {
   resultData: resultDataStyle[];
+  myResultData: resultDataStyle[];
+  address: any;
 }
 
 const resultSlice = createSlice({

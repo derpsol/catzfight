@@ -8,6 +8,10 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { IReduxState } from "store/slices/state.interface";
+import first from "assets/images/first.png";
+import second from "assets/images/second.png";
+import third from "assets/images/third.png";
+import other from "assets/images/other.png";
 
 const Winner = () => {
   const winnerData: any[] = useSelector<IReduxState, any[]>(
@@ -17,78 +21,78 @@ const Winner = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "rgba(230,239,237, 0.1)",
         paddingX: "6px",
-        mt: { xs: 2, sm: 4, md: 6, xl: 8 },
+        pt: { xs: 2, sm: 4, md: 6, xl: 8 },
         pb: 1,
       }}
     >
       <Typography
         fontFamily="Audiowide"
         sx={{
-          fontSize: { xs: "20px", sm: "25px" },
-          color: "#F39B33",
-          py: { xs: 1, md: 2 },
+          fontSize: { xs: "24px", sm: "30px" },
+          color: "white",
+          textAlign: "center",
+          py: { xs: 1, sm: 2, md: 3, xl: 4 },
+          mb: { xs: 1, sm: 2, md: 3, xl: 4 },
         }}
       >
         Top 10 Winners
       </Typography>
       <Table>
         <TableBody>
-          <TableRow>
-            <TableCell
-              sx={{ borderBottom: "none", padding: "0", textAlign: "center" }}
-            >
-              <Typography
-                sx={{
-                  color: "white",
-                  fontSize: { xs: "14px", sm: "16px", md: "20px" },
-                }}
-              >
-                Wins:
-              </Typography>
-            </TableCell>
-            <TableCell
-              sx={{ borderBottom: "none", padding: "0", textAlign: "center" }}
-            >
-              <Typography
-                sx={{
-                  color: "white",
-                  fontSize: { xs: "14px", sm: "16px", md: "20px" },
-                }}
-              >
-                Address:
-              </Typography>
-            </TableCell>
-          </TableRow>
-          {winnerData && winnerData.map((data, index) => (
-            <TableRow key={index}>
-              <TableCell
-                sx={{ borderBottom: "none", padding: "0", textAlign: "center" }}
-              >
-                <Typography
+          {winnerData &&
+            winnerData.map((data, index) => (
+              <TableRow key={index}>
+                <TableCell
                   sx={{
-                    color: "white",
-                    fontSize: { xs: "14px", sm: "16px", md: "20px" },
+                    borderBottom: "none",
+                    padding: "0",
+                    textAlign: "center",
                   }}
                 >
-                  {data.winCount}
-                </Typography>
-              </TableCell>
-              <TableCell
-                sx={{ borderBottom: "none", padding: "0", textAlign: "center" }}
-              >
-                <Typography
+                  {data.rank === 1 ? 
+                  <Box component="img" src={first} width="50px" /> :
+                  data.rank === 2 ?
+                  <Box component="img" src={second} width="50px" /> :
+                  data.rank === 3 ?
+                  <Box component="img" src={third} width="50px" /> :
+                  <Box component="img" src={other} width="50px" />
+                }
+                </TableCell>
+                <TableCell
                   sx={{
-                    color: "white",
-                    fontSize: { xs: "14px", sm: "16px", md: "20px" },
+                    borderBottom: "none",
+                    padding: "0",
+                    textAlign: "center",
                   }}
                 >
-                  {`${data.address.slice(0,4)}...${data.address.slice(-4)}`}
-                </Typography>
-              </TableCell>
-            </TableRow>
-          ))}
+                  <Typography
+                    sx={{
+                      color: "white",
+                      fontSize: { xs: "14px", sm: "16px", md: "20px" },
+                    }}
+                  >
+                    {`${data.address.slice(0, 4)}...${data.address.slice(-4)}`}
+                  </Typography>
+                </TableCell>
+                <TableCell
+                  sx={{
+                    borderBottom: "none",
+                    padding: "0",
+                    textAlign: "center",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      color: "white",
+                      fontSize: { xs: "14px", sm: "16px", md: "20px" },
+                    }}
+                  >
+                    Win {data.winCount} times
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </Box>
