@@ -62,12 +62,13 @@ export const approveNFT = createAsyncThunk(
 
 interface IloadNftAllowance {
   tokenIds: Number[];
+  index: number;
 }
 
 export const loadNftAllowance = createAsyncThunk(
   "app/loadNftAllowance",
   //@ts-ignore
-  async ({ tokenIds }: IloadNftAllowance) => {
+  async ({ tokenIds, index }: IloadNftAllowance) => {
     let approvedList: any[] = [];
     await instance
       .get(`/api/approved`)
@@ -78,26 +79,27 @@ export const loadNftAllowance = createAsyncThunk(
         console.log(error);
       });
     let allows: boolean[][] = [];
-    for (let i = 0; i < 1; i++) {
-      let nftContract: any;
-      if (window) {
-        if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-          nftContract = await window.tronWeb
-            .contract()
-            .at(tronWeb.address.toHex(SHASTA_TESTNET.NFT_ADDRESS));
-        }
-      }
-      let allowtmp: String[] = [];
-      await Promise.all(
-        tokenIds.map(async (tokenId, index) => {
-          allowtmp[index] = await nftContract.getApproved(tokenId).call();
-        })
-      );
-      allowtmp.map((allow, index) => {
-        allows[i][index] =
-          allow === tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS);
-      });
+    for (let i = 0; i < approvedList.length; i++) {
+      allows.push([]);
     }
+    let nftContract: any;
+    if (window) {
+      if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+        nftContract = await window.tronWeb
+          .contract()
+          .at(tronWeb.address.toHex(approvedList[index].address));
+      }
+    }
+    let allowtmp: String[] = [];
+    await Promise.all(
+      tokenIds.map(async (tokenId, idn) => {
+        allowtmp[idn] = await nftContract.getApproved(tokenId).call();
+      })
+    );
+    allowtmp.map((allow, idn) => {
+      allows[index][idn] =
+        allow === tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS);
+    });
     return {
       allowances: allows,
     };

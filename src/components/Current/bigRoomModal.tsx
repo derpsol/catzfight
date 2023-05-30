@@ -43,18 +43,21 @@ export function BigRoomModal() {
   const nftInfo: number[] = useSelector<IReduxState, number[]>(
     (state) => state.wallet.nftInfo
   );
-  const baseUri: string = useSelector<IReduxState, string>(
+  const baseUri: string[] = useSelector<IReduxState, string[]>(
     (state) => state.nfts.nfturl
   );
 
-  const approve = useCallback(async (id: Number) => {
-    await dispatch(
-      approveNFT({
-        tokenId: id,
-      })
-    );
-    await dispatch(loadNftAllowance({ tokenIds: nftids }));
-  }, [dispatch, nftids]);
+  // const approve = useCallback(
+  //   async (id: Number) => {
+  //     await dispatch(
+  //       approveNFT({
+  //         tokenId: id,
+  //       })
+  //     );
+  //     await dispatch(loadNftAllowance({ tokenIds: nftids }));
+  //   },
+  //   [dispatch, nftids]
+  // );
 
   const closeModal = useCallback(async () => {
     dispatch(
@@ -96,7 +99,7 @@ export function BigRoomModal() {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-      <Box sx={avatarsStyle}>
+        {/* <Box sx={avatarsStyle}>
           {nftInfo &&
             nftInfo.map((id: number, index) => {
               return (
@@ -107,7 +110,10 @@ export function BigRoomModal() {
                   <Box sx={{ mb: 2, display: "flex", flexDirection: "column" }}>
                     <Box
                       component="img"
-                      src={`https://ipfs.io/ipfs/${baseUri?.slice(7,53)}/${id}.png`}
+                      src={`https://ipfs.io/ipfs/${baseUri?.slice(
+                        7,
+                        53
+                      )}/${id}.png`}
                       alt="NFT_avatar"
                       sx={modalAvatarStyle}
                     />
@@ -138,7 +144,10 @@ export function BigRoomModal() {
                     {nfturis ? (
                       <Box
                         component="img"
-                        src={`https://ipfs.io/ipfs/${baseUri?.slice(7,53)}/${id}.png`}
+                        src={`https://ipfs.io/ipfs/${baseUri?.slice(
+                          7,
+                          53
+                        )}/${id}.png`}
                         alt="NFT_avatar"
                         sx={modalAvatarStyle}
                       />
@@ -167,7 +176,7 @@ export function BigRoomModal() {
                 </Box>
               );
             })}
-        </Box>
+        </Box> */}
       </Box>
     </Modal>
   );

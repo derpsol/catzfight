@@ -22,26 +22,20 @@ import { gameDataStyle } from "@types";
 export function SmallRooms() {
   const { account } = useWeb3React();
   const dispatch = useDispatch<AppDispatch>();
-  const firRandomData: number[] = useSelector<IReduxState, number[]>(
-    (state) => state.fight.random1
-  );
-  const secRandomData: number[] = useSelector<IReduxState, number[]>(
-    (state) => state.fight.random2
-  );
   const gameData: gameDataStyle[] = useSelector<IReduxState, any[]>(
     (state) => state.app.gameData
   );
-  const decide: boolean = useSelector<IReduxState, boolean>(
-    (state) => state.battle.decide
-  );
-  const nftids: any[] = useSelector<IReduxState, any[]>(
+  const nftids: any[][] = useSelector<IReduxState, any[][]>(
     (state) => state.nfts.nftids
   );
 
   const onEnterModal = useCallback(
     async (index: number) => {
       await dispatch(loadNftDetails({ account: account }));
-      await dispatch(loadNftAllowance({ tokenIds: nftids }));
+      await dispatch(loadNftAllowance({
+        tokenIds: nftids[0],
+        index: 0
+      }));
       await dispatch(
         loadBattleDetails({
           openState: true,
@@ -59,7 +53,10 @@ export function SmallRooms() {
   const onClaimModal = useCallback(
     async (index: number, fightRoom: number, firstRandom: number) => {
       await dispatch(loadNftDetails({ account: account }));
-      await dispatch(loadNftAllowance({ tokenIds: nftids }));
+      await dispatch(loadNftAllowance({
+        tokenIds: nftids[0],
+        index: 0
+      }));
       await dispatch(
         loadBattleDetails({
           openState: false,
@@ -147,7 +144,7 @@ export function SmallRooms() {
                   onClick={() => {
                     onEnterModal(index);
                   }}
-                  disabled={data.firstNFT !== "" ? true : false}
+                  disabled={data.firstNFT !== ""}
                   sx={{
                     position: "relative",
                     width: "62%",
@@ -217,13 +214,8 @@ export function SmallRooms() {
                 </Box>
                 <Button
                   disabled={
-                    !(
-                      data.firstNFT !== "" ||
-                      data.secondAddress !== null ||
-                      data.secondAddress === undefined
-                    )
-                      ? true
-                      : false
+                    !(data.firstNFT !== "" ||
+                      data.secondAddress !== null || false)
                   }
                   onClick={() => {
                     onClaimModal(index, data.fightRoom, data.firstRandom);

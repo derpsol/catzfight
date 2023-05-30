@@ -52,7 +52,7 @@ export function BigRoom() {
       })
     );
     await dispatch(loadNftDetails({ account: account }));
-    await dispatch(loadNftAllowance({ tokenIds: nftids }));
+    // await dispatch(loadNftAllowance({ tokenIds: nftids }));
   }, [account, nftids]);
 
   const onClaimModal = useCallback(
@@ -68,7 +68,7 @@ export function BigRoom() {
         })
       );
       await dispatch(loadNftDetails({ account: account }));
-      await dispatch(loadNftAllowance({ tokenIds: nftids }));
+      // await dispatch(loadNftAllowance({ tokenIds: nftids }));
     },
     [account, nftids]
   );

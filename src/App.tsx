@@ -28,7 +28,11 @@ function App() {
   const loadData = useCallback(() => {
     dispatch(loadGameDetails({ gameData: [] }));
     dispatch(loadRandomDetails({ randomData: [] }));
-    dispatch(loadResultDetails({ resultData: [] }));
+    dispatch(loadResultDetails({
+      resultData: [],
+      myResultData: [],
+      address: account,
+    }));
     dispatch(loadWinnerDetails({ winnerData: [] }));
     dispatch(loadWaitingDetails({
       waitingList: [],

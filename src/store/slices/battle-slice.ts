@@ -7,12 +7,12 @@ import {
 import { RootState } from "state";
 
 interface IBattleDetails {
-  openState: boolean,
   claimState: boolean,
-  whichroom: number,
-  whichfight: number,
-  waitingRandom: number,
   decide: boolean,
+  openState: boolean,
+  waitingRandom: number,
+  whichfight: number,
+  whichroom: number,
 }
 
 export const loadBattleDetails = createAsyncThunk(
