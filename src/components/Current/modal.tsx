@@ -52,10 +52,11 @@ export function SampleModal() {
   );
 
   const handleApproveNFT = useCallback(
-    async (id: Number, index: number) => {
+    async (id: Number, index: number, address: string) => {
       await dispatch(
         approveNFT({
           tokenId: id,
+          address: address,
         })
       );
       await dispatch(loadNftAllowance({ tokenIds: nftids[index], index: index }));
@@ -211,7 +212,7 @@ export function SampleModal() {
                                       onEnterRoom(id);
                                       closeModal();
                                     }
-                                  : () => handleApproveNFT(id, index)
+                                  : () => handleApproveNFT(id, index, approve.address)
                               }
                             >
                               {allowFlg?.[index][index1] ? "Fight" : "Approve"}
