@@ -13,6 +13,7 @@ import instance from "constants/axios";
 
 interface IapproveNFT {
   tokenId: Number;
+  address: string;
 }
 
 declare var window: any;
@@ -20,13 +21,13 @@ declare var window: any;
 export const approveNFT = createAsyncThunk(
   "NFT/approveMFT",
   //@ts-ignore
-  async ({ tokenId }: IapproveNFT, { dispatch }) => {
+  async ({ tokenId, address }: IapproveNFT, { dispatch }) => {
     let nftContract;
     if (window) {
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
         nftContract = await window.tronWeb
           .contract()
-          .at(tronWeb.address.toHex(SHASTA_TESTNET.NFT_ADDRESS));
+          .at(tronWeb.address.toHex(address));
       }
     }
     try {
