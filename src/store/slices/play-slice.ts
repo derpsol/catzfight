@@ -223,8 +223,8 @@ export const ClaimFight = createAsyncThunk(
       for (let i = 0; i < usersData.length; i++) {
         totalStake += usersData[i].stakeAmount;
       }
-      if (firstRandom === 77777) {
-        if (secondRandom === 77777) {
+      if (firstRandom === 777) {
+        if (secondRandom === 777) {
           await instance.post("/api/userinfo/create", {
             address: resultData.firstAddress,
             stakeAmount: 0,
@@ -267,8 +267,8 @@ export const ClaimFight = createAsyncThunk(
         await meowContract.setJackpot(jackpotAmount / 10);
       }
 
-      if (secondRandom === 77777) {
-        if (firstRandom === 77777) {
+      if (secondRandom === 777) {
+        if (firstRandom === 777) {
           await instance.post("/api/userinfo/create", {
             address: resultData.firstAddress,
             stakeAmount: 0,

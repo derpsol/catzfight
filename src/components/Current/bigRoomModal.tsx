@@ -22,7 +22,7 @@ export function BigRoomModal() {
   const isLoading: boolean = useSelector<IReduxState, boolean>(
     (state) => state.nft.loading
   );
-  const allowFlg: boolean[][] = useSelector<IReduxState, boolean[][]>(
+  const allowFlg: boolean[] = useSelector<IReduxState, boolean[]>(
     (state) => state.nft.allowances
   );
   const whichroom: number = useSelector<IReduxState, number>(

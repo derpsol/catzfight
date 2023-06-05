@@ -35,7 +35,7 @@ export function SampleModal() {
   const isLoading: boolean = useSelector<IReduxState, boolean>(
     (state) => state.nft.loading
   );
-  const allowFlg: boolean[][] = useSelector<IReduxState, boolean[][]>(
+  const allowFlg: boolean[] = useSelector<IReduxState, boolean[]>(
     (state) => state.nft.allowances
   );
   const openState: boolean = useSelector<IReduxState, boolean>(
@@ -51,6 +51,13 @@ export function SampleModal() {
     (state) => state.wallet.nftInfo
   );
 
+  const getAllowanceFlag = async(id: number) => {
+    await dispatch(loadNftAllowance({
+      tokenIds: nftids[id],
+      index: id
+    }));
+  }
+
   const handleApproveNFT = useCallback(
     async (id: Number, index: number, address: string) => {
       await dispatch(
@@ -59,7 +66,7 @@ export function SampleModal() {
           address: address,
         })
       );
-      await dispatch(loadNftAllowance({ tokenIds: nftids[index], index: index }));
+      getAllowanceFlag(index);
     },
     [nftids]
   );
@@ -78,7 +85,7 @@ export function SampleModal() {
   }, []);
 
   const onEnterRoom = useCallback(
-    async (id: number) => {
+    async (index: number, id: number) => {
       let fightRoomNum = getDate();
       await dispatch(
         EnterRoom({
@@ -119,6 +126,7 @@ export function SampleModal() {
                       mr: "8px",
                     }}
                     key={index}
+                    onClick={() => {getAllowanceFlag(index)}}
                   />
                 );
               })}
@@ -160,7 +168,7 @@ export function SampleModal() {
                             variant="contained"
                             color="primary"
                             onClick={() => {
-                              onEnterRoom(id);
+                              onEnterRoom(index, id);
                               closeModal();
                             }}
                           >
@@ -207,15 +215,15 @@ export function SampleModal() {
                               variant="contained"
                               color="primary"
                               onClick={
-                                allowFlg?.[index][index1]
+                                allowFlg[index1]
                                   ? () => {
-                                      onEnterRoom(id);
+                                      onEnterRoom(index, id);
                                       closeModal();
                                     }
                                   : () => handleApproveNFT(id, index, approve.address)
                               }
                             >
-                              {allowFlg?.[index][index1] ? "Fight" : "Approve"}
+                              {allowFlg[index1] ? "Fight" : "Approve"}
                             </Button>
                           )}
                         </Box>

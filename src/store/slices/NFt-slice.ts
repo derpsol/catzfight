@@ -79,10 +79,7 @@ export const loadNftAllowance = createAsyncThunk(
       .catch((error) => {
         console.log(error);
       });
-    let allows: boolean[][] = [];
-    for (let i = 0; i < approvedList.length; i++) {
-      allows.push([]);
-    }
+    let allows: boolean[] = [false];
     let nftContract: any;
     if (window) {
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
@@ -91,16 +88,14 @@ export const loadNftAllowance = createAsyncThunk(
           .at(tronWeb.address.toHex(approvedList[index].address));
       }
     }
-    let allowtmp: String[] = [];
     await Promise.all(
       tokenIds.map(async (tokenId, idn) => {
-        allowtmp[idn] = await nftContract.getApproved(tokenId).call();
+        let allowtmp = await nftContract.getApproved(tokenId).call();
+        allows[idn] =
+          (allowtmp === tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS));
+
       })
     );
-    allowtmp.map((allow, idn) => {
-      allows[index][idn] =
-        allow === tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS);
-    });
     return {
       allowances: allows,
     };
@@ -112,7 +107,7 @@ const initialState = {
 };
 
 export interface INFTSlice {
-  allowances: boolean[][];
+  allowances: boolean[];
   loading: boolean;
 }
 
