@@ -48,6 +48,7 @@ export function BigRoom() {
         claimState: false,
         whichfight: 0,
         waitingRandom: 0,
+        waitingNft: '',
         decide: false,
       })
     );
@@ -56,7 +57,7 @@ export function BigRoom() {
   }, [account, nftids]);
 
   const onClaimModal = useCallback(
-    async (index: number, fightRoom: number, firstRandom: number) => {
+    async (index: number, fightRoom: number, firstRandom: number, waitingNft: string) => {
       await dispatch(
         loadBattleDetails({
           openState: false,
@@ -64,6 +65,7 @@ export function BigRoom() {
           claimState: true,
           whichfight: fightRoom,
           waitingRandom: firstRandom,
+          waitingNft: waitingNft,
           decide: false,
         })
       );
@@ -272,7 +274,7 @@ export function BigRoom() {
                         : false
                     }
                     onClick={() => {
-                      onClaimModal(index, data.fightRoom, data.firstRandom);
+                      onClaimModal(index, data.fightRoom, data.firstRandom, data.nftAddress);
                     }}
                     sx={{
                       position: "relative",

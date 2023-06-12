@@ -8,6 +8,9 @@ export type gameDataStyle = {
   secondRandom: number;
   tokenId: number;
   fightRoom: number;
+  nftAddress: string;
+  nftName: string;
+  createdAt: string;
   flag: boolean;
 };
 

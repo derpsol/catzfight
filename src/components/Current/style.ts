@@ -42,7 +42,6 @@ export const style = {
   boxShadow: 24,
   p: 4,
   backgroundColor: "rgba(38,40,42)",
-  borderRadius: 8,
   overflowY: "scroll",
   "&::-webkit-scrollbar": {
     width: "8px",

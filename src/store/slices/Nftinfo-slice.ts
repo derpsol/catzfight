@@ -5,7 +5,6 @@ import {
   createAsyncThunk,
 } from "@reduxjs/toolkit";
 import { RootState } from "state";
-import { SHASTA_TESTNET } from "constants/addresses";
 import tronWeb from "tronweb";
 import instance from "constants/axios";
 

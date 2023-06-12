@@ -33,6 +33,7 @@ const CurrentBattle = () => {
           claimState: false,
           whichroom: 0,
           whichfight: 0,
+          waitingNft: '',
           waitingRandom: 0,
         })
       );
@@ -46,6 +47,7 @@ const CurrentBattle = () => {
             claimState: false,
             whichroom: 0,
             whichfight: 0,
+            waitingNft: '',
             waitingRandom: 0,
           })
         );

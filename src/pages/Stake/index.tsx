@@ -11,7 +11,7 @@ const Stake = () => {
 
   return (
     <Box
-      sx={{ backgroundColor: "#989E90", py: { xs: 2, sm: 4, md: 6, xl: 8 } }}
+      sx={{ backgroundColor: "#111B24", py: { xs: 2, sm: 4, md: 6, xl: 8 } }}
     >
       <Typography
         fontFamily="Audiowide"

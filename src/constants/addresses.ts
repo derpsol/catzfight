@@ -1,7 +1,7 @@
 import { Networks } from "./blockchain";
 
 export const SHASTA_TESTNET = {
-  MEOW_ADDRESS: "TNGQyG1BKKrEE4dcwsKR1ycdMXMcyRPqZN", //
+  MEOW_ADDRESS: "TQpb8ACUEDMqF4Dy4JrNZAeuAW5aJrqUWu", //
   NFT_ADDRESS: "TUvR3L8eT3QPDJ18hVUqELzpvVQrGL2gAM",
   MEOWTOKEN_ADDRESS: "TDtFwTisg9hdsfmwEGcZcyCTExExsdazFj",
 };

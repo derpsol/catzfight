@@ -31,10 +31,13 @@ export const loadGameDetails = createAsyncThunk(
         secondNFT: "",
         firstAddress: "",
         secondAddress: "",
+        nftAddress: '',
+        nftName: '',
         firstRandom: 0,
         secondRandom: 0,
         tokenId: 0,
         fightRoom: 0,
+        createdAt: '',
         flag: false
       };
       gameData.push(newGameData);
@@ -45,12 +48,15 @@ export const loadGameDetails = createAsyncThunk(
         gameData[i].roomNum = tmpgameData[tmpcnt].roomNum;
         gameData[i].firstNFT = tmpgameData[tmpcnt]?.firstNFT;
         gameData[i].firstAddress = tmpgameData[tmpcnt]?.firstAddress;
+        gameData[i].nftAddress = tmpgameData[tmpcnt]?.nftAddress;
+        gameData[i].nftName = tmpgameData[tmpcnt]?.nftName;
         gameData[i].firstRandom = tmpgameData[tmpcnt]?.firstRandom;
         gameData[i].fightRoom = tmpgameData[tmpcnt]?.fightRoom;
         gameData[i].tokenId = tmpgameData[tmpcnt]?.tokenId;
         gameData[i].secondNFT = tmpgameData[tmpcnt]?.secondNFT;
         gameData[i].secondAddress = tmpgameData[tmpcnt]?.secondAddress;
         gameData[i].secondRandom = tmpgameData[tmpcnt]?.secondRandom;
+        gameData[i].createdAt = tmpgameData[tmpcnt]?.createdAt;
         tmpcnt ++;
       }
     }
@@ -83,10 +89,13 @@ const gameSlice = createSlice({
         secondNFT: "",
         firstAddress: "",
         secondAddress: "",
+        nftAddress: '',
+        nftName: '',
         firstRandom: 0,
         secondRandom: 0,
         tokenId: 0,
         fightRoom: 0,
+        createdAt: '',
         flag: false
       };
       if(action.payload.delRoomNum > 0) {
@@ -110,10 +119,13 @@ const gameSlice = createSlice({
         secondNFT: "",
         firstAddress: "",
         secondAddress: "",
+        nftAddress: '',
+        nftName: '',
         firstRandom: 0,
         secondRandom: 0,
         tokenId: 0,
         fightRoom: 0,
+        createdAt: '',
         flag: false
       };
       for(let i = 0; i < state.gameData.length; i ++) {

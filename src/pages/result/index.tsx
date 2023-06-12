@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import Role from "./Role";
 import FinishedBattle from "./FinishedBattle";
 import Winner from "./Winner";
