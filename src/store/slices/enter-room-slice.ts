@@ -13,6 +13,8 @@ interface IenterRoomMeow {
   url: string;
   address: any;
   gamePrice: number;
+  nftAddress: string;
+  nftName: string;
 }
 
 declare var window: any;
@@ -20,10 +22,10 @@ declare var window: any;
 export const EnterRoom = createAsyncThunk(
   "enterRoom/enterRoomMeow",
   async (
-    { tokenId, fightRoom, whichroom, url, address, gamePrice }: IenterRoomMeow,
+    { tokenId, fightRoom, whichroom, url, address, gamePrice, nftAddress, nftName }: IenterRoomMeow,
     { dispatch }
   ) => {
-    console.log('enterRoom data: ', tokenId, fightRoom, whichroom, url, address, gamePrice);
+    console.log('enterRoom data: ', tokenId, fightRoom, whichroom, url, nftAddress, gamePrice);
     let meowContract;
     if (window) {
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
@@ -35,8 +37,8 @@ export const EnterRoom = createAsyncThunk(
     let enterTx;
     try {
       enterTx = await meowContract
-        .enterRoom(tokenId, fightRoom)
-        .send({ feeLimit: 1000000000, callValue: gamePrice });
+        .enterRoom(tokenId, fightRoom, nftAddress)
+        .send({ feeLimit: 2000000000, callValue: gamePrice });
 
       let receipt = null;
       let attempts = 0;
@@ -65,6 +67,8 @@ export const EnterRoom = createAsyncThunk(
         fightRoom: fightRoom,
         firstRandom: random_tmp,
         tokenId: tokenId,
+        nftAddress: nftAddress,
+        nftName: nftName,
       });
       notification({ title: "Successfully Entered!", type: "success" });
       return;

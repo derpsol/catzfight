@@ -13,11 +13,12 @@ interface IBattleDetails {
   waitingRandom: number,
   whichfight: number,
   whichroom: number,
+  waitingNft: string,
 }
 
 export const loadBattleDetails = createAsyncThunk(
   "app/loadBattleDetails",
-  async ({ openState, claimState, whichfight, whichroom, waitingRandom, decide }: IBattleDetails ) => {
+  async ({ openState, claimState, whichfight, whichroom, waitingRandom, decide, waitingNft }: IBattleDetails ) => {
     return {
       openState,
       claimState,
@@ -25,6 +26,7 @@ export const loadBattleDetails = createAsyncThunk(
       whichroom,
       waitingRandom,
       decide,
+      waitingNft,
     };
   }
 );
@@ -37,6 +39,7 @@ const initialState = {
   whichfight: 0,
   waitingRandom: 0,
   decide: false,
+  waitingNft: '',
 };
 
 export interface IBattleSlice {
@@ -46,6 +49,7 @@ export interface IBattleSlice {
   whichroom: number,
   whichfight: number,
   waitingRandom: number,
+  waitingNft: string,
   decide: boolean,
 }
 

@@ -5,6 +5,7 @@ import { loadWaitingDetails } from "store/slices/getnft-slice";
 import { AppDispatch } from "state";
 import Waiting from "./components/waiting";
 import Approve from "./components/approve";
+import Refund from "./components/refund";
 
 function Admin() {
   const dispatch = useDispatch<AppDispatch>();
@@ -31,6 +32,7 @@ function Admin() {
     >
       <Waiting />
       <Approve />
+      <Refund />
     </Box>
   );
 }

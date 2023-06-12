@@ -32,10 +32,12 @@ export function SmallRooms() {
   const onEnterModal = useCallback(
     async (index: number) => {
       await dispatch(loadNftDetails({ account: account }));
-      await dispatch(loadNftAllowance({
-        tokenIds: nftids[0],
-        index: 0
-      }));
+      await dispatch(
+        loadNftAllowance({
+          tokenIds: nftids ? nftids[0] : [],
+          index: 0,
+        })
+      );
       await dispatch(
         loadBattleDetails({
           openState: true,
@@ -43,6 +45,7 @@ export function SmallRooms() {
           claimState: false,
           whichfight: 0,
           waitingRandom: 0,
+          waitingNft: "",
           decide: false,
         })
       );
@@ -51,12 +54,19 @@ export function SmallRooms() {
   );
 
   const onClaimModal = useCallback(
-    async (index: number, fightRoom: number, firstRandom: number) => {
+    async (
+      index: number,
+      fightRoom: number,
+      firstRandom: number,
+      waitingNft: string
+    ) => {
       await dispatch(loadNftDetails({ account: account }));
-      await dispatch(loadNftAllowance({
-        tokenIds: nftids[0],
-        index: 0
-      }));
+      await dispatch(
+        loadNftAllowance({
+          tokenIds: nftids ? nftids[0] : [],
+          index: 0,
+        })
+      );
       await dispatch(
         loadBattleDetails({
           openState: false,
@@ -64,6 +74,7 @@ export function SmallRooms() {
           claimState: true,
           whichfight: fightRoom,
           waitingRandom: firstRandom,
+          waitingNft: waitingNft,
           decide: false,
         })
       );
@@ -130,13 +141,19 @@ export function SmallRooms() {
                   justifyContent="center"
                   alignItems="center"
                 >
-                  {data.firstNFT !== "" && data.firstNFT !== undefined ? (
-                    <Typography sx={randomNumberStyle}>
-                      {data.firstRandom}
-                    </Typography>
+                  {data.secondNFT !== "" || data.secondNFT !== undefined ? (
+                    data.firstNFT !== "" && data.firstNFT !== undefined ? (
+                      <Typography sx={randomNumberStyle}>
+                        {data.nftName}
+                      </Typography>
+                    ) : (
+                      <Typography sx={randomNumberStyle}>
+                        Random Number
+                      </Typography>
+                    )
                   ) : (
                     <Typography sx={randomNumberStyle}>
-                      Random Number
+                      {data.firstRandom}
                     </Typography>
                   )}
                 </Box>
@@ -214,11 +231,19 @@ export function SmallRooms() {
                 </Box>
                 <Button
                   disabled={
-                    !(data.firstNFT !== "" ||
-                      data.secondAddress !== null || false)
+                    !(
+                      data.firstNFT !== "" ||
+                      data.secondAddress !== null ||
+                      false
+                    )
                   }
                   onClick={() => {
-                    onClaimModal(index, data.fightRoom, data.firstRandom);
+                    onClaimModal(
+                      index,
+                      data.fightRoom,
+                      data.firstRandom,
+                      data.nftAddress
+                    );
                   }}
                   sx={{
                     position: "relative",

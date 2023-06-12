@@ -14,12 +14,12 @@ import { useWeb3React } from "@web3-react/core";
 
 export function SampleModal() {
   const dispatch = useDispatch<AppDispatch>();
+  const { account } = useWeb3React();
   const [value, setValue] = useState("1");
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
-  const { account } = useWeb3React();
   const nftids: any[][] = useSelector<IReduxState, any[][]>(
     (state) => state.nfts.nftids
   );
@@ -79,6 +79,7 @@ export function SampleModal() {
         whichroom: 0,
         whichfight: 0,
         waitingRandom: 0,
+        waitingNft: '',
         decide: false,
       })
     );
@@ -92,9 +93,11 @@ export function SampleModal() {
           tokenId: id,
           fightRoom: fightRoomNum,
           whichroom: whichroom,
-          url: `https://ipfs.io/ipfs/${baseUri?.slice(7, 53)}/${id}.png`,
+          url: `https://ipfs.io/ipfs/${baseUri[index]?.slice(7, 53)}/${id}.png`,
           address: account,
           gamePrice: Number(gamePrice),
+          nftAddress: approvedList[index].address,
+          nftName: approvedList[index].name,
         })
       );
     },

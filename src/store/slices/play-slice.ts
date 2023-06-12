@@ -41,10 +41,18 @@ export const widrawNFT = createAsyncThunk(
       .catch((error) => {
         console.log(error);
       });
+    
+    let nftIds: number[] = [];
+    let nftAddress: string[] = [];
+
+    for(let i = 0; i < usersData.ownNfts.length; i ++) {
+      nftAddress[i] = usersData.ownNfts[i].split('@')[0];
+      nftIds[i] = Number(usersData.ownNfts[i].split('@')[1]);
+    }
 
     try {
       await meowContract
-        .claimNFT(usersData.ownNfts)
+        .claimNFT(nftIds, nftAddress)
         .send({ feeLimit: 100000000 });
 
       await instance.post("/api/userinfo/create", {
@@ -119,6 +127,7 @@ interface IclaimFightMeow {
   waitingRandom: number;
   address: any;
   gamePrice: number;
+  nftAddress: string;
 }
 
 export const ClaimFight = createAsyncThunk(
@@ -133,6 +142,7 @@ export const ClaimFight = createAsyncThunk(
       waitingRandom,
       address,
       gamePrice,
+      nftAddress
     }: IclaimFightMeow,
     { dispatch }
   ) => {
@@ -151,7 +161,7 @@ export const ClaimFight = createAsyncThunk(
     let random2: number[] = [];
     try {
       enterTx = await meowContract
-        .claimFight(tokenId, fightRoom)
+        .claimFight(tokenId, fightRoom, nftAddress)
         .send({ feeLimit: 200000000, callValue: gamePrice });
 
       let receipt = null;
@@ -324,7 +334,7 @@ export const ClaimFight = createAsyncThunk(
           address: resultData.firstAddress,
           stakeAmount: 0,
           claimAmount: whichroom < 3 ? (gamePrice * 6) / 5 : gamePrice * 6,
-          ownNfts: [tokenId, resultData.tokenId],
+          ownNfts: [`${nftAddress}@${tokenId}`, `${nftAddress}@${resultData.tokenId}`],
         });
       } else if (firstRandom < secondRandom) {
         await instance
@@ -340,21 +350,21 @@ export const ClaimFight = createAsyncThunk(
           address: address,
           stakeAmount: 0,
           claimAmount: whichroom < 3 ? (gamePrice * 6) / 5 : gamePrice * 6,
-          ownNfts: [tokenId, resultData.tokenId],
+          ownNfts: [`${nftAddress}@${tokenId}`, `${nftAddress}@${resultData.tokenId}`],
         });
       } else {
         await instance.post("/api/userinfo/create", {
           address: resultData.firstAddress,
           stakeAmount: 0,
           claimAmount: whichroom < 3 ? gamePrice : gamePrice * 5,
-          ownNfts: [resultData.tokenId],
+          ownNfts: [`${nftAddress}@${resultData.tokenId}`],
         });
 
         await instance.post("/api/userinfo/create", {
           address: address,
           stakeAmount: 0,
           claimAmount: whichroom < 3 ? gamePrice : gamePrice * 5,
-          ownNfts: [tokenId],
+          ownNfts: [`${nftAddress}@${tokenId}`],
         });
         flag = true;
       }
