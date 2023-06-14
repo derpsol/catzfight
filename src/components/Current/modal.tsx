@@ -47,7 +47,7 @@ export function SampleModal() {
   const gamePrice: string = useSelector<IReduxState, string>(
     (state) => state.jackpot.gameprice
   );
-  const nftInfo: number[] = useSelector<IReduxState, number[]>(
+  const nftInfo: string[] = useSelector<IReduxState, string[]>(
     (state) => state.wallet.nftInfo
   );
 
@@ -140,7 +140,7 @@ export function SampleModal() {
               <TabPanel value={`${index + 1}`} key={index} >
                 <Box sx={avatarsStyle}>
                   {nftInfo &&
-                    nftInfo.map((id: number, index0) => {
+                    nftInfo.map((info: string, index0) => {
                       return (
                         <Box
                           sx={{
@@ -162,7 +162,7 @@ export function SampleModal() {
                               src={`https://ipfs.io/ipfs/${baseUri[index0]?.slice(
                                 7,
                                 53
-                              )}/${id}.png`}
+                              )}/${info.split('@')[1]}.png`}
                               alt="NFT_avatar"
                               sx={modalAvatarStyle}
                             />
@@ -171,7 +171,7 @@ export function SampleModal() {
                             variant="contained"
                             color="primary"
                             onClick={() => {
-                              onEnterRoom(index, id);
+                              onEnterRoom(index, Number(info.split('@')[1]));
                               closeModal();
                             }}
                           >

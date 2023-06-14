@@ -40,7 +40,7 @@ export const walletInfo = createAsyncThunk(
       });
 
     let nftCount = tmpData?.ownNfts.length;
-    let nftInfo: number[] = tmpData?.ownNfts;
+    let nftInfo: string[] = tmpData?.ownNfts;
     let trxAmount = tmpData?.claimAmount / 1000000;
     let stakeAmount = tmpData?.stakeAmount;
     return {
@@ -58,7 +58,7 @@ export interface IWalletInfoDetail {
   trxAmount: number;
   stakeAmount: number;
   totalStake: number;
-  nftInfo: number[];
+  nftInfo: string[];
 }
 
 const initialState = {

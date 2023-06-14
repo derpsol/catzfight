@@ -50,7 +50,7 @@ export function BigRoomModal() {
   const waitingRandom: number = useSelector<IReduxState, number>(
     (state) => state.battle.waitingRandom
   );
-  const nftInfo: number[] = useSelector<IReduxState, number[]>(
+  const nftInfo: string[] = useSelector<IReduxState, string[]>(
     (state) => state.wallet.nftInfo
   );
   const baseUri: string[] = useSelector<IReduxState, string[]>(
@@ -150,7 +150,7 @@ export function BigRoomModal() {
               <TabPanel value={`${index + 1}`} key={index} >
                 <Box sx={avatarsStyle}>
                   {nftInfo &&
-                    nftInfo.map((id: number, index0) => {
+                    nftInfo.map((info: string, index0) => {
                       return (
                         <Box
                           sx={{
@@ -172,7 +172,7 @@ export function BigRoomModal() {
                               src={`https://ipfs.io/ipfs/${baseUri[index0]?.slice(
                                 7,
                                 53
-                              )}/${id}.png`}
+                              )}/${info.split('@')[1]}.png`}
                               alt="NFT_avatar"
                               sx={modalAvatarStyle}
                             />
@@ -181,7 +181,7 @@ export function BigRoomModal() {
                             variant="contained"
                             color="primary"
                             onClick={() => {
-                              onClaimFight(index, id);
+                              onClaimFight(index, Number(info.split('@')[1]));
                               closeModal();
                             }}
                           >

@@ -141,7 +141,7 @@ export function SmallRooms() {
                   justifyContent="center"
                   alignItems="center"
                 >
-                  {data.secondNFT !== "" || data.secondNFT !== undefined ? (
+                  {data.secondNFT === "" ? (
                     data.firstNFT !== "" && data.firstNFT !== undefined ? (
                       <Typography sx={randomNumberStyle}>
                         {data.nftName}
