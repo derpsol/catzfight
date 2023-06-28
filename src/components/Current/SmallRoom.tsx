@@ -15,6 +15,9 @@ import {
   roomStyleAvatar,
   roomStyleBack,
   buttonStyle,
+  randomNumberPosStyle,
+  roomContentTop,
+  buttonWidthStyle,
 } from "./style";
 import { loadNftAllowance } from "store/slices/NFt-slice";
 import { gameDataStyle } from "@types";
@@ -84,30 +87,24 @@ export function SmallRooms() {
 
   return (
     <Box
-      sx={{
-        display: "flex",
-        justifyContent: "space-around",
-        flexWrap: "wrap",
-      }}
+      display='flex'
+      justifyContent='space-around'
+      flexWrap='wrap'
     >
       {(gameData.length !== 0 ? gameData : Datas)?.map((data, index) => {
         return (
           <Box
             display="flex"
             justifyContent="flex-start"
-            sx={{
-              mr: { xs: 1, sm: 2 },
-              ml: { xs: 1, sm: 2 },
-              mb: { xs: 1, sm: 2 },
-            }}
             border="1px solid white"
             bgcolor="RGB(255,255,255,0.1)"
-            padding={2}
+            padding={1}
             key={index}
+            mt={2}
           >
             <Box
               sx={{
-                mr: { xs: "6px", sm: "8px", md: "12px", xl: "16px" },
+                mr: { xs: "4px", sm: "6px", md: "8px", xl: "12px" },
               }}
               position="relative"
               display="flex"
@@ -120,7 +117,7 @@ export function SmallRooms() {
                 flexDirection="column"
                 alignItems="center"
                 position="absolute"
-                top="30px"
+                sx={roomContentTop}
               >
                 {data.firstNFT !== "" ? (
                   <Box
@@ -134,9 +131,7 @@ export function SmallRooms() {
                   </Box>
                 )}
                 <Box
-                  sx={{
-                    height: { xs: "36px", sm: "50px", md: "72px" },
-                  }}
+                  sx={randomNumberPosStyle}
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
@@ -148,7 +143,7 @@ export function SmallRooms() {
                       </Typography>
                     ) : (
                       <Typography sx={randomNumberStyle}>
-                        Random Number
+                        Random
                       </Typography>
                     )
                   ) : (
@@ -162,10 +157,7 @@ export function SmallRooms() {
                     onEnterModal(index);
                   }}
                   disabled={data.firstNFT !== ""}
-                  sx={{
-                    position: "relative",
-                    width: "62%",
-                  }}
+                  sx={buttonWidthStyle}
                 >
                   <Box component="img" src={buttonBack} width="100%" />
                   <Typography
@@ -198,7 +190,7 @@ export function SmallRooms() {
                 flexDirection="column"
                 alignItems="center"
                 position="absolute"
-                top="30px"
+                sx={roomContentTop}
               >
                 {data.secondNFT !== "" && data.secondNFT !== undefined ? (
                   <Box
@@ -212,9 +204,7 @@ export function SmallRooms() {
                   </Box>
                 )}
                 <Box
-                  sx={{
-                    height: { xs: "36px", sm: "50px", md: "72px" },
-                  }}
+                  sx={randomNumberPosStyle}
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
@@ -225,7 +215,7 @@ export function SmallRooms() {
                     </Typography>
                   ) : (
                     <Typography sx={randomNumberStyle}>
-                      Random Number
+                      Random
                     </Typography>
                   )}
                 </Box>
@@ -245,10 +235,7 @@ export function SmallRooms() {
                       data.nftAddress
                     );
                   }}
-                  sx={{
-                    position: "relative",
-                    width: "62%",
-                  }}
+                  sx={buttonWidthStyle}
                 >
                   <Box component="img" src={buttonBack} width="100%" />
                   <Typography

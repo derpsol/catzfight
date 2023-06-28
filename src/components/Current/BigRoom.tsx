@@ -16,6 +16,9 @@ import {
   roomStyleAvatar,
   roomStyleBack,
   buttonStyle,
+  randomNumberPosStyle,
+  roomContentTop,
+  buttonWidthStyle,
 } from "./style";
 import { loadNftAllowance } from "store/slices/NFt-slice";
 import { gameDataStyle } from "@types";
@@ -77,11 +80,9 @@ export function BigRoom() {
 
   return (
     <Box
-      sx={{
-        display: "flex",
-        justifyContent: "space-around",
-        flexWrap: "wrap",
-      }}
+      display='flex'
+      justifyContent='space-around'
+      flexWrap='wrap'
     >
       {Datas &&
         Datas.map((data, index) => {
@@ -90,19 +91,15 @@ export function BigRoom() {
             <Box
               display="flex"
               justifyContent="flex-start"
-              sx={{
-                mr: { xs: 1, sm: 2 },
-                ml: { xs: 1, sm: 2 },
-                mb: { xs: 1, sm: 2 },
-              }}
               border='1px solid white'
               bgcolor='RGB(255,255,255,0.1)'
-              padding={2}
+              padding={1}
               key={index}
+              mt={2}
             >
               <Box
                 sx={{
-                  mr: { xs: "6px", sm: "8px", md: "12px", xl: "16px" },
+                  mr: { xs: "4px", sm: "6px", md: "8px", xl: "12px" },
                 }}
                 position="relative"
                 display="flex"
@@ -114,8 +111,8 @@ export function BigRoom() {
                   display="flex"
                   flexDirection="column"
                   position="absolute"
-                  top="30px"
                   alignItems="center"
+                  sx={roomContentTop}
                 >
                   {data.firstNFT !== "" ? (
                     <Box
@@ -135,23 +132,11 @@ export function BigRoom() {
                         }
                         repeat={10000}
                       >
-                        {/* <Tween
-                          from={{ scaleX: 1.1, scaleY: 1.1 }}
-                          to={{ scaleX: 1, scaleY: 1 }}
-                          duration={1.5}
-                        />
-                        <Tween
-                          from={{ scaleX: 1, scaleY: 1 }}
-                          to={{ scaleX: 1.1, scaleY: 1.1 }}
-                          duration={1.5}
-                        /> */}
                       </Timeline>
                     </Box>
                   )}
                   <Box
-                    sx={{
-                      height: { xs: "36px", sm: "50px", md: "72px" },
-                    }}
+                    sx={randomNumberPosStyle}
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
@@ -162,7 +147,7 @@ export function BigRoom() {
                       </Typography>
                     ) : (
                       <Typography sx={randomNumberStyle}>
-                        Random Number
+                        Random
                       </Typography>
                     )}
                   </Box>
@@ -171,10 +156,7 @@ export function BigRoom() {
                       onEnterModal(index);
                     }}
                     disabled={data.firstNFT !== "" ? true : false}
-                    sx={{
-                      position: "relative",
-                      width: "62%",
-                    }}
+                    sx={buttonWidthStyle}
                   >
                     <Box component="img" src={buttonBack} width="100%" />
                     <Typography
@@ -218,7 +200,7 @@ export function BigRoom() {
                   alignItems="center"
                   flexDirection="column"
                   position="absolute"
-                  top="30px"
+                  sx={roomContentTop}
                 >
                   {data.secondNFT !== "" && data.secondNFT !== undefined ? (
                     <Box
@@ -238,29 +220,17 @@ export function BigRoom() {
                         }
                         repeat={10000}
                       >
-                        {/* <Tween
-                          from={{ scaleX: 1.1, scaleY: 1.1 }}
-                          to={{ scaleX: 1, scaleY: 1 }}
-                          duration={1.5}
-                        />
-                        <Tween
-                          from={{ scaleX: 1, scaleY: 1 }}
-                          to={{ scaleX: 1.1, scaleY: 1.1 }}
-                          duration={1.5}
-                        /> */}
                       </Timeline>
                     </Box>
                   )}
                   <Box
-                    sx={{
-                      height: { xs: "36px", sm: "50px", md: "72px" },
-                    }}
+                    sx={randomNumberPosStyle}
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
                   >
                     <Typography sx={randomNumberStyle}>
-                      Random Number
+                      Random
                     </Typography>
                   </Box>
                   <Button
@@ -276,10 +246,7 @@ export function BigRoom() {
                     onClick={() => {
                       onClaimModal(index, data.fightRoom, data.firstRandom, data.nftAddress);
                     }}
-                    sx={{
-                      position: "relative",
-                      width: "62%",
-                    }}
+                    sx={buttonWidthStyle}
                   >
                     <Box component="img" src={buttonBack} width="100%" />
                     <Typography
