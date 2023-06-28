@@ -92,7 +92,7 @@ export function BigRoom() {
               display="flex"
               justifyContent="flex-start"
               border='1px solid white'
-              bgcolor='RGB(255,255,255,0.1)'
+              bgcolor='RGB(0,0,255,0.2)'
               padding={1}
               key={index}
               mt={2}
