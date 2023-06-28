@@ -7,8 +7,13 @@ import MyResult from "./MyResult";
 const Result = () => {
   return (
     <Box minHeight='100vh' sx={{ backgroundColor: "#111B24" }}>
-      <Winner />
-      <Role />
+      <Box
+        display='flex'
+        justifyContent='space-around'
+      >
+        <Winner />
+        <Role />
+      </Box>
       <FinishedBattle />
       <MyResult />
     </Box>

@@ -132,7 +132,7 @@ const Jackpot = () => {
             Available TRX: {widrawAmount ? widrawAmount : 0} TRX
           </Typography>
         </Box>
-        <Box sx={{ mr: 3, textAlign: "center" }}>
+        {/* <Box sx={{ mr: 3, textAlign: "center" }}>
           <Button
             variant="contained"
             color="primary"
@@ -142,7 +142,7 @@ const Jackpot = () => {
           >
             Meow Staking
           </Button>
-        </Box>
+        </Box> */}
       </Box>
       <Box
         display='flex'

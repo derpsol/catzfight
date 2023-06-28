@@ -25,6 +25,8 @@ const Winner = () => {
         pt: { xs: 2, sm: 4, md: 6, xl: 8 },
         pb: 1,
       }}
+      height='100vh'
+      width='100%'
     >
       <Typography
         fontFamily="Audiowide"
