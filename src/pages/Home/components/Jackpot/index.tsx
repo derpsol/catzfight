@@ -117,11 +117,6 @@ const Jackpot = () => {
         }}
       >
         <Box sx={{ mr: 3, textAlign: "center" }}>
-          <Button onClick={handleOpen} variant="contained" color="success">
-            NFT Request
-          </Button>
-        </Box>
-        <Box sx={{ mr: 3, textAlign: "center" }}>
           <Button variant="contained" color="info" onClick={onWidrawNFT}>
             Withdraw NFTs
           </Button>
@@ -149,24 +144,44 @@ const Jackpot = () => {
           </Button>
         </Box>
       </Box>
-      <Typography
-        fontFamily="Audiowide"
+      <Box
+        display='flex'
+        alignItems='center'
         sx={{
-          color: "#fff",
-          fontSize: { xs: "20px", xl: "24px" },
-          py: 1,
-          px: { xs: 1, xl: 2 },
-          backgroundColor: "rgba(38,40,42,0.64)",
-          width: { xs: "320px", sm: "450px", xl: "600px" },
-          textAlign: "center",
-          position: { md: "absolute" },
-          mx: "auto",
-          left: "6px",
-          bottom: "6px",
+          justifyContent: {xs: 'center', sm: 'space-between'},
+          flexDirection: { xs: 'column', sm: 'row'},
         }}
       >
-        MEOW left to be mined: 99,999,980
-      </Typography>
+        <Box sx={{ textAlign: "center", ml: {xs: 0, sm: 3} }}>
+          <Button onClick={handleOpen} variant="contained" color="success">
+            NFT Request
+          </Button>
+        </Box>
+        <Box
+          sx={{
+            mr: {xs: 0, sm: 3},
+            mt: {xs: 1, sm: 0},
+            mb: {xs: 1, sm: 0},
+          }}
+          display='flex'
+          justifyContent='center'
+        >
+          <Typography
+            fontFamily="Audiowide"
+            sx={{
+              color: "#fff",
+              fontSize: { xs: "20px", xl: "24px" },
+              py: 1,
+              px: { xs: 1, xl: 2 },
+              backgroundColor: "rgba(38,40,42,0.64)",
+              width: { xs: "320px", sm: "450px", xl: "600px" },
+              textAlign: "center",
+            }}
+          >
+            MEOW left to be mined: 99,999,980
+          </Typography>
+        </Box>
+      </Box>
       <Modal
         open={open}
         onClose={handleClose}

@@ -94,6 +94,9 @@ const CurrentBattle = () => {
       <Box
         display='flex'
         justifyContent='space-between'
+        sx={{
+          flexDirection: {xs: 'column', sm: 'row'}
+        }}
       >
         <Box>
           <Typography
@@ -114,7 +117,7 @@ const CurrentBattle = () => {
             fontFamily="Audiowide"
             sx={{
               fontSize: { xs: "18px", sm: "24px", md: "30px" },
-              color: "white",
+              color: "RGB(0,0,200)",
               textAlign: "center",
               py: { xs: 1, sm: 2, md: 3, xl: 4 },
             }}
