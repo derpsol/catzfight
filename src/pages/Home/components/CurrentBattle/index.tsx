@@ -91,30 +91,39 @@ const CurrentBattle = () => {
         pb: { xs: 2, sm: 4, md: 6, xl: 8 },
       }}
     >
-      <Typography
-        fontFamily="Audiowide"
-        sx={{
-          fontSize: { xs: "24px", sm: "30px" },
-          color: "white",
-          textAlign: "center",
-          py: { xs: 1, sm: 2, md: 3, xl: 4 },
-        }}
+      <Box
+        display='flex'
+        justifyContent='space-between'
       >
-        50 TRX Battle (1 Roll & 1 Meow)
-      </Typography>
-      <SmallRooms />
-      <Typography
-        fontFamily="Audiowide"
-        sx={{
-          fontSize: { xs: "24px", sm: "30px" },
-          color: "white",
-          textAlign: "center",
-          py: { xs: 2, sm: 3, md: 4, xl: 5 },
-        }}
-      >
-        250 TRX Battle (5 Rolls & 5 Meow)
-      </Typography>
-      <BigRoom />
+        <Box>
+          <Typography
+            fontFamily="Audiowide"
+            sx={{
+              fontSize: { xs: "18px", sm: "24px", md: "30px" },
+              color: "white",
+              textAlign: "center",
+              py: { xs: 1, sm: 2, md: 3, xl: 4 },
+            }}
+          >
+            50 TRX Battle (1 Roll & 1 Meow)
+          </Typography>
+          <SmallRooms />
+        </Box>
+        <Box>
+          <Typography
+            fontFamily="Audiowide"
+            sx={{
+              fontSize: { xs: "18px", sm: "24px", md: "30px" },
+              color: "white",
+              textAlign: "center",
+              py: { xs: 1, sm: 2, md: 3, xl: 4 },
+            }}
+          >
+            250 TRX Battle (5 Rolls & 5 Meow)
+          </Typography>
+          <BigRoom />
+        </Box>
+      </Box>
 
       <SampleModal />
       <BigRoomModal />

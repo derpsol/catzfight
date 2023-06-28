@@ -1,34 +1,47 @@
 export const fightStyle = {
-  fontSize: { xs: "32px", sm: "34px", md: "50px" },
+  fontSize: { xs: "20px", sm: "24px", md: "28px" },
   fontFamily: "Georgia",
   fontWeight: "900",
   color: "white",
-  lineHeight: { xs: "32px", sm: "40px", md: "64px" },
+  lineHeight: { xs: "20px", sm: "24px", md: "36px" },
   textAlign: "center",
 };
 
 export const randomNumberStyle = {
-  fontSize: { xs: "12px", sm: "16px", md: "20px" },
+  fontSize: { xs: "10px", sm: "12px", md: "14px" },
   color: "white",
   fontWeight: "900",
   fontFamily: "Georgia",
 };
 
+export const randomNumberPosStyle = {
+  height: { xs: "20px", sm: "28px", md: "46px" },
+}
+
+export const buttonWidthStyle = {
+  position: "relative",
+  width: {xs: "80%", md: "60%"},
+}
+
 export const roomStyleAvatar = {
-  width: { xs: "120px", sm: "120px", md: "200px" },
-  height: { xs: "110px", sm: "140px", md: "200px" },
+  width: { xs: "90px", sm: "120px", md: "150px" },
+  height: { xs: "60px", sm: "70px", md: "80px" },
   borderRadius: "12px",
 };
 
 export const buttonStyle = {
-  fontSize: { xs: "15px", sm: "18px" },
+  fontSize: { xs: "8px", sm: "12px", md: "14px" },
   textAlign: "center",
   position: "absolute",
 };
 
+export const roomContentTop = {
+  top: { xs: '10px', md: '30px' }
+}
+
 export const roomStyleBack = {
-  width: { xs: "180px", sm: "240px", md: "300px" },
-  height: { xs: "240px", sm: "300px", md: "400px" },
+  width: { xs: "90px", sm: "120px", md: "150px" },
+  height: { xs: "120px", sm: "150px", md: "200px" },
 };
 
 export const style = {
