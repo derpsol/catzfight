@@ -18,6 +18,7 @@ const Role = () => {
       }}
       width='100%'
       height='100vh'
+      overflow='scroll'
     >
       <Typography
         fontFamily="Audiowide"
