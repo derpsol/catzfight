@@ -90,7 +90,7 @@ const Winner = () => {
                       fontSize: { xs: "14px", sm: "16px", md: "20px" },
                     }}
                   >
-                    Win {data.winCount} times
+                    {data.winCount} wins
                   </Typography>
                 </TableCell>
               </TableRow>
