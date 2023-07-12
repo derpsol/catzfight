@@ -20,12 +20,12 @@ export const randomNumberPosStyle = {
 
 export const buttonWidthStyle = {
   position: "relative",
-  width: {xs: "80%", md: "60%"},
+  width: {xs: "80%", md: "80%"},
 }
 
 export const roomStyleAvatar = {
-  width: { xs: "90px", sm: "120px", md: "150px" },
-  height: { xs: "60px", sm: "70px", md: "80px" },
+  width: { xs: "60px", sm: "70px", md: "100px" },
+  height: { xs: "60px", sm: "70px", md: "100px" },
   borderRadius: "12px",
 };
 
@@ -36,12 +36,12 @@ export const buttonStyle = {
 };
 
 export const roomContentTop = {
-  top: { xs: '10px', md: '30px' }
+  top: { xs: '10px', md: '20px' }
 }
 
 export const roomStyleBack = {
   width: { xs: "90px", sm: "120px", md: "150px" },
-  height: { xs: "120px", sm: "150px", md: "200px" },
+  height: { xs: "130px", sm: "170px", md: "220px" },
 };
 
 export const style = {
