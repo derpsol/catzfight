@@ -16,9 +16,9 @@ const Role = () => {
         mt: { xs: 2, sm: 4, md: 6, xl: 8 },
         pb: 1,
       }}
-      width='100%'
-      height='100vh'
-      overflow='scroll'
+      width="100%"
+      height="100vh"
+      overflow="scroll"
     >
       <Typography
         fontFamily="Audiowide"
@@ -32,14 +32,10 @@ const Role = () => {
       >
         Numbers Rolled
       </Typography>
-      <Box display='flex' flexDirection='column'>
+      <Box display="flex" flexDirection="column">
         {randomData &&
           randomData.map((data, index) => (
-            <Box
-              display='flex'
-              flexDirection='column'
-              key={index}
-            >
+            <Box display="flex" flexDirection="column" key={index}>
               <Typography
                 sx={{
                   color: "white",
