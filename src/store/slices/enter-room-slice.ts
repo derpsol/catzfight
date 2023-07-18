@@ -22,10 +22,27 @@ declare var window: any;
 export const EnterRoom = createAsyncThunk(
   "enterRoom/enterRoomMeow",
   async (
-    { tokenId, fightRoom, whichroom, url, address, gamePrice, nftAddress, nftName }: IenterRoomMeow,
+    {
+      tokenId,
+      fightRoom,
+      whichroom,
+      url,
+      address,
+      gamePrice,
+      nftAddress,
+      nftName,
+    }: IenterRoomMeow,
     { dispatch }
   ) => {
-    console.log('enterRoom data: ', tokenId, fightRoom, whichroom, url, nftAddress, gamePrice);
+    console.log(
+      "enterRoom data: ",
+      tokenId,
+      fightRoom,
+      whichroom,
+      url,
+      nftAddress,
+      gamePrice
+    );
     let meowContract;
     if (window) {
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {

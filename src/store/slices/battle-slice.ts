@@ -7,18 +7,26 @@ import {
 import { RootState } from "state";
 
 interface IBattleDetails {
-  claimState: boolean,
-  decide: boolean,
-  openState: boolean,
-  waitingRandom: number,
-  whichfight: number,
-  whichroom: number,
-  waitingNft: string,
+  claimState: boolean;
+  decide: boolean;
+  openState: boolean;
+  waitingRandom: number;
+  whichfight: number;
+  whichroom: number;
+  waitingNft: string;
 }
 
 export const loadBattleDetails = createAsyncThunk(
   "app/loadBattleDetails",
-  async ({ openState, claimState, whichfight, whichroom, waitingRandom, decide, waitingNft }: IBattleDetails ) => {
+  async ({
+    openState,
+    claimState,
+    whichfight,
+    whichroom,
+    waitingRandom,
+    decide,
+    waitingNft,
+  }: IBattleDetails) => {
     return {
       openState,
       claimState,
@@ -39,18 +47,18 @@ const initialState = {
   whichfight: 0,
   waitingRandom: 0,
   decide: false,
-  waitingNft: '',
+  waitingNft: "",
 };
 
 export interface IBattleSlice {
-  loading: boolean,
-  openState: boolean,
-  claimState: boolean,
-  whichroom: number,
-  whichfight: number,
-  waitingRandom: number,
-  waitingNft: string,
-  decide: boolean,
+  loading: boolean;
+  openState: boolean;
+  claimState: boolean;
+  whichroom: number;
+  whichfight: number;
+  waitingRandom: number;
+  waitingNft: string;
+  decide: boolean;
 }
 
 const battleSlice = createSlice({
