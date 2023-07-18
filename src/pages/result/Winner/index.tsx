@@ -25,8 +25,8 @@ const Winner = () => {
         pt: { xs: 2, sm: 4, md: 6, xl: 8 },
         pb: 1,
       }}
-      height='100vh'
-      width='100%'
+      height="100vh"
+      width="100%"
     >
       <Typography
         fontFamily="Audiowide"
@@ -52,14 +52,15 @@ const Winner = () => {
                     textAlign: "center",
                   }}
                 >
-                  {data.rank === 1 ? 
-                  <Box component="img" src={first} width="50px" /> :
-                  data.rank === 2 ?
-                  <Box component="img" src={second} width="50px" /> :
-                  data.rank === 3 ?
-                  <Box component="img" src={third} width="50px" /> :
-                  <Box component="img" src={other} width="50px" />
-                }
+                  {data.rank === 1 ? (
+                    <Box component="img" src={first} width="50px" />
+                  ) : data.rank === 2 ? (
+                    <Box component="img" src={second} width="50px" />
+                  ) : data.rank === 3 ? (
+                    <Box component="img" src={third} width="50px" />
+                  ) : (
+                    <Box component="img" src={other} width="50px" />
+                  )}
                 </TableCell>
                 <TableCell
                   sx={{
