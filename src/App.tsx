@@ -16,8 +16,8 @@ import { loadWinnerDetails } from "store/slices/winner-slice";
 import { useDispatch } from "react-redux";
 import { useEffect, useCallback } from "react";
 import { useWalletModalToggle } from "state/application/hooks";
-import { ReactNotifications } from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
+import { ReactNotifications } from "react-notifications-component";
+import "react-notifications-component/dist/theme.css";
 import { loadWaitingDetails } from "store/slices/getnft-slice";
 
 function App() {
@@ -28,16 +28,20 @@ function App() {
   const loadData = useCallback(() => {
     dispatch(loadGameDetails({ gameData: [] }));
     dispatch(loadRandomDetails({ randomData: [] }));
-    dispatch(loadResultDetails({
-      resultData: [],
-      myResultData: [],
-      address: account,
-    }));
+    dispatch(
+      loadResultDetails({
+        resultData: [],
+        myResultData: [],
+        address: account,
+      })
+    );
     dispatch(loadWinnerDetails({ winnerData: [] }));
-    dispatch(loadWaitingDetails({
-      waitingList: [],
-      approvedList: []
-    }));
+    dispatch(
+      loadWaitingDetails({
+        waitingList: [],
+        approvedList: [],
+      })
+    );
     dispatch(loadNftDetails({ account: account }));
     dispatch(loadJackpotDetails({ account: account }));
   }, [account]);
@@ -61,8 +65,8 @@ function App() {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/stake" component={Stake} />
-          <Route exact path='/admin' component={Admin} />
-          <Route exact path='/result' component={Result} />
+          <Route exact path="/admin" component={Admin} />
+          <Route exact path="/result" component={Result} />
           <Route path="*">
             <Redirect to="/" />
           </Route>
