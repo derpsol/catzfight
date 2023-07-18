@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../index';
-import { updateMatchesDarkMode } from './actions';
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../index";
+import { updateMatchesDarkMode } from "./actions";
 
 export default function Updater(): null {
   const dispatch = useDispatch<AppDispatch>();
@@ -12,20 +12,20 @@ export default function Updater(): null {
       dispatch(updateMatchesDarkMode({ matchesDarkMode: match.matches }));
     };
 
-    const match = window?.matchMedia('(prefers-color-scheme: dark)');
+    const match = window?.matchMedia("(prefers-color-scheme: dark)");
     dispatch(updateMatchesDarkMode({ matchesDarkMode: match.matches }));
 
     if (match?.addListener) {
       match?.addListener(darkHandler);
     } else if (match?.addEventListener) {
-      match?.addEventListener('change', darkHandler);
+      match?.addEventListener("change", darkHandler);
     }
 
     return () => {
       if (match?.removeListener) {
         match?.removeListener(darkHandler);
       } else if (match?.removeEventListener) {
-        match?.removeEventListener('change', darkHandler);
+        match?.removeEventListener("change", darkHandler);
       }
     };
   }, [dispatch]);
