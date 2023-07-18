@@ -45,7 +45,7 @@ const initialState: {
   loading: true,
   resultData: [],
   myResultData: [],
-  address: '',
+  address: "",
 };
 
 export interface IResultSlice {

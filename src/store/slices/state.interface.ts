@@ -12,16 +12,16 @@ import { IWinnerSlice } from "./winner-slice";
 import { IWaitingSlice } from "./getnft-slice";
 
 export interface IReduxState {
-    battle: IBattleSlice;
-    app: IAppSlice;
-    nft: INFTSlice;
-    fight: IWinSlice;
-    nfts: INftDetailSlice;
-    messages: MessagesState;
-    wallet: IWalletInfoDetail;
-    jackpot: IJackPotSlice;
-    random: IRandomSlice;
-    result: IResultSlice;
-    winner: IWinnerSlice;
-    waiting: IWaitingSlice;
+  battle: IBattleSlice;
+  app: IAppSlice;
+  nft: INFTSlice;
+  fight: IWinSlice;
+  nfts: INftDetailSlice;
+  messages: MessagesState;
+  wallet: IWalletInfoDetail;
+  jackpot: IJackPotSlice;
+  random: IRandomSlice;
+  result: IResultSlice;
+  winner: IWinnerSlice;
+  waiting: IWaitingSlice;
 }
