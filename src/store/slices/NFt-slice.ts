@@ -92,8 +92,7 @@ export const loadNftAllowance = createAsyncThunk(
       tokenIds.map(async (tokenId, idn) => {
         let allowtmp = await nftContract.getApproved(tokenId).call();
         allows[idn] =
-          (allowtmp === tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS));
-
+          allowtmp === tronWeb.address.toHex(SHASTA_TESTNET.MEOW_ADDRESS);
       })
     );
     return {

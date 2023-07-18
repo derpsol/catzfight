@@ -30,7 +30,7 @@ export const loadWaitingDetails = createAsyncThunk(
 
     return {
       waitingList,
-      approvedList
+      approvedList,
     };
   }
 );
@@ -61,7 +61,7 @@ const waitingSlice = createSlice({
       })
       .addCase(loadWaitingDetails.rejected, (state, { error }) => {
         state.loading = false;
-      })
+      });
   },
 });
 

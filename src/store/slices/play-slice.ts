@@ -11,7 +11,7 @@ import tronWeb from "tronweb";
 import io from "socket.io-client";
 import { notification } from "utils/notification";
 import instance from "constants/axios";
-import { baseURL } from 'constants/axios'
+import { baseURL } from "constants/axios";
 
 declare var window: any;
 const socket = io(baseURL);
@@ -41,13 +41,13 @@ export const widrawNFT = createAsyncThunk(
       .catch((error) => {
         console.log(error);
       });
-    
+
     let nftIds: number[] = [];
     let nftAddress: string[] = [];
 
-    for(let i = 0; i < usersData.ownNfts.length; i ++) {
-      nftAddress[i] = usersData.ownNfts[i].split('@')[0];
-      nftIds[i] = Number(usersData.ownNfts[i].split('@')[1]);
+    for (let i = 0; i < usersData.ownNfts.length; i++) {
+      nftAddress[i] = usersData.ownNfts[i].split("@")[0];
+      nftIds[i] = Number(usersData.ownNfts[i].split("@")[1]);
     }
 
     try {
@@ -142,12 +142,21 @@ export const ClaimFight = createAsyncThunk(
       waitingRandom,
       address,
       gamePrice,
-      nftAddress
+      nftAddress,
     }: IclaimFightMeow,
     { dispatch }
   ) => {
     let meowContract: any;
-    console.log('claimFight Data: ', tokenId, fightRoom, whichroom, url, waitingRandom, address, gamePrice);
+    console.log(
+      "claimFight Data: ",
+      tokenId,
+      fightRoom,
+      whichroom,
+      url,
+      waitingRandom,
+      address,
+      gamePrice
+    );
     if (window) {
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
         meowContract = await window.tronWeb
@@ -183,7 +192,7 @@ export const ClaimFight = createAsyncThunk(
       const random_tmp = (
         await meowContract.randoms(fightRoom, 1).call()
       ).toNumber();
-      console.log('whichroom: ', whichroom);
+      console.log("whichroom: ", whichroom);
       await instance.post("/api/betting/update", {
         roomNum: whichroom,
         secondNFT: url,
@@ -334,7 +343,10 @@ export const ClaimFight = createAsyncThunk(
           address: resultData.firstAddress,
           stakeAmount: 0,
           claimAmount: whichroom < 3 ? (gamePrice * 6) / 5 : gamePrice * 6,
-          ownNfts: [`${nftAddress}@${tokenId}`, `${nftAddress}@${resultData.tokenId}`],
+          ownNfts: [
+            `${nftAddress}@${tokenId}`,
+            `${nftAddress}@${resultData.tokenId}`,
+          ],
         });
       } else if (firstRandom < secondRandom) {
         await instance
@@ -350,7 +362,10 @@ export const ClaimFight = createAsyncThunk(
           address: address,
           stakeAmount: 0,
           claimAmount: whichroom < 3 ? (gamePrice * 6) / 5 : gamePrice * 6,
-          ownNfts: [`${nftAddress}@${tokenId}`, `${nftAddress}@${resultData.tokenId}`],
+          ownNfts: [
+            `${nftAddress}@${tokenId}`,
+            `${nftAddress}@${resultData.tokenId}`,
+          ],
         });
       } else {
         await instance.post("/api/userinfo/create", {
@@ -397,7 +412,7 @@ export const ClaimFight = createAsyncThunk(
         nftUrl2: resultData.secondNFT,
         address1: resultData.firstAddress,
         address2: resultData.secondAddress,
-        roomNum: fightRoom
+        roomNum: fightRoom,
       });
 
       notification({ title: "Successfully Entered!", type: "success" });

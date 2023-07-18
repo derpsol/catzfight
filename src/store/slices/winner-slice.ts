@@ -10,7 +10,7 @@ import { winnerDataStyle } from "@types";
 
 export const loadWinnerDetails = createAsyncThunk(
   "winner/loadWinnerDetails",
-  async ({ winnerData } : IWinnerSlice) => {
+  async ({ winnerData }: IWinnerSlice) => {
     await instance
       .get("/api/winner")
       .then((response) => {
@@ -26,8 +26,8 @@ export const loadWinnerDetails = createAsyncThunk(
 );
 
 const initialState: {
-  loading: boolean,
-  winnerData: winnerDataStyle[]
+  loading: boolean;
+  winnerData: winnerDataStyle[];
 } = {
   loading: true,
   winnerData: [],
@@ -43,11 +43,11 @@ const winnerSlice = createSlice({
   reducers: {
     updateWinnerData(state, action) {
       let updatedData: winnerDataStyle = action.payload;
-      
+
       const index = state.winnerData.findIndex(
         (data) => data.address === updatedData.address
       );
-      if(index < 0) {
+      if (index < 0) {
         state.winnerData.push(updatedData);
       } else {
         state.winnerData[index] = updatedData;
