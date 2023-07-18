@@ -1,11 +1,11 @@
-import { TransactionResponse } from '@ethersproject/providers';
-import { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { TransactionResponse } from "@ethersproject/providers";
+import { useCallback, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import { useActiveWeb3React } from '../../hooks';
-import { AppDispatch, AppState } from '../index';
-import { addTransaction } from './actions';
-import { TransactionDetails } from './reducer';
+import { useActiveWeb3React } from "../../hooks";
+import { AppDispatch, AppState } from "../index";
+import { addTransaction } from "./actions";
+import { TransactionDetails } from "./reducer";
 
 // helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder(): (
@@ -14,7 +14,7 @@ export function useTransactionAdder(): (
     summary?: string;
     approval?: { tokenAddress: string; spender: string };
     claim?: { recipient: string };
-  },
+  }
 ) => void {
   const { chainId, account } = useActiveWeb3React();
   const dispatch = useDispatch<AppDispatch>();
@@ -26,18 +26,31 @@ export function useTransactionAdder(): (
         summary,
         approval,
         claim,
-      }: { summary?: string; claim?: { recipient: string }; approval?: { tokenAddress: string; spender: string } } = {},
+      }: {
+        summary?: string;
+        claim?: { recipient: string };
+        approval?: { tokenAddress: string; spender: string };
+      } = {}
     ) => {
       if (!account) return;
       if (!chainId) return;
 
       const { hash } = response;
       if (!hash) {
-        throw Error('No transaction hash found.');
+        throw Error("No transaction hash found.");
       }
-      dispatch(addTransaction({ hash, from: account, chainId, approval, summary, claim }));
+      dispatch(
+        addTransaction({
+          hash,
+          from: account,
+          chainId,
+          approval,
+          summary,
+          claim,
+        })
+      );
     },
-    [dispatch, chainId, account],
+    [dispatch, chainId, account]
   );
 }
 
@@ -45,7 +58,9 @@ export function useTransactionAdder(): (
 export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
   const { chainId } = useActiveWeb3React();
 
-  const state = useSelector<AppState, AppState['transactions']>((state) => state.transactions);
+  const state = useSelector<AppState, AppState["transactions"]>(
+    (state) => state.transactions
+  );
 
   return chainId ? state[chainId] ?? {} : {};
 }
@@ -67,12 +82,15 @@ export function isTransactionRecent(tx: TransactionDetails): boolean {
 }
 
 // returns whether a token has a pending approval transaction
-export function useHasPendingApproval(tokenAddress: string | undefined, spender: string | undefined): boolean {
+export function useHasPendingApproval(
+  tokenAddress: string | undefined,
+  spender: string | undefined
+): boolean {
   const allTransactions = useAllTransactions();
   return useMemo(
     () =>
-      typeof tokenAddress === 'string' &&
-      typeof spender === 'string' &&
+      typeof tokenAddress === "string" &&
+      typeof spender === "string" &&
       Object.keys(allTransactions).some((hash) => {
         const tx = allTransactions[hash];
         if (!tx) return false;
@@ -81,10 +99,14 @@ export function useHasPendingApproval(tokenAddress: string | undefined, spender:
         } else {
           const approval = tx.approval;
           if (!approval) return false;
-          return approval.spender === spender && approval.tokenAddress === tokenAddress && isTransactionRecent(tx);
+          return (
+            approval.spender === spender &&
+            approval.tokenAddress === tokenAddress &&
+            isTransactionRecent(tx)
+          );
         }
       }),
-    [allTransactions, spender, tokenAddress],
+    [allTransactions, spender, tokenAddress]
   );
 }
 
@@ -102,7 +124,9 @@ export function useUserHasSubmittedClaim(account?: string): {
       const tx = allTransactions[hash];
       return tx.claim && tx.claim.recipient === account;
     });
-    return txnIndex && allTransactions[txnIndex] ? allTransactions[txnIndex] : undefined;
+    return txnIndex && allTransactions[txnIndex]
+      ? allTransactions[txnIndex]
+      : undefined;
   }, [account, allTransactions]);
 
   return { claimSubmitted: Boolean(claimTxn), claimTxn };
