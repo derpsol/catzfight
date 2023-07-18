@@ -3,7 +3,7 @@ import instance from "constants/axios";
 import { notification } from "utils/notification";
 import tronWeb from "tronweb";
 
-declare var window: any;
+declare var window : any;
 
 interface IAddNft {
   address: string;

@@ -31,20 +31,20 @@ export const loadGameDetails = createAsyncThunk(
         secondNFT: "",
         firstAddress: "",
         secondAddress: "",
-        nftAddress: '',
-        nftName: '',
+        nftAddress: "",
+        nftName: "",
         firstRandom: 0,
         secondRandom: 0,
         tokenId: 0,
         fightRoom: 0,
-        createdAt: '',
-        flag: false
+        createdAt: "",
+        flag: false,
       };
       gameData.push(newGameData);
     }
     let tmpcnt = 0;
     for (let i = 0; i < Math.max(4, maxRoomNum + 2); i++) {
-      if(i + 1 === tmpgameData[tmpcnt]?.roomNum) {
+      if (i + 1 === tmpgameData[tmpcnt]?.roomNum) {
         gameData[i].roomNum = tmpgameData[tmpcnt].roomNum;
         gameData[i].firstNFT = tmpgameData[tmpcnt]?.firstNFT;
         gameData[i].firstAddress = tmpgameData[tmpcnt]?.firstAddress;
@@ -57,7 +57,7 @@ export const loadGameDetails = createAsyncThunk(
         gameData[i].secondAddress = tmpgameData[tmpcnt]?.secondAddress;
         gameData[i].secondRandom = tmpgameData[tmpcnt]?.secondRandom;
         gameData[i].createdAt = tmpgameData[tmpcnt]?.createdAt;
-        tmpcnt ++;
+        tmpcnt++;
       }
     }
     return {
@@ -89,16 +89,16 @@ const gameSlice = createSlice({
         secondNFT: "",
         firstAddress: "",
         secondAddress: "",
-        nftAddress: '',
-        nftName: '',
+        nftAddress: "",
+        nftName: "",
         firstRandom: 0,
         secondRandom: 0,
         tokenId: 0,
         fightRoom: 0,
-        createdAt: '',
-        flag: false
+        createdAt: "",
+        flag: false,
       };
-      if(action.payload.delRoomNum > 0) {
+      if (action.payload.delRoomNum > 0) {
         updatedData.roomNum = action.payload.delRoomNum;
       } else {
         updatedData = action.payload;
@@ -106,7 +106,7 @@ const gameSlice = createSlice({
       const index = state.gameData.findIndex(
         (data) => data.roomNum === updatedData.roomNum
       );
-      if(index < 0) {
+      if (index < 0) {
         state.gameData[updatedData.roomNum - 1] = updatedData;
       } else {
         state.gameData[index] = updatedData;
@@ -119,20 +119,20 @@ const gameSlice = createSlice({
         secondNFT: "",
         firstAddress: "",
         secondAddress: "",
-        nftAddress: '',
-        nftName: '',
+        nftAddress: "",
+        nftName: "",
         firstRandom: 0,
         secondRandom: 0,
         tokenId: 0,
         fightRoom: 0,
-        createdAt: '',
-        flag: false
+        createdAt: "",
+        flag: false,
       };
-      for(let i = 0; i < state.gameData.length; i ++) {
+      for (let i = 0; i < state.gameData.length; i++) {
         maxRoomNum = Math.max(state.gameData[i].roomNum, maxRoomNum);
       }
-      for(let i = 0; i < Math.max(4, maxRoomNum + 2); i ++) {
-        if(state.gameData[i] === undefined) {
+      for (let i = 0; i < Math.max(4, maxRoomNum + 2); i++) {
+        if (state.gameData[i] === undefined) {
           state.gameData[i] = emptyData;
         }
       }
